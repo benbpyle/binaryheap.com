@@ -1,0 +1,41 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout title="Projects | binaryheap">
+  <Header />
+  <main id="main-content" class="app-layout">
+    <section class="py-8 sm:py-10">
+      <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">
+        Projects
+      </h1>
+      <p class="mt-2 text-base italic text-foreground/80">
+        Things I've built and shipped.
+      </p>
+    </section>
+    <ul class="grid gap-6 sm:grid-cols-1">
+      <li
+        class="rounded-md border border-border p-6 transition-colors hover:bg-foreground/5"
+      >
+        <h2 class="text-xl font-semibold">
+          <a
+            href="https://github.com/binaryheap"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-accent"
+          >
+            binaryheap.com
+          </a>
+        </h2>
+        <p class="mt-2 text-foreground/80">
+          This very site — a blog built with Astro and the AstroPaper theme,
+          deployed on Cloudflare Pages. Hosts 120+ posts on serverless, Rust,
+          Go, AWS, and engineering leadership.
+        </p>
+      </li>
+    </ul>
+  </main>
+  <Footer />
+</Layout>

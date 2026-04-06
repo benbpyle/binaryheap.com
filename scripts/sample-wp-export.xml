@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wp="http://wordpress.org/export/1.2/"
+>
+  <channel>
+    <title>Binary Heap</title>
+    <link>https://binaryheap.com</link>
+    <description>A developer blog</description>
+
+    <item>
+      <title>Getting Started with Astro</title>
+      <pubDate>Mon, 10 Mar 2025 09:00:00 +0000</pubDate>
+      <category domain="post_tag" nicename="astro"><![CDATA[Astro]]></category>
+      <category domain="post_tag" nicename="javascript"><![CDATA[JavaScript]]></category>
+      <category domain="category" nicename="tutorials"><![CDATA[Tutorials]]></category>
+      <content:encoded><![CDATA[<p>Astro is a modern static site generator that delivers lightning-fast performance by shipping zero JavaScript by default.</p>
+
+<h2>Why Astro?</h2>
+
+<p>There are many reasons to choose Astro for your next project:</p>
+
+<ul>
+  <li><strong>Performance first</strong> — Astro ships zero JS by default</li>
+  <li><strong>Content-focused</strong> — Built for content-rich websites</li>
+  <li><strong>Island architecture</strong> — Hydrate interactive components on demand</li>
+</ul>
+
+<h2>Getting Started</h2>
+
+<p>To create a new Astro project, run:</p>
+
+<pre><code>npm create astro@latest</code></pre>
+
+<p>Then follow the prompts. It's that easy!</p>
+
+<h3>Project Structure</h3>
+
+<p>A typical Astro project looks like this:</p>
+
+<pre><code>src/
+  pages/
+  components/
+  layouts/
+  content/
+public/
+astro.config.mjs</code></pre>
+
+<p>Check out the <a href="https://docs.astro.build">official documentation</a> for more details.</p>]]></content:encoded>
+      <excerpt:encoded><![CDATA[A quick guide to getting started with Astro, the modern static site generator that ships zero JavaScript by default.]]></excerpt:encoded>
+      <wp:post_type>post</wp:post_type>
+      <wp:status>publish</wp:status>
+      <wp:post_date>2025-03-10 09:00:00</wp:post_date>
+    </item>
+
+    <item>
+      <title>Tailwind CSS v4: What's New</title>
+      <pubDate>Fri, 21 Mar 2025 14:30:00 +0000</pubDate>
+      <category domain="post_tag" nicename="css"><![CDATA[CSS]]></category>
+      <category domain="post_tag" nicename="tailwind"><![CDATA[Tailwind]]></category>
+      <category domain="category" nicename="web-development"><![CDATA[Web Development]]></category>
+      <content:encoded><![CDATA[<p>Tailwind CSS v4 brings a completely new engine built on top of <a href="https://lightningcss.dev">Lightning CSS</a>, along with a redesigned configuration experience.</p>
+
+<h2>Key Changes</h2>
+
+<h3>CSS-First Configuration</h3>
+
+<p>Gone is the <code>tailwind.config.js</code> file. In v4, you configure everything directly in CSS using the <code>@theme</code> directive:</p>
+
+<pre><code>@import "tailwindcss";
+
+@theme {
+  --color-brand: #7c3aed;
+  --font-heading: "Inter", sans-serif;
+}</code></pre>
+
+<h3>Performance Improvements</h3>
+
+<p>The new engine is <strong>10x faster</strong> than v3 for full builds and over <strong>100x faster</strong> for incremental builds. This means near-instant HMR in development.</p>
+
+<h2>Migration Tips</h2>
+
+<ol>
+  <li>Remove your <code>tailwind.config.js</code> file</li>
+  <li>Move theme customizations to <code>@theme</code> blocks in CSS</li>
+  <li>Update any custom plugins to the new API</li>
+</ol>
+
+<p>The migration is mostly straightforward, but test thoroughly!</p>]]></content:encoded>
+      <excerpt:encoded><![CDATA[Exploring the major changes in Tailwind CSS v4, including the new CSS-first configuration and massive performance improvements.]]></excerpt:encoded>
+      <wp:post_type>post</wp:post_type>
+      <wp:status>publish</wp:status>
+      <wp:post_date>2025-03-21 14:30:00</wp:post_date>
+    </item>
+
+    <item>
+      <title>Draft: My Thoughts on Web Components</title>
+      <pubDate>Tue, 01 Apr 2025 08:00:00 +0000</pubDate>
+      <category domain="post_tag" nicename="web-components"><![CDATA[Web Components]]></category>
+      <category domain="category" nicename="opinion"><![CDATA[Opinion]]></category>
+      <content:encoded><![CDATA[<p>Web Components have been around for years, but adoption has been slow. Here are my unfiltered thoughts on the state of the platform in 2025.</p>
+
+<h2>The Good</h2>
+
+<p>Shadow DOM encapsulation is genuinely useful for design systems and widget libraries. The <code>customElements.define()</code> API is simple enough, and with declarative shadow DOM landing in all major browsers, SSR is finally viable.</p>
+
+<h2>The Not-So-Good</h2>
+
+<p>The developer experience still lags behind frameworks like React, Vue, and Svelte. Templating with template literals feels clunky, and reactivity requires manual wiring.</p>
+
+<blockquote><p>The best technology is the one your team can ship with confidently.</p></blockquote>
+
+<p>I'll expand on this more once I've gathered my full thoughts.</p>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_type>post</wp:post_type>
+      <wp:status>draft</wp:status>
+      <wp:post_date>2025-04-01 08:00:00</wp:post_date>
+    </item>
+
+    <item>
+      <title>About Page</title>
+      <wp:post_type>page</wp:post_type>
+      <wp:status>publish</wp:status>
+      <content:encoded><![CDATA[<p>This is a page, not a post. It should be skipped by the migration script.</p>]]></content:encoded>
+    </item>
+
+  </channel>
+</rss>
