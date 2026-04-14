@@ -26,3 +26,7 @@ pnpm-debug.log*
 # pagefind
 
 public/pagefind
+
+# CDK
+infra/cdk.out/
+infra/node_modules/

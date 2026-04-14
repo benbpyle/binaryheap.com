@@ -1,2 +1,0 @@
-# Redirect old /blog/:slug URLs to new /posts/:slug URLs
-/blog/:slug /posts/:slug 301
