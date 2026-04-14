@@ -1,7 +1,7 @@
 ---
 title: Part1-The-Short-Bus-and-the-Fairway
 author: "Benjamen Pyle"
-description: "_Part 1 of 3: Reflections on 30 Years in Technology_ _Part 2: The Fear of Being Included | Part 3: John Henry at the Keyboard_"
+description: "Reflections on 30 years in technology reveal how mentorship, resilience, and an analytical mindset shaped a lasting career in software development."
 pubDatetime: 2026-03-02T00:00:00Z
 tags:
   - uncategorized

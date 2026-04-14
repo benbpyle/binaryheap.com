@@ -1,7 +1,7 @@
 ---
 title: API Gateway Base Path Mapping
 author: "Benjamen Pyle"
-description: Using bath path mapping with AWS API Gateway and CDK
+description: API Gateway base path mapping with CDK routes multiple REST APIs under a single custom domain name while disabling default execute endpoints.
 pubDatetime: 2023-01-16T00:00:00Z
 tags:
   - aws

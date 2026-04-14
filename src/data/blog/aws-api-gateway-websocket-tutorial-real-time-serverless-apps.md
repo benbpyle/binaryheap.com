@@ -1,7 +1,7 @@
 ---
 title: "AWS API Gateway WebSocket Tutorial: Real-time Serverless Apps"
 author: "Benjamen Pyle"
-description: I was working recently with some backend code and I needed to communicate the success or failure of the result back to my UI. I instantly knew that I needed to put together a WebSocket to handle this
+description: AWS API Gateway WebSocket tutorial showing how to build real-time serverless apps with Lambda, DynamoDB, and CDK using Golang step by step.
 pubDatetime: 2023-10-08T00:00:00Z
 tags:
   - aws

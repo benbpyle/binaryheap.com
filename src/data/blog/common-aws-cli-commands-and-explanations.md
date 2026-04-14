@@ -1,7 +1,7 @@
 ---
 title: Common AWS CLI commands and explanations
 author: "Benjamen Pyle"
-description: How to use some common AWS CLI Commands
+description: AWS CLI commands reference covering SNS, SQS, S3, CloudFormation, CodeCommit, Cognito, and Kinesis with practical examples and explanations.
 pubDatetime: 2023-02-19T00:00:00Z
 tags:
   - aws

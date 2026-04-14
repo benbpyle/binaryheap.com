@@ -1,7 +1,7 @@
 ---
 title: "Gratitude.  A look back at re:Invent"
 author: "Benjamen Pyle"
-description: "Gratitude. That's the simple yet powerful word that comes to mind when I look back on re:Invent 2023. This article is an expression of my gratitude to those who made not only re:Invent something more"
+description: "Gratitude and community shaped an unforgettable re:Invent 2023 experience, from favorite announcements to meaningful connections with builders."
 pubDatetime: 2023-12-09T00:00:00Z
 tags:
   - aws

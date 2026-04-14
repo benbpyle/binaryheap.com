@@ -1,7 +1,7 @@
 ---
 title: Building Serverless Applications with AWS - Data
 author: "Benjamen Pyle"
-description: "Building Serverless applications can feel a bit overwhelming when you are first getting started. Sure, Event-Driven Systems have been around for many years but this notion of using managed services to"
+description: "Serverless data storage on AWS compared across DynamoDB, RDS, S3, OpenSearch, Timestream, and HealthLake with guidance on choosing the right fit."
 pubDatetime: 2023-07-10T00:00:00Z
 tags:
   - aws

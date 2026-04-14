@@ -1,7 +1,7 @@
 ---
 title: Lambda Extension with Golang
 author: "Benjamen Pyle"
-description: "For full disclosure, I've been writing Lambda function code since 2017 and I completely breezed over the release of Lambda Extensions back in 2020. Here's the release announcement. At the core of exte"
+description: "Lambda extensions built with Golang enable cross-language reuse by running a sidecar HTTP API for caching with Momento and DynamoDB read-through."
 pubDatetime: 2023-06-18T00:00:00Z
 tags:
   - aws

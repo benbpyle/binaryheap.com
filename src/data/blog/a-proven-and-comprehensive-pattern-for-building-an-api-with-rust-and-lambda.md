@@ -1,7 +1,7 @@
 ---
 title: A Proven and Comprehensive Pattern for Building an API with Rust and Lambda
 author: "Benjamen Pyle"
-description: "I've been encouraged lately by all of the Rust and Serverless content that has been posted on various platforms. I've also been public about the fact that I believe that Rust adoption with Serverless"
+description: "Rust and Lambda API tutorial walking through a complete CRUD implementation with DynamoDB, Cargo workspaces, and CDK for deployment to AWS."
 pubDatetime: 2024-03-16T00:00:00Z
 tags:
   - aws

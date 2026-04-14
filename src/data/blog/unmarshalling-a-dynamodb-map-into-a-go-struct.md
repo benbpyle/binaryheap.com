@@ -1,7 +1,7 @@
 ---
 title: Unmarshalling a DynamoDB Map into a Go Struct
 author: "Benjamen Pyle"
-description: Unmarshalling a DynamoDB map into a Go struct
+description: DynamoDB map unmarshalling in Go lets you convert nested key-value attributes into strongly typed structs using custom UnmarshalDynamoDBAttributeValue methods.
 pubDatetime: 2023-02-01T00:00:00Z
 tags:
   - aws

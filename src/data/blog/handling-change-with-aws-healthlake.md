@@ -1,7 +1,7 @@
 ---
 title: Handling Change with AWS Healthlake
 author: "Benjamen Pyle"
-description: Handling change with AWS Healthlake using the Change Data Capture pattern
+description: AWS HealthLake change data capture using CloudTrail, EventBridge, and Step Functions enables event-driven workflows for FHIR resource mutations.
 pubDatetime: 2023-01-30T00:00:00Z
 tags:
   - serverless

@@ -1,7 +1,7 @@
 ---
 title: The Fear of Being Included
 author: "Benjamen Pyle"
-description: "_Part 1: The Short Bus and the Fairway_"
+description: "Introversion in tech is far more nuanced than antisocial stereotypes suggest, and online community can extend real life rather than replace it."
 pubDatetime: 2026-03-02T00:00:00Z
 tags:
   - community

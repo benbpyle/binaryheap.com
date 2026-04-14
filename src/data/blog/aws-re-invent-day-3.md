@@ -1,7 +1,7 @@
 ---
 title: "AWS re:Invent Day 3"
 author: "Benjamen Pyle"
-description: "So this one is rough in the best of ways possible. It's currently 2 AM Las Vegas time and I've been up since 7 AM the previous day. Back to what I said a few days ago, re:Invent is a marathon and not"
+description: "AWS re:Invent 2023 Day 3 recap covering keynote reactions, community booth volunteering, building lasting connections, and the Momento bash."
 pubDatetime: 2023-11-30T00:00:00Z
 tags:
   - aws

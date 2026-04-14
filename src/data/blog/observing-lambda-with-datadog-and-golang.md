@@ -1,7 +1,7 @@
 ---
 title: Observing Lambda with Datadog and Golang
 author: "Benjamen Pyle"
-description: observability with aws lambda datadog and go
+description: Lambda observability with Datadog and Golang covers setting up structured JSON logging, distributed tracing with spans, and correlating them together.
 pubDatetime: 2022-12-12T00:00:00Z
 tags:
   - aws

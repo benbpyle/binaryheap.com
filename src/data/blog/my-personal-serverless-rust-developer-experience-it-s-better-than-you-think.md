@@ -1,7 +1,7 @@
 ---
 title: "My Personal Serverless Rust Developer Experience.  It's Better Than You Think"
 author: "Benjamen Pyle"
-description: 'One of the things that can be difficult when starting with a new technology, framework or tool is where to get started. That "get started" can mean a great many things to many people. Over the past 6'
+description: "Serverless Rust developer experience guide covers the complete workflow from IDE setup and Cargo Lambda to local debugging and CDK deployments."
 pubDatetime: 2024-02-10T00:00:00Z
 tags:
   - aws

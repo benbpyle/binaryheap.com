@@ -1,7 +1,7 @@
 ---
 title: AWS CDK Pipeline
 author: "Benjamen Pyle"
-description: aws cdk piplines L3 construct
+description: AWS CDK Pipelines construct provides an opinionated CI/CD pipeline with self-mutation, cross-account deploys, and automatic source monitoring.
 pubDatetime: 2022-11-28T00:00:00Z
 tags:
   - aws

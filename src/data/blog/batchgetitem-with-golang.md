@@ -1,7 +1,7 @@
 ---
 title: BatchGetItem with Golang
 author: "Benjamen Pyle"
-description: Achieving the fetch of multiple items from DynamoDB using the BatchGetItem operation with Golang
+description: DynamoDB BatchGetItem with Golang retrieves multiple items by key in a single call using the AWS SDK BatchGetItemPagesWithContext function.
 pubDatetime: 2023-02-25T00:00:00Z
 tags:
   - aws

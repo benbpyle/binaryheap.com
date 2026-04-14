@@ -1,7 +1,7 @@
 ---
 title: Creating an Async Integration with AWS Step Functions from API Gateway via CDK
 author: "Benjamen Pyle"
-description: I often have the scenario where there is a client which makes a request to an endpoint and they just want to make sure that payload was delivered but not necessarily concerned about the outcome. A pre
+description: Step Functions async integration with API Gateway via CDK enables durable webhook-style endpoints that return immediately while workflows execute.
 pubDatetime: 2022-12-17T00:00:00Z
 tags:
   - aws

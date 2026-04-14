@@ -1,7 +1,7 @@
 ---
 title: Web API with Rust and Fargate
 author: "Benjamen Pyle"
-description: "I've been spending more and more time with Rust which is perfectly in line with my end-of-year planning. So far, my collection of articles is growing and so are my Rust skills. I can't profess to be m"
+description: "Rust web API on AWS Fargate built with Axum, DynamoDB, and Docker, covering local development with Docker Compose and ECS cloud deployment."
 pubDatetime: 2023-12-21T00:00:00Z
 tags:
   - aws

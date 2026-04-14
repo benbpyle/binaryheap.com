@@ -1,7 +1,7 @@
 ---
 title: "AWS re:Invent Day 2"
 author: "Benjamen Pyle"
-description: "Day 2 of re:Invent 2023 has come and gone and it was personally my best day yet. By the numbers, I'm at the halfway point with my two busiest days ahead. Let's get right to my recap as it's filled wit"
+description: "AWS re:Invent 2023 Day 2 recap covers the Adam Selipsky keynote, announcements like Amazon Q and S3 Express One Zone, and community networking."
 pubDatetime: 2023-11-29T00:00:00Z
 tags:
   - aws

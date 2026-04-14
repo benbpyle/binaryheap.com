@@ -1,7 +1,7 @@
 ---
 title: Infrastructure as Code
 author: "Benjamen Pyle"
-description: 'Infrastructure as Code is an emerging practice that encourages the writing of cloud infrastructure as code instead of clicking your way to deployment. I feel like "ClickOps" is where we all started ye'
+description: 'Infrastructure as Code shifts deployment ownership to development teams, building a culture of accountability, customer focus, and faster response.'
 pubDatetime: 2023-05-27T00:00:00Z
 tags:
   - aws

@@ -1,7 +1,7 @@
 ---
 title: Building Trust
 author: "Benjamen Pyle"
-description: "I've been spending a lot of time lately being self-reflective and this week I was thinking about building trust. The more I thought about trust, the more I wanted to write something about how to build"
+description: "Building trust in technology teams starts with adding value, listening before speaking, giving your time selflessly, and showing up when it matters."
 pubDatetime: 2023-10-14T00:00:00Z
 tags:
   - leadership

@@ -1,7 +1,7 @@
 ---
 title: Building Serverless Applications with AWS – API
 author: "Benjamen Pyle"
-description: "Building Serverless applications can feel a bit overwhelming when you are first getting started. Sure, Event-Driven Systems have been around for many years but this notion of using managed services to"
+description: "API Gateway for serverless apps explored through resources, method requests, integration types, models, custom domains, and base path mapping."
 pubDatetime: 2023-08-05T00:00:00Z
 tags:
   - aws

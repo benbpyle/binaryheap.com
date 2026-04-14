@@ -1,7 +1,7 @@
 ---
 title: Building Serverless Applications with AWS – Security
 author: "Benjamen Pyle"
-description: "Building Serverless applications can feel a bit overwhelming when you are first getting started. Sure, Event-Driven Systems have been around for many years but this notion of using managed services to"
+description: "Serverless security on AWS broken down into three pillars: API Gateway custom authorizers, least-privilege IAM policies, and KMS data encryption."
 pubDatetime: 2023-08-12T00:00:00Z
 tags:
   - aws

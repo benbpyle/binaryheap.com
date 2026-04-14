@@ -1,7 +1,7 @@
 ---
 title: Does Serverless Still Matter?
 author: "Benjamen Pyle"
-description: "No. Short, simple, and direct. The answer to the question is that serverless at this point and time doesn't matter. Now I'm not saying that it's never mattered. But what I am saying is that it's just"
+description: "Serverless as a corporate-backed movement may be fading, but its value, community, and impact on cloud computing will endure for years to come."
 pubDatetime: 2024-06-02T00:00:00Z
 tags:
   - people

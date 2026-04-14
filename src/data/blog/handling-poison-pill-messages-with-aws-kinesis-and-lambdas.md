@@ -1,7 +1,7 @@
 ---
 title: 'Handling "Poison Pill" Messages with AWS Kinesis and Lambdas'
 author: "Benjamen Pyle"
-description: Handling bad messages in Kinesis streams when using them as event sources with Lambdas
+description: Kinesis poison pill messages block stream processing for hours when Lambda event sources fail, but CDK event source configurations can solve this.
 pubDatetime: 2022-12-29T00:00:00Z
 tags:
   - aws

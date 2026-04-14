@@ -1,7 +1,7 @@
 ---
 title: The Short Bus and the Fairway
 author: "Benjamen Pyle"
-description: "* * *"
+description: "Thirty years in technology taught me that resilience, mentorship, and an analytical mindset matter far more than mastering any single technical skill."
 pubDatetime: 2026-03-02T00:00:00Z
 tags:
   - career

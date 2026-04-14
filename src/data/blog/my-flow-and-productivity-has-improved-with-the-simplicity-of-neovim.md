@@ -1,7 +1,7 @@
 ---
 title: My Flow and Productivity has Improved with the Simplicity of Neovim
 author: "Benjamen Pyle"
-description: "I don't think it's a surprise if you've been following along with me lately that I've pivoted my daily programming setup to Neovim. What might surprise you is that I started my career working on HP-UX"
+description: "Neovim setup with LazyVim, tmux, and Wezterm creates a simplified terminal workflow that boosts developer flow and productivity for daily coding."
 pubDatetime: 2024-06-21T00:00:00Z
 tags:
   - uncategorized

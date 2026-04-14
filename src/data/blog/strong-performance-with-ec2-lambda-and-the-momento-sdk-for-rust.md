@@ -1,7 +1,7 @@
 ---
 title: "Strong Performance with EC2, Lambda, and the Momento SDK for Rust"
 author: "Benjamen Pyle"
-description: I wrote recently about Mind Boggling Speed with Caching with Momento and Rust and wanted to continue in that theme as I explore the Momento SDK for Rust. Caching is a technique that builders reach for
+description: Momento SDK for Rust delivers 2ms topic latency on EC2 and near-instant webhooks on Lambda, proving serverless caching performs at any scale.
 pubDatetime: 2024-06-30T00:00:00Z
 tags:
   - aws

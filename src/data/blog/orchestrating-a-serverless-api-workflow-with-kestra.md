@@ -1,7 +1,7 @@
 ---
 title: Orchestrating a Serverless API Workflow with Kestra
 author: "Benjamen Pyle"
-description: "Modern applications are complex. Fewer and fewer applications are built as single monolith that runs in one process, stores its data in a single database, and has access to the underlying single file"
+description: "Kestra workflow orchestration demonstrated with AWS Lambda and DynamoDB, covering HTTP tasks, database queries, and the control plane interface."
 pubDatetime: 2024-11-26T00:00:00Z
 tags:
   - aws

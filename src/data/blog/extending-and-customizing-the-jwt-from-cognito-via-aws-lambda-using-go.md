@@ -1,7 +1,7 @@
 ---
 title: Extending and Customizing the JWT from Cognito via AWS Lambda using Go
 author: "Benjamen Pyle"
-description: Extending JWTs from Cognito with Lambda and Go
+description: Cognito JWT customization using Go Lambda triggers lets you add private claims to ID tokens through the PreTokenGeneration user pool trigger.
 pubDatetime: 2023-02-04T00:00:00Z
 tags:
   - aws

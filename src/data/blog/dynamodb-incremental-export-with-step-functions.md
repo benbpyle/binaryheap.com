@@ -1,7 +1,7 @@
 ---
 title: DynamoDB Incremental Export with Step Functions
 author: "Benjamen Pyle"
-description: "When working on building solutions, the answer to some problems is often, it depends. For instance, if I need to deal with data as it changes and use DynamoDB, streams are the perfect feature to take"
+description: "DynamoDB incremental exports can be orchestrated with Step Functions using native SDK integrations, eliminating the need for Lambda compute code."
 pubDatetime: 2023-10-25T00:00:00Z
 tags:
   - aws

@@ -1,7 +1,7 @@
 ---
 title: "Stepping Out, 1 Year Later"
 author: "Benjamen Pyle"
-description: This is an article to my past self and perhaps those that come later who are in the same position I was in this time last year.
+description: "Career independence after one year of leaving a CTO role, with lessons on family, sales pipeline, finances, and building a consulting business."
 pubDatetime: 2024-12-21T00:00:00Z
 tags:
   - people

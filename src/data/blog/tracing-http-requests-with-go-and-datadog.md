@@ -1,7 +1,7 @@
 ---
 title: Tracing HTTP Requests with Go and Datadog
 author: "Benjamen Pyle"
-description: tracing http requests with Go and Datadog
+description: HTTP request tracing in Go with Datadog wraps the standard HTTP client to generate spans with method and URL details in your flame graphs.
 pubDatetime: 2022-12-13T00:00:00Z
 tags:
   - aws

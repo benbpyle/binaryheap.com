@@ -1,7 +1,7 @@
 ---
 title: DynamoDB Streams EventBridge Pipes Enrichment
 author: "Benjamen Pyle"
-description: "I've been wanting to spend more time lately talking about AWS HealthLake. And then more specifically, Fast Healthcare Interoperable Resources (FHIR) which is the foundation for interoperability in hea"
+description: "DynamoDB Streams enrichment with EventBridge Pipes transforms domain data into FHIR healthcare resources using serverless filtering and Lambda."
 pubDatetime: 2023-08-31T00:00:00Z
 tags:
   - aws

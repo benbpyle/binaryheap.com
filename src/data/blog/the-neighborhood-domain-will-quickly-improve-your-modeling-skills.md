@@ -1,7 +1,7 @@
 ---
 title: The Neighborhood Domain will Quickly Improve your Modeling Skills
 author: "Benjamen Pyle"
-description: "Microservices are about domain decomposition. This decomposition allows code to be deployed that is more isolated, durable, resilient, and launched in a compute form factor designed for the requiremen"
+description: "Neighborhood domain modeling maps bounded contexts to familiar concepts like houses and HOAs, making microservice architecture easier to understand."
 pubDatetime: 2024-05-25T00:00:00Z
 tags:
   - architecture

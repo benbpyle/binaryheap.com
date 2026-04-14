@@ -56,8 +56,11 @@ const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
   : undefined;
 
+const wordCount = post.body ? post.body.split(/\s+/).filter(Boolean).length : 0;
+
 const layoutProps = {
   title: `${title} | ${SITE.title}`,
+  postTitle: title,
   author,
   description,
   pubDatetime,
@@ -65,6 +68,8 @@ const layoutProps = {
   canonicalURL,
   ogImage,
   scrollSmooth: true,
+  tags,
+  wordCount,
 };
 
 /* ========== Prev/Next Posts ========== */

@@ -1,7 +1,7 @@
 ---
 title: "Embrace that a Career isn't always Measured by Climbing the Technology Ladder"
 author: "Benjamen Pyle"
-description: "What if I've been thinking about my career all wrong up until this point? How can that even be possible? I consider myself to be making the turn. Heading into the back nine of this adventure. Does tha"
+description: "Career growth in technology does not require climbing the corporate ladder, and discovering your why can reshape how you measure true success."
 pubDatetime: 2024-03-02T00:00:00Z
 tags:
   - people

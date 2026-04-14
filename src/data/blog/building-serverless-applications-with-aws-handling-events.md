@@ -1,7 +1,7 @@
 ---
 title: Building Serverless Applications with AWS – Handling Events
 author: "Benjamen Pyle"
-description: "Building Serverless applications can feel a bit overwhelming when you are first getting started. Sure, Event-Driven Systems have been around for many years but this notion of using managed services to"
+description: "Serverless event handling on AWS explained through SQS, Kinesis, SNS, and EventBridge with guidance on when to use each service in your design."
 pubDatetime: 2023-07-27T00:00:00Z
 tags:
   - aws

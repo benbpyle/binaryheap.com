@@ -1,7 +1,7 @@
 ---
 title: "AWS re:Invent Day 1"
 author: "Benjamen Pyle"
-description: "Day 1 of re:Invent has come and gone and it was an epic start to the week. I've often heard it said that re:Invent is a marathon and not a sprint and that's a very true statement. If you are reading t"
+description: "AWS re:Invent 2023 Day 1 recap covers a DynamoDB modeling session, the Healthcare and Life Sciences Executive Symposium, and Monday Night Live."
 pubDatetime: 2023-11-28T00:00:00Z
 tags:
   - aws

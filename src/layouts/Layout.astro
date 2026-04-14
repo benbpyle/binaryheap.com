@@ -1,11 +1,15 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
+import {
+  PUBLIC_GOOGLE_SITE_VERIFICATION,
+  PUBLIC_GA4_ID,
+} from "astro:env/client";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 
 type Props = {
   title?: string;
+  postTitle?: string;
   author?: string;
   profile?: string;
   description?: string;
@@ -14,10 +18,13 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  tags?: string[];
+  wordCount?: number;
 };
 
 const {
   title = SITE.title,
+  postTitle,
   author = SITE.author,
   profile = SITE.profile,
   description = SITE.desc,
@@ -26,25 +33,69 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  tags,
+  wordCount,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
+const isBlogPost = !!pubDatetime;
+const ogType = isBlogPost ? "article" : "website";
+const siteURL = new URL("/", Astro.url);
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  headline: `${title}`,
-  image: `${socialImageURL}`,
-  datePublished: `${pubDatetime?.toISOString()}`,
-  ...(modDatetime && { dateModified: modDatetime.toISOString() }),
-  author: [
-    {
-      "@type": "Person",
-      name: `${author}`,
-      ...(profile && { url: profile }),
-    },
-  ],
-};
+const structuredData = isBlogPost
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: postTitle ?? title,
+      image: `${socialImageURL}`,
+      datePublished: pubDatetime.toISOString(),
+      ...(modDatetime && { dateModified: modDatetime.toISOString() }),
+      author: {
+        "@type": "Person",
+        name: author,
+        ...(profile && { url: profile }),
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "binaryheap",
+        url: `${siteURL}`,
+      },
+      ...(wordCount && { wordCount }),
+      ...(tags && tags.length > 0 && { keywords: tags.join(", ") }),
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: SITE.title,
+      description: SITE.desc,
+      url: `${siteURL}`,
+    };
+
+const breadcrumbData = isBlogPost
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: `${siteURL}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Posts",
+          item: `${new URL("/posts/", Astro.url)}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: postTitle ?? title,
+        },
+      ],
+    }
+  : null;
 ---
 
 <!doctype html>
@@ -68,6 +119,8 @@ const structuredData = {
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="binaryheap" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
@@ -105,6 +158,16 @@ const structuredData = {
       set:html={JSON.stringify(structuredData)}
     />
 
+    {
+      breadcrumbData && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(breadcrumbData)}
+        />
+      )
+    }
+
     <!-- Enable RSS feed auto-discovery  -->
     <!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery -->
     <link
@@ -125,6 +188,35 @@ const structuredData = {
           name="google-site-verification"
           content={PUBLIC_GOOGLE_SITE_VERIFICATION}
         />
+      )
+    }
+
+    <!-- Google Analytics 4 (production only) -->
+    {
+      import.meta.env.PROD && PUBLIC_GA4_ID && (
+        <>
+          <script
+            is:inline
+            src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA4_ID}`}
+            async
+          />
+          <script
+            is:inline
+            define:vars={{ PUBLIC_GA4_ID }}
+          >
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', PUBLIC_GA4_ID, { send_page_view: false });
+
+            document.addEventListener('astro:page-load', () => {
+              gtag('event', 'page_view', {
+                page_location: window.location.href,
+                page_title: document.title,
+              });
+            });
+          </script>
+        </>
       )
     }
 

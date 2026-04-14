@@ -1,7 +1,7 @@
 ---
 title: 4 Inspiring Tips to Think like a Consultant
 author: "Benjamen Pyle"
-description: "I'm early on in this new venture as a full-time consultant but something that isn't new for me is being someone people go to for help. Every time I speak to someone about this topic I tend to drive ba"
+description: "Consultant mindset tips that elevate your influence by mastering four skills: listening, adding value, working backwards, and making tradeoffs."
 pubDatetime: 2024-03-09T00:00:00Z
 tags:
   - leadership

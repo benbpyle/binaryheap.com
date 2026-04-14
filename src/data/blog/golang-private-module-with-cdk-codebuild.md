@@ -1,7 +1,7 @@
 ---
 title: Golang Private Module with CDK CodeBuild
 author: "Benjamen Pyle"
-description: "Even experienced builders run into things from time to time that they haven't seen before and this causes them some trouble. I've been working with CDK, CodePipeline, CodeBuild and Golang for several"
+description: "Golang private modules in AWS CodeBuild require specific configuration with .netrc files and GOPRIVATE variables in your CDK CodePipeline setup."
 pubDatetime: 2023-05-06T00:00:00Z
 tags:
   - aws

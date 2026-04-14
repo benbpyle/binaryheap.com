@@ -1,7 +1,7 @@
 ---
 title: Mapping AWS State Machine output to API Gateway response with VTL
 author: "Benjamen Pyle"
-description: Mapping AWS State Machine output to API Gateway response with VTL
+description: VTL mapping templates in API Gateway transform Step Functions output into custom HTTP responses with dynamic status codes and JSON payloads.
 pubDatetime: 2023-01-27T00:00:00Z
 tags:
   - aws

@@ -1,7 +1,7 @@
 ---
 title: Querying AWS Healthlake from Go
 author: "Benjamen Pyle"
-description: Querying AWS Healthlake with Go
+description: AWS HealthLake querying with Go requires signed REST API requests to fetch FHIR Bundles and Patient resources from your datastore endpoint.
 pubDatetime: 2023-01-09T00:00:00Z
 tags:
   - aws

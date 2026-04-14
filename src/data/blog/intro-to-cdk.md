@@ -1,7 +1,7 @@
 ---
 title: Intro to CDK
 author: "Benjamen Pyle"
-description: introduction to aws cdk with typescript
+description: AWS CDK lets developers define cloud infrastructure using familiar programming languages like TypeScript, enabling testing and reusable constructs.
 pubDatetime: 2022-11-19T00:00:00Z
 tags:
   - aws

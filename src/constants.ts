@@ -19,15 +19,9 @@ interface Social {
 export const SOCIALS: Social[] = [
   {
     name: "GitHub",
-    href: "https://github.com/binaryheap",
+    href: "https://github.com/benbpyle",
     linkTitle: `${SITE.title} on GitHub`,
     icon: IconGitHub,
-  },
-  {
-    name: "X",
-    href: "https://x.com/binaryheap",
-    linkTitle: `${SITE.title} on X`,
-    icon: IconBrandX,
   },
   {
     name: "LinkedIn",

@@ -1,7 +1,7 @@
 ---
 title: SQS Re-Drive with Golang and Step Functions
 author: "Benjamen Pyle"
-description: Earlier this week a new set of APIs were released for working with Dead-Letter-Queues and re-drives back to its primary queue. Messaging-based systems have been around for a long time and they are a c
+description: SQS dead-letter-queue re-drive automated with Golang Lambda functions and Step Functions provides self-healing workflows for event-driven systems.
 pubDatetime: 2023-06-10T00:00:00Z
 tags:
   - aws

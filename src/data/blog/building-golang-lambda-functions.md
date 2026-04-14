@@ -1,7 +1,7 @@
 ---
 title: Building Golang Lambda Functions
 author: "Benjamen Pyle"
-description: "Using CDK for building Golang Lambda functions is a super simple process and easy enough to work with. It is well documented and is a subclass of the `Function` class defined in `aws-cdk-lib/aws-lambd"
+description: "Golang Lambda functions with CDK explored through entry points, runtime selection, environment variables, and linker flags to reduce binary size."
 pubDatetime: 2023-04-26T00:00:00Z
 tags:
   - aws

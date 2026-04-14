@@ -1,7 +1,7 @@
 ---
 title: "AWS re:Invent Day 0"
 author: "Benjamen Pyle"
-description: "Here goes the beginning of a nightly blog post recapping my experience at AWS re:Invent 2023 in Las Vegas. AWS re:Invent officially kicks off on Monday 11/27/2023 but for those of us who arrived early"
+description: "AWS re:Invent 2023 Day 0 recap covering the community hike at Valley of Fire, meeting builders in person, and kicking off the conference week."
 pubDatetime: 2023-11-27T00:00:00Z
 tags:
   - aws

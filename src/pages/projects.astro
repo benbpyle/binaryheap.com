@@ -21,21 +21,51 @@ import Footer from "@/components/Footer.astro";
       >
         <h2 class="text-xl font-semibold">
           <a
-            href="https://github.com/binaryheap"
+            href="https://homeschoolace.com"
             target="_blank"
             rel="noopener noreferrer"
+            class="hover:text-accent"
+          >
+            Homeschool Ace
+          </a>
+        </h2>
+        <p class="mt-2 text-foreground/80">
+          An edtech platform for homeschool families — manage curriculum, track
+          student progress, and stay organized. Built with modern web tech and
+          cloud infrastructure on AWS.
+        </p>
+      </li>
+      <li
+        class="rounded-md border border-border p-6 transition-colors hover:bg-foreground/5"
+      >
+        <h2 class="text-xl font-semibold">
+          <a
+            href="https://binaryheap.com"
             class="hover:text-accent"
           >
             binaryheap.com
           </a>
         </h2>
         <p class="mt-2 text-foreground/80">
-          This very site — a blog built with Astro and the AstroPaper theme,
-          deployed on Cloudflare Pages. Hosts 120+ posts on serverless, Rust,
-          Go, AWS, and engineering leadership.
+          This site — a software engineering blog built with Astro, deployed on
+          AWS CloudFront + S3. Hosts 120+ posts on serverless, Rust, Go, AWS
+          CDK, and cloud architecture.
         </p>
       </li>
     </ul>
+    <section class="mt-10 border-t border-border pt-8 pb-8">
+      <p class="text-foreground/80">
+        Most of my work is open source. Check out my full profile on
+        <a
+          href="https://github.com/benbpyle"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-medium text-accent underline decoration-dashed underline-offset-4 hover:text-accent/80"
+        >
+          GitHub
+        </a>.
+      </p>
+    </section>
   </main>
   <Footer />
 </Layout>

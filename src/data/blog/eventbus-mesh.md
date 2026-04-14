@@ -1,7 +1,7 @@
 ---
 title: EventBus Mesh
 author: "Benjamen Pyle"
-description: Using and EventBus Mesh can provide good separation of concerns when developing features usin an Event-Driven Architecture
+description: EventBus Mesh pattern connects multiple EventBridge buses to isolate microservice boundaries while enabling cross-domain event-driven communication.
 pubDatetime: 2023-03-20T00:00:00Z
 tags:
   - aws
