@@ -201,6 +201,38 @@ function handler(event) {
       ),
     });
 
+    // --- Fastmail Email Records ---
+    new route53.MxRecord(this, "FastmailMx", {
+      zone: hostedZone,
+      values: [
+        { priority: 10, hostName: "in1-smtp.messagingengine.com" },
+        { priority: 20, hostName: "in2-smtp.messagingengine.com" },
+      ],
+    });
+
+    new route53.CnameRecord(this, "DkimFm1", {
+      zone: hostedZone,
+      recordName: "fm1._domainkey",
+      domainName: "fm1.binaryheap.com.dkim.fmhosted.com",
+    });
+
+    new route53.CnameRecord(this, "DkimFm2", {
+      zone: hostedZone,
+      recordName: "fm2._domainkey",
+      domainName: "fm2.binaryheap.com.dkim.fmhosted.com",
+    });
+
+    new route53.CnameRecord(this, "DkimFm3", {
+      zone: hostedZone,
+      recordName: "fm3._domainkey",
+      domainName: "fm3.binaryheap.com.dkim.fmhosted.com",
+    });
+
+    new route53.TxtRecord(this, "FastmailSpf", {
+      zone: hostedZone,
+      values: ["v=spf1 include:spf.messagingengine.com ?all"],
+    });
+
     // --- CodeStar Connection (GitHub) ---
     const connection = new codestarconnections.CfnConnection(
       this,
