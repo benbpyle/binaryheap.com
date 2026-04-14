@@ -14,25 +14,25 @@ draft: false
 
 Over the past few years I've spent a great deal of time writing and [building with Datadog](https://binaryheap.com/tag/datadog/). I find that their platform gives me as a builder the right insight and tools to diagnose things quickly, make adjustments when things run out of resources, and observe my software's behavior in test and at scale. During this past year or two, I've been expanding my skills into the Kubernetes ecosystem and was so pleased to find that my Datadog experience is valuable there as well. So, from Serverless to Kubernetes, Datadog has me covered. Let's explore what establishing Datadog on Kubernetes means for me as a developer.
 
--   [Datadog on Kubernetes](#datadog-on-kubernetes)
--   [Working through the Project](#working-through-the-project)
-    -   [Creating the Cluster](#creating-the-cluster)
-    -   [Installing Datadog](#installing-datadog)
-    -   [Configure Datadog Secret](#configure-datadog-secret)
-    -   [Working with Helm](#working-with-helm)
-    -   [Deploying Applications](#deploying-applications)
--   [Putting the Pieces Together](#putting-the-pieces-together)
-    -   [Cluster(s) Overview](#cluster-s-overview)
-    -   [Nodes, Deployments, Containers, and Processes](#nodes-deployments-containers-and-processes)
-    -   [Traces](#traces)
--   [Wrapping Up](#wrapping-up)
+- [Datadog on Kubernetes](#datadog-on-kubernetes)
+- [Working through the Project](#working-through-the-project)
+  - [Creating the Cluster](#creating-the-cluster)
+  - [Installing Datadog](#installing-datadog)
+  - [Configure Datadog Secret](#configure-datadog-secret)
+  - [Working with Helm](#working-with-helm)
+  - [Deploying Applications](#deploying-applications)
+- [Putting the Pieces Together](#putting-the-pieces-together)
+  - [Cluster(s) Overview](#cluster-s-overview)
+  - [Nodes, Deployments, Containers, and Processes](#nodes-deployments-containers-and-processes)
+  - [Traces](#traces)
+- [Wrapping Up](#wrapping-up)
 
 ## Datadog on Kubernetes
 
 Let's start out by exploring what the ecosystem looks like when deploying Datadog on Kubernetes. The image below is from a wonderful article on the Datadog blog which shows that there are two agents I will be running.
 
--   Node Agent -- handles node level APM and metrics collection
--   Cluster Agent -- runs on a Node and deals with aggregating data from the various nodes to ship to the Datadog platform
+- Node Agent -- handles node level APM and metrics collection
+- Cluster Agent -- runs on a Node and deals with aggregating data from the various nodes to ship to the Datadog platform
 
 ![](/images/dd_k8s-1024x792.avif)
 
@@ -154,7 +154,7 @@ This initial view is just a nice overview of the cluster(s) that I'm managing. I
 
 ![](/images/cluster_overview-976x1024.jpg)
 
-Once I drill into any of those, the navigation options open up tremendously. All of these options can be scoped by any tag that I've create, labels defined in Kubernetes, or the DD\_ENV (Datadog environment) that I've scoped my resources down to.
+Once I drill into any of those, the navigation options open up tremendously. All of these options can be scoped by any tag that I've create, labels defined in Kubernetes, or the DD_ENV (Datadog environment) that I've scoped my resources down to.
 
 ![](/images/navigation-379x1024.jpg)
 

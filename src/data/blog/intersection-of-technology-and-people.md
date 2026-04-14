@@ -36,10 +36,10 @@ With AWS and serverless, drop in SQS and you've instantly got a highly available
 
 This approaches carries forward with other layers in your application. Just to name a few below.
 
--   Database - DynamoDB/Aurora
--   Publishing Events - EventBridge/SNS
--   Streams - Kinesis
--   Disk space - S3
+- Database - DynamoDB/Aurora
+- Publishing Events - EventBridge/SNS
+- Streams - Kinesis
+- Disk space - S3
 
 #### Language and Frameworks
 
@@ -49,17 +49,17 @@ These decisions are very important as you look at teaming and shared architectur
 
 In addition to the languages you are going to select and the language frameworks you choose, I believe you need to pick the infrastructure as code direction you are going to take. Again, lots of options here from
 
--   SAM
--   CDK
--   SST
--   Serverless
--   Terraform
--   CloudFormation
+- SAM
+- CDK
+- SST
+- Serverless
+- Terraform
+- CloudFormation
 
 I'm sure I am missing one but these are the key ones that I've seen in the wild. I don't know that it matters much which one you choose but what matters is that you have consistency in the usage. You 100% do not want a ClickOps scenario where you have people building things in the Console. And you don't want a situation where people are using a mixture of all of these. Efficiency is gained and knowledge is shared when you standardize. This is a little bit of the people part of the intersection of technology and people. I'm a big fan of CDK and SAM. Here are a couple of articles that dive in a little more
 
--   [Intro to CDK](https://binaryheap.com/29b7)
--   [CDK Pipelines](https://binaryheap.com/zn6k)
+- [Intro to CDK](https://binaryheap.com/29b7)
+- [CDK Pipelines](https://binaryheap.com/zn6k)
 
 #### Your Code
 
@@ -118,9 +118,9 @@ I can't underscore this enough as I've honestly never seen this in my previous e
 
 The decision for serverless is more than just about technology. It is a decision that centers around the intersection of people and technology. This intersection requires those in charge of the solution to first
 
--   Decide to leverage serverless
--   Standardize the tooling and frameworks
--   Innovate and deliver value
+- Decide to leverage serverless
+- Standardize the tooling and frameworks
+- Innovate and deliver value
 
 From there you need to embrace the operating model that is serverless and lean into the tooling, deployments and costs.
 

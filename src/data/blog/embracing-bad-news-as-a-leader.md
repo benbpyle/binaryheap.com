@@ -42,7 +42,7 @@ This tip is two-fold.
 1.  Make sure I know what has happened
 2.  Make sure my employee knows that nothing bad is personally going to happen to them and that I'm there to help them work the problem
 
-This tip is super important because it will shape your employee's perspective and relationship with you as the leader going forward. It'll also shape the outcome. Jocko Willink has a video out where his acknowledgment is "[Good](<http://Jocko Willink "GOOD" \(Official\) - YouTube>)". What he's saying in that one word is, "I hear you. Let's get better".
+This tip is super important because it will shape your employee's perspective and relationship with you as the leader going forward. It'll also shape the outcome. Jocko Willink has a video out where his acknowledgment is "[Good](<http://Jocko Willink "GOOD" (Official) - YouTube>)". What he's saying in that one word is, "I hear you. Let's get better".
 
 ### Tip #3 - Ask Questions
 

@@ -60,10 +60,10 @@ Lastly, use the tram, if it's convenient. In years past, AWS has paid for confer
 
 My recommendation for where to stay is to shoot for the MGM Grand. It meets the criteria I laid out above.
 
--   Sleeping and conference venue
--   Shuttle access
--   In the heart of the south half of the conference
--   Tram access. Big bonus as the tram gets you to Caesars in no time and is accessible on the casino level of the hotel
+- Sleeping and conference venue
+- Shuttle access
+- In the heart of the south half of the conference
+- Tram access. Big bonus as the tram gets you to Caesars in no time and is accessible on the casino level of the hotel
 
 ### Building your Schedule
 
@@ -75,8 +75,8 @@ It's for that point alone that you need to have your week as best you can plan w
 
 Now for the topic of how you plan. I think these 2 approaches make a ton of sense.
 
--   Schedule what you want to schedule and build in appropriate breaks and travel time. If this is you, you are committing to bouncing from venue to venue to make the sessions you want to check out.
--   Schedule around location. For instance, one day stay in the south of the conference. The next visit to the north. It minimizes travel but might limit options. Look, there is plenty to check out at re:Invent but you do give up flexibility this way.
+- Schedule what you want to schedule and build in appropriate breaks and travel time. If this is you, you are committing to bouncing from venue to venue to make the sessions you want to check out.
+- Schedule around location. For instance, one day stay in the south of the conference. The next visit to the north. It minimizes travel but might limit options. Look, there is plenty to check out at re:Invent but you do give up flexibility this way.
 
 The next wrinkle in the mix is if you want to attend any of the keynotes. I recommend that you make at least two of them. [Here is the list](https://reinvent.awsevents.com/keynotes/?trk=direct). Pick the two that you find an affinity toward attending and go for it. But know this, they will put a wrinkle in your schedule because you might want to be in the south end of the conference once a day, but that day starts at the Venetian because a keynote is going on. So plan accordingly.
 
@@ -114,17 +114,17 @@ Alright, so you've read this far. Thanks for that. I know there has been a lot o
 
 In no order.
 
--   Scheduling
-    -   I talked a good bit about scheduling. Get your schedule on your calendar application. It'll help you with in-conference navigation
-    -   Use the re:Invent application. It's great at helping you navigate and look into session details
-    -   Be flexible. I know this goes against my plan, plan, plan statement above. But honestly, allow room for flex. And roll with the changes.
-    -   Block time out for the expo. It's huge. Huge. I normally grab a 2 or 3-hour block on Wednesday or Thursday and forgo sessions. But you might want to look at just popping in and out while in the Venetian. That's another approach.
--   Session planning - Mix up your session types.
-    -   Breakouts - lecture-style sessions
-    -   Workshops and Builder sessions - Building things at a table either solo or with others
-    -   Chalk Talks - maybe my favorite but they are whiteboarding and interactive. Design and/or problem-solving type sessions
-    -   Lightning talks - Small but powerful dev talks usually in the expo hall
--   Eating and dining - take advantage of the free breakfast and lunches. The conference content areas will do this each day during the week. The food is great, quick and easy to access with many options
+- Scheduling
+  - I talked a good bit about scheduling. Get your schedule on your calendar application. It'll help you with in-conference navigation
+  - Use the re:Invent application. It's great at helping you navigate and look into session details
+  - Be flexible. I know this goes against my plan, plan, plan statement above. But honestly, allow room for flex. And roll with the changes.
+  - Block time out for the expo. It's huge. Huge. I normally grab a 2 or 3-hour block on Wednesday or Thursday and forgo sessions. But you might want to look at just popping in and out while in the Venetian. That's another approach.
+- Session planning - Mix up your session types.
+  - Breakouts - lecture-style sessions
+  - Workshops and Builder sessions - Building things at a table either solo or with others
+  - Chalk Talks - maybe my favorite but they are whiteboarding and interactive. Design and/or problem-solving type sessions
+  - Lightning talks - Small but powerful dev talks usually in the expo hall
+- Eating and dining - take advantage of the free breakfast and lunches. The conference content areas will do this each day during the week. The food is great, quick and easy to access with many options
 
 ## Attending your First re:Invent Wrap Up
 

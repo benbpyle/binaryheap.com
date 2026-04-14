@@ -21,10 +21,10 @@ What I mean by that is that certain languages and frameworks are better suited t
 
 Each language and framework will have an impact on the profile of your function. Things such as:
 
--   Cold Starts - time for the Lambda to be deployed and run initially
--   Cost - Price per GB sec. Essentially memory allocated and time component
--   Memory - How much memory does your function need to be allocated to run well
--   Bundle size - The bigger the bundle the longer to deploy and the longer it to start
+- Cold Starts - time for the Lambda to be deployed and run initially
+- Cost - Price per GB sec. Essentially memory allocated and time component
+- Memory - How much memory does your function need to be allocated to run well
+- Bundle size - The bigger the bundle the longer to deploy and the longer it to start
 
 ## Choosing Go when Building Lambdas
 
@@ -122,10 +122,9 @@ Building infrastructure as code has so many benefits and using CDK makes that al
 
 ```typescript
 new GoFunction(this, "TheFunc", {
-    entry: path.join(__dirname, "some-path"),
-    functionName: "func-name",
+  entry: path.join(__dirname, "some-path"),
+  functionName: "func-name",
 });
-
 ```
 
 Have a look at the [documentation](https://docs.aws.amazon.com/cdk/api/v2/docs/@aws-cdk_aws-lambda-go-alpha.GoFunction.html) for more CDK options.

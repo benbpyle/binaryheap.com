@@ -33,17 +33,17 @@ First, you need to make sure that you are correctly logging at the right level w
 
 ```typescript
 new GoFunction(this, `SampleFunc`, {
-    entry: path.join(__dirname, `../src/source`),
-    functionName: `func-name`,
-    environment: {
-          "DD_FLUSH_TO_LOG": "true",
-          "DD_TRACE_ENABLED": "true",
-          "LOG_LEVEL": getLogLevel(props.stage) // this nugget right here
-    },
-  });
+  entry: path.join(__dirname, `../src/source`),
+  functionName: `func-name`,
+  environment: {
+    DD_FLUSH_TO_LOG: "true",
+    DD_TRACE_ENABLED: "true",
+    LOG_LEVEL: getLogLevel(props.stage), // this nugget right here
+  },
+});
 ```
 
-By adding in the "LOG\_LEVEL" environment variable to this Lambda, I get the ability to change it should I want to force something a little more verbose on demand.
+By adding in the "LOG_LEVEL" environment variable to this Lambda, I get the ability to change it should I want to force something a little more verbose on demand.
 
 The below is a simple example, and you could add more "default" logic but this sets the log level from the variable passed in
 
@@ -75,8 +75,8 @@ func main() {
 	lambda.Start(ddlambda.WrapFunction(handler, lib.DataDogConfig()))
 }
 
-func handler(ctx context.Context, event interface{}) error { 
-    // you'd NOT use interface{} as the event 
+func handler(ctx context.Context, event interface{}) error {
+    // you'd NOT use interface{} as the event
 
     return nil
 }
@@ -107,9 +107,9 @@ Tracing in applications is just a way for you to instrument your code so that th
 
 Then inside each of those traces you'll have things called Spans. Spans can be nested too so that each function or block that you execute gets specific attributes about it that identifies the
 
--   name
--   time started
--   duration
+- name
+- time started
+- duration
 
 This helps with timings of things in addition to being able to group these specific operations. Again, when using Lambda with Golang and Datadog the tooling does this really nicely and the Datadog Go library makes it super simple.
 

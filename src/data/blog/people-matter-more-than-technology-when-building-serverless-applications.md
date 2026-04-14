@@ -39,8 +39,8 @@ However, when building Serverless applications, the language choice matters less
 
 The two most important parts of building Serverless applications are this:
 
--   People
--   Customers
+- People
+- Customers
 
 Let's break that down.
 
@@ -48,8 +48,8 @@ Let's break that down.
 
 The single most important thing that needs to be accounted for when building Serverless applications is [people](https://binaryheap.com/intersection-of-technology-and-people/). If I go back to my above point that software is about delivering value to customers, what's more important between these two choices?
 
--   Learning a new tool to shave 250ms from a Web API that adds 6 months to the delivery.
--   Getting to market first or almost first with a fantastic user experience.
+- Learning a new tool to shave 250ms from a Web API that adds 6 months to the delivery.
+- Getting to market first or almost first with a fantastic user experience.
 
 The argument can be made that "Why can't I have both"? My argument back is that you don't need both. When shipping value to customers, being bug-free with great workflows paired with early-to-market delivery will win out over having the most technically superior application. And I use the phrase technically superior very loosely in this sense. I'll take a team that's shipping quality value every two weeks in JavaScript versus a team shipping blazing-fast Rust code that doesn't meet the need.
 

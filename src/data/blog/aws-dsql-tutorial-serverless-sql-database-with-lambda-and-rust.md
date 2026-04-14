@@ -20,31 +20,31 @@ But maybe that choice doesn't have to be made going forward. With the release of
 
 Let's take a look at how this comes together with an AWS DSQL Tutorial!
 
--   [AWS DSQL Tutorial](#aws-dsql)
--   [DSQL Rust and Lambda](#dsql-rust-and-lambda)
-    -   [CDK Rust Function](#cdk-rust-function)
-    -   [Creating the DSQL Instance](#creating-the-dsql-instance)
-    -   [Rust Code](#rust-code)
-    -   [SQLx Aside](#sq-lx-aside)
--   [Exercising DSQL and Lambda](#exercising-dsql-and-lambda)
-    -   [OpenTelemetry Rust Setup](#open-telemetry-rust-setup)
-    -   [Tracing Execution](#tracing-execution)
-    -   [DSL Performance](#dsl-performance)
-        -   [Cold Start Latency](#cold-start-latency)
-        -   [Insert Latency](#insert-latency)
-            -   [Flame](#flame)
-            -   [Waterfall](#waterfall)
-            -   [Overall Latency](#overal-latency)
-            -   [Thoughts on Insert Latency](#thoughts-on-insert-latency)
-        -   [Select Latency](#select-latency)
-            -   [Flame](#flame-1)
-            -   [Waterfall](#waterfall-2)
-            -   [Overall](#overall)
-            -   [Thoughts on Insert Latency](#thoughts-on-insert-latency-3)
--   [Impressions and Thoughts](#impressions-and-thoughts)
-    -   [The Nice List](#the-nice-list)
-    -   [The Naughty List](#the-naughty-list)
--   [Wrapping Up](#wrapping-up)
+- [AWS DSQL Tutorial](#aws-dsql)
+- [DSQL Rust and Lambda](#dsql-rust-and-lambda)
+  - [CDK Rust Function](#cdk-rust-function)
+  - [Creating the DSQL Instance](#creating-the-dsql-instance)
+  - [Rust Code](#rust-code)
+  - [SQLx Aside](#sq-lx-aside)
+- [Exercising DSQL and Lambda](#exercising-dsql-and-lambda)
+  - [OpenTelemetry Rust Setup](#open-telemetry-rust-setup)
+  - [Tracing Execution](#tracing-execution)
+  - [DSL Performance](#dsl-performance)
+    - [Cold Start Latency](#cold-start-latency)
+    - [Insert Latency](#insert-latency)
+      - [Flame](#flame)
+      - [Waterfall](#waterfall)
+      - [Overall Latency](#overal-latency)
+      - [Thoughts on Insert Latency](#thoughts-on-insert-latency)
+    - [Select Latency](#select-latency)
+      - [Flame](#flame-1)
+      - [Waterfall](#waterfall-2)
+      - [Overall](#overall)
+      - [Thoughts on Insert Latency](#thoughts-on-insert-latency-3)
+- [Impressions and Thoughts](#impressions-and-thoughts)
+  - [The Nice List](#the-nice-list)
+  - [The Naughty List](#the-naughty-list)
+- [Wrapping Up](#wrapping-up)
 
 ## AWS DSQL Tutorial
 
@@ -54,26 +54,26 @@ AWS Distributed SQL (DSQL) is a very recent launch that occurred at re:Invent 20
 
 And it further makes these claims about what DSQL promises to deliver for developers.
 
--   Virtually unlimited scale
--   [Build always available apps](https://binaryheap.com/building-serverless-applications-with-aws-api/)
--   No infrastructure to manage
--   Easy to use
+- Virtually unlimited scale
+- [Build always available apps](https://binaryheap.com/building-serverless-applications-with-aws-api/)
+- No infrastructure to manage
+- Easy to use
 
 The service is still in public preview, but I couldn't wait get my hands on it and measure developer experience, ease of use, and some performance.
 
 > We went too far with NoSQL database usage in the serverless community and we did so because the tools didn't exist for us to leverage the broader covering features of traditional SQL in serverless builds.
-> 
+>
 > [Benjamen Pyle](https://binaryheap.com/benjamen-pyle/)
 
 ## DSQL Rust and Lambda
 
 I've written about [Rust and Lambda](https://binaryheap.com/serverless-rust-developer-experience/) extensively, so this article won't try and convince you that you should be doing all of your Lambda code in Rust. But if you are keeping score, I do like Rust for its
 
--   Developer experience
--   Aversion to bugs
--   Almost complete removal of exceptions
--   Package management
--   And oh, it's kinda fast
+- Developer experience
+- Aversion to bugs
+- Almost complete removal of exceptions
+- Package management
+- And oh, it's kinda fast
 
 But enough of the Rust benefits, how am I pulling these three bits together and what did I do with them? Walking through a simple example, I have a Todo model that is stored and retrieved from a Todos table in DSQL. Then I've built two [Lambda Functions](https://binaryheap.com/opentelemet-rust-lambda-datadog/). One to handle POST (Insert) and one to handle GET (select). Outside of the DSQL instance (which is only ClickOps at this point), I'm provisioning via [CDK](https://binaryheap.com/intro-to-cdk/)
 
@@ -84,43 +84,43 @@ In order to track performance which I'll show later on, I'm using the [Datadog L
 ```typescript
 const layer = LayerVersion.fromLayerVersionArn(
   this,
-  'DatadogExtension',
-  'arn:aws:lambda:us-east-1:464622532012:layer:Datadog-Extension-ARM:67'
-)
-
+  "DatadogExtension",
+  "arn:aws:lambda:us-east-1:464622532012:layer:Datadog-Extension-ARM:67"
+);
 ```
 
 Next, I'm adding my Lambda Function and attaching new IAM permissions so that it can execute DSQL operations. Notice I'm granting `dsql:*` as this is a just a demo. I normally would be much more granular in what I'm assigning. And lastly, I'm using a FunctionURL to expose the Lambda over an HTTP Endpoint. Super simple and great for what I'm doing here.
 
 ```typescript
-const insert = new RustFunction(this, 'InsertFunction', {
+const insert = new RustFunction(this, "InsertFunction", {
   architecture: Architecture.ARM_64,
   functionName: "dsql-insert",
-  manifestPath: 'lambdas/insert',
+  manifestPath: "lambdas/insert",
   memorySize: 256,
   environment: {
     CLUSTER_ENDPOINT: process.env.CLUSTER_ENDPOINT!,
     DD_API_KEY: process.env.DD_API_KEY!,
-    DD_SERVICE: 'dsql-insert',
+    DD_SERVICE: "dsql-insert",
     DD_SITE: process.env.DD_SITE!,
-    RUST_LOG: 'info',
+    RUST_LOG: "info",
   },
-  layers: [layer]
-})
+  layers: [layer],
+});
 
-insert.addToRolePolicy(new PolicyStatement({
-  effect: Effect.ALLOW,
-  actions: ["dsql:*"],
-  resources: ["*"]
-}))
+insert.addToRolePolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ["dsql:*"],
+    resources: ["*"],
+  })
+);
 
 insert.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
   cors: {
-    allowedOrigins: ["*"]
-  }
-})
-
+    allowedOrigins: ["*"],
+  },
+});
 ```
 
 ### Creating the DSQL Instance
@@ -215,7 +215,7 @@ async fn function_handler(
                 .bind(e.id.clone())
                 .bind(e.name.clone())
                 .bind(e.description.clone())
-                .bind(e.created_at) 
+                .bind(e.created_at)
                 .bind(e.updated_at)
                 .execute(pool)
                 .instrument(query_span)
@@ -308,8 +308,8 @@ Registry::default()
 At this point, I have a DSQL cluster, a couple of [Lambda Functions](https://binaryheap.com/testing-step-function-workflows-locally/), and Datadog ready to capture traces. Generating traffic them comes down to using a Postman Runner which in this case I simulated 30 users. An example of one of those POST requests looks like this.
 
 ```bash
-curl --location 'https://<location>lambda-url.us-east-1.on.aws/' 
---header 'Content-Type: application/json' 
+curl --location 'https://<location>lambda-url.us-east-1.on.aws/'
+--header 'Content-Type: application/json'
 --data '{
     "name": "First",
     "description": "Some description"
@@ -350,9 +350,9 @@ When it comes to just running inserts, thanks to Datadog, I've got a waterfall, 
 
 A few thoughts on this small sample.
 
--   The performance seems smooth at the p95 mark with spikes showing in the p99 subset. That's fairly normal from my experience when working with other AWS services.
--   Being that I didn't introduce into jitter into the virtual users, early bursts in latency are just Lambda Functions spinning up to handle the 30 virtual users
--   The p95 on just saving the Todo was 19.8ms. That's over double what I normally see working with DynamoDB. Again, this is an early preview.
+- The performance seems smooth at the p95 mark with spikes showing in the p99 subset. That's fairly normal from my experience when working with other AWS services.
+- Being that I didn't introduce into jitter into the virtual users, early bursts in latency are just Lambda Functions spinning up to handle the 30 virtual users
+- The p95 on just saving the Todo was 19.8ms. That's over double what I normally see working with DynamoDB. Again, this is an early preview.
 
 #### Select Latency
 
@@ -392,9 +392,9 @@ And to be fair, I'm going to show the same 3 graphs and give you some thoughts.
 
 A few thoughts on this small sample. It boils down to me being suprised at the performance on these reads.
 
--   There are significant differences in the sample sizes. I honestly haven't seen performance like this in any other AWS service that I've worked with. Again, preview, but I'm **not** excited about this early on. I also need to do more digging.
--   Normally, I tend to see higher initial p99 latency to account for cold starts, but this operation performed the same way throughout the duration of the run. I need to do some more investigation in future articles on this.
--   The p95 on selecting the top 10 Todos was 193ms. That's a significant bump from what I'm used to seeing when working with DynamoDB
+- There are significant differences in the sample sizes. I honestly haven't seen performance like this in any other AWS service that I've worked with. Again, preview, but I'm **not** excited about this early on. I also need to do more digging.
+- Normally, I tend to see higher initial p99 latency to account for cold starts, but this operation performed the same way throughout the duration of the run. I need to do some more investigation in future articles on this.
+- The p95 on selecting the top 10 Todos was 193ms. That's a significant bump from what I'm used to seeing when working with DynamoDB
 
 ## Impressions and Thoughts
 

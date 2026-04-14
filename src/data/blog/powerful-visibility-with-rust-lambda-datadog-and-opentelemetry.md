@@ -120,11 +120,11 @@ Before I jump into what this code produces in terms of traces and spans, the CDK
 
 Points to note in the below.
 
--   The Datadog extension is added as a Lambda Layer from the ARN
--   DD\_API\_KEY: this is the API Key I created in Datadog. I put that in a Parameter Store path that I can keep safe and fetch at build time
--   DD\_EXTENSION\_VERSION: making this `next` enables the project 'Bottlecap' which is the rewritten extension that I mentioned at the top of this article
--   DD\_SITE: if you are in the default Datadog region, this isn't needed. For me though, I have something else, so I'm putting that in an environment variable
--   addFunctionUrl creates the endpoint that will be exposed to trigger this Lambda Function
+- The Datadog extension is added as a Lambda Layer from the ARN
+- DD_API_KEY: this is the API Key I created in Datadog. I put that in a Parameter Store path that I can keep safe and fetch at build time
+- DD_EXTENSION_VERSION: making this `next` enables the project 'Bottlecap' which is the rewritten extension that I mentioned at the top of this article
+- DD_SITE: if you are in the default Datadog region, this isn't needed. For me though, I have something else, so I'm putting that in an environment variable
+- addFunctionUrl creates the endpoint that will be exposed to trigger this Lambda Function
 
 ```typescript
 constructor(scope: Construct, id: string, props: FuncProps) {
@@ -199,10 +199,10 @@ And if viewing this flat isn't good enough, I can pivot to the Waterfall view. N
 
 The last piece that I want to explore is the metrics view that is created by Datadog. The metric graphs can be interchanged so I selected these 4 to walk through what they mean.
 
--   Duration: The elapsed time for a function’s execution, in milliseconds
--   Billed Duration: Execution time billed in 1 ms increments, rounded up to the nearest millisecond
--   Runtime Duration: The elapsed time for my function handling code
--   Post Runtime Duration: Code that runs in the Lambda lifecycle (Datadog extension)
+- Duration: The elapsed time for a function’s execution, in milliseconds
+- Billed Duration: Execution time billed in 1 ms increments, rounded up to the nearest millisecond
+- Runtime Duration: The elapsed time for my function handling code
+- Post Runtime Duration: Code that runs in the Lambda lifecycle (Datadog extension)
 
 ![Datadog Lambda Metrics](/images/metrics.jpg)
 

@@ -33,13 +33,13 @@ Enter new Serverless. And enter not having to waste Lambda cycles on tranforms a
 
 Quick walkthrough of what is above and how to subscribe SNS to EventBridge Pipes.
 
--   Message is still published to SNS
--   SQS has the subscription to SNS (this stays the same)
--   Connect EventBridge Pipes to the SQS
-    -   Pipes allow a Filter to remove unecassary messages
-    -   Pipes allow a Transform to shape the data as needed
-    -   An EventBus is the target for the Pipe
--   The EventBus can have targets that trigger downstream code/services
+- Message is still published to SNS
+- SQS has the subscription to SNS (this stays the same)
+- Connect EventBridge Pipes to the SQS
+  - Pipes allow a Filter to remove unecassary messages
+  - Pipes allow a Transform to shape the data as needed
+  - An EventBus is the target for the Pipe
+- The EventBus can have targets that trigger downstream code/services
 
 ### Breaking down the Architecture
 
@@ -50,30 +50,29 @@ Let's walk through each step of the flow via code and images to show how to subs
 ```typescript
 // creating the SNS Topic
 this._topic = new Topic(scope, "SampleTopic", {
-    topicName: "sample-topic",
-    displayName: "Sample Topic",
+  topicName: "sample-topic",
+  displayName: "Sample Topic",
 });
 
 // creating the SQS Queue
 this._queue = new Queue(scope, "SampleQueue", {
-    queueName: `sample-queue`,
+  queueName: `sample-queue`,
 });
 
 /// add the subscription
 this._topic.addSubscription(
-    new SqsSubscription(this._queue, {
-        // SUPER IMPORTANT -- rawMessageDelivery
-        rawMessageDelivery: true,
-    })
+  new SqsSubscription(this._queue, {
+    // SUPER IMPORTANT -- rawMessageDelivery
+    rawMessageDelivery: true,
+  })
 );
-
 ```
 
 The above does a few simple things.
 
--   Creates the Topic
--   Creates the Queue
--   Adds the subscription **VERY IMPORTANT** make sure to include `rawMessageDelivery`. This tells SNS to send SQS just the message body and not all of the other SNS details. It keeps the JSON clean too so it's not escaped
+- Creates the Topic
+- Creates the Queue
+- Adds the subscription **VERY IMPORTANT** make sure to include `rawMessageDelivery`. This tells SNS to send SQS just the message body and not all of the other SNS details. It keeps the JSON clean too so it's not escaped
 
 ##### Topic In AWS Console
 
@@ -98,26 +97,26 @@ Now to build the pipe. Let's again dive into CDK
 ```typescript
 // Create the role
 const pipeRole = this.pipeRole(
-    scope,
-    this.sourcePolicy(props.queue),
-    this.targetPolicy(props.bus)
+  scope,
+  this.sourcePolicy(props.queue),
+  this.targetPolicy(props.bus)
 );
 
 // Create the pipe
 const pipe = new pipes.CfnPipe(this, "Pipe", {
-    name: "SampleEvent-Pipe",
-    roleArn: pipeRole.roleArn,
-    source: props.queue.queueArn,
-    target: props.bus.eventBusArn,
-    sourceParameters: this.sourceParameters(),
-    targetParameters: this.targetParameters(),
+  name: "SampleEvent-Pipe",
+  roleArn: pipeRole.roleArn,
+  source: props.queue.queueArn,
+  target: props.bus.eventBusArn,
+  sourceParameters: this.sourceParameters(),
+  targetParameters: this.targetParameters(),
 });
 ```
 
 This is what the `constructor` code of the `Construct` looks like. I am building up the Role that handles
 
--   Source Policy (the queue)
--   Target Policy (the bus)
+- Source Policy (the queue)
+- Target Policy (the bus)
 
 Then adding in the `Source` and `Target` parameters. To explore this further.
 
@@ -127,19 +126,19 @@ Sets up permission to read, delete and get queue attributes
 
 ```typescript
 sourcePolicy = (queue: IQueue): PolicyDocument => {
-    return new PolicyDocument({
-        statements: [
-            new PolicyStatement({
-                resources: [queue.queueArn],
-                actions: [
-                    "sqs:ReceiveMessage",
-                    "sqs:DeleteMessage",
-                    "sqs:GetQueueAttributes",
-                ],
-                effect: Effect.ALLOW,
-            }),
+  return new PolicyDocument({
+    statements: [
+      new PolicyStatement({
+        resources: [queue.queueArn],
+        actions: [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
         ],
-    });
+        effect: Effect.ALLOW,
+      }),
+    ],
+  });
 };
 ```
 
@@ -149,15 +148,15 @@ Sets up Bus permissiont to be able put events on the EventBus
 
 ```typescript
 targetPolicy = (bus: IEventBus): PolicyDocument => {
-    return new PolicyDocument({
-        statements: [
-            new PolicyStatement({
-                resources: [bus.eventBusArn],
-                actions: ["events:PutEvents"],
-                effect: Effect.ALLOW,
-            }),
-        ],
-    });
+  return new PolicyDocument({
+    statements: [
+      new PolicyStatement({
+        resources: [bus.eventBusArn],
+        actions: ["events:PutEvents"],
+        effect: Effect.ALLOW,
+      }),
+    ],
+  });
 };
 ```
 
@@ -167,23 +166,23 @@ This creates rules around how the Pipe reads from SQS in addition to adding in a
 
 ```typescript
 sourceParameters = () => {
-    return {
-        sqsQueueParameters: {
-            batchSize: 1,
-        },
-        filterCriteria: {
-            filters: [
-                {
-                    pattern: `
+  return {
+    sqsQueueParameters: {
+      batchSize: 1,
+    },
+    filterCriteria: {
+      filters: [
+        {
+          pattern: `
                 {
                     "body": {
                         "eventType": ["SampleEvent"]
                     }
-                }`
-                },
-            ],
+                }`,
         },
-    };
+      ],
+    },
+  };
 };
 ```
 
@@ -195,12 +194,12 @@ This creates rules around how the Pipe posts data into its target. You also get 
 
 ```typescript
 targetParameters = () => {
-    return {
-        eventBridgeEventBusParameters: {
-            detailType: "SampleEventTriggered",
-            source: "com.binaryheap.sample-source",
-        },
-        inputTemplate: `
+  return {
+    eventBridgeEventBusParameters: {
+      detailType: "SampleEventTriggered",
+      source: "com.binaryheap.sample-source",
+    },
+    inputTemplate: `
         {
             "metaBody" {
                 "correlationId": <$.messageId>;
@@ -211,7 +210,7 @@ targetParameters = () => {
                 "field3": <$.body.field3>;
             }
         }`,
-    };
+  };
 };
 ```
 
@@ -258,7 +257,7 @@ To keep moving through the architecture, the output of the Pipe is targeting an 
 
 ```typescript
 this._bus = new events.EventBus(scope, "EventBus", {
-    eventBusName: "sample-event-bus",
+  eventBusName: "sample-event-bus",
 });
 ```
 
@@ -300,9 +299,9 @@ Third, the Dead Letter Queue. If something goes wrong calling the State Machine,
 
 And laslty, the target. There are many targets you can create, but in this case, I'm using a StateMachine target that has the
 
--   Rule Input
--   Dead Letter Queue
--   Role used
+- Rule Input
+- Dead Letter Queue
+- Role used
 
 ##### EventBridge Rule
 
@@ -318,44 +317,40 @@ For this example, the State Machine is basic. It just has a Succeed Task. Since 
 
 ```typescript
 finalizeStateMachine = (scope: Construct) => {
-    const logGroup = new logs.LogGroup(this, "CloudwatchLogs", {
-        logGroupName: "/aws/vendedlogs/states/sample-state-machine",
-    });
+  const logGroup = new logs.LogGroup(this, "CloudwatchLogs", {
+    logGroupName: "/aws/vendedlogs/states/sample-state-machine",
+  });
 
-    const role = new Role(this, "StateMachineRole", {
-        assumedBy: new ServicePrincipal("states.us-west-2.amazonaws.com"),
-    });
+  const role = new Role(this, "StateMachineRole", {
+    assumedBy: new ServicePrincipal("states.us-west-2.amazonaws.com"),
+  });
 
-    const flow = this.buildStateMachine(scope);
+  const flow = this.buildStateMachine(scope);
 
-    this._stateMachine = new stepfunctions.StateMachine(
-        this,
-        "StateMachine",
-        {
-            role: role,
-            stateMachineName: "SampleStateMachine",
-            definition: flow,
-            stateMachineType: stepfunctions.StateMachineType.EXPRESS,
-            timeout: Duration.seconds(30),
-            logs: {
-                level: LogLevel.ALL,
-                destination: logGroup,
-                includeExecutionData: true,
-            },
-        }
-    );
+  this._stateMachine = new stepfunctions.StateMachine(this, "StateMachine", {
+    role: role,
+    stateMachineName: "SampleStateMachine",
+    definition: flow,
+    stateMachineType: stepfunctions.StateMachineType.EXPRESS,
+    timeout: Duration.seconds(30),
+    logs: {
+      level: LogLevel.ALL,
+      destination: logGroup,
+      includeExecutionData: true,
+    },
+  });
 };
 ```
 
 Walking through the above code
 
--   Build up the CloudWatch LogGroup
--   Create the StateMachine Role
--   Build the StateMachine
+- Build up the CloudWatch LogGroup
+- Create the StateMachine Role
+- Build the StateMachine
 
 ```typescript
 buildStateMachine = (scope: Construct): stepfunctions.IChainable => {
-    return new Succeed(scope, "DefaultSucceed");
+  return new Succeed(scope, "DefaultSucceed");
 };
 ```
 

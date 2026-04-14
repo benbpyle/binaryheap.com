@@ -23,24 +23,24 @@ Before diving into the code, let's take a look at the designed implementation. T
 
 With any REST-based Create, Read, Update, and Delete API, there will be paths for each operation that support the different verbs. The API in this article will cover the following endpoints.
 
--   `/` POST - create new Items
--   `/` GET - fetches all items (supports pagination)=
--   `/{id}` - GET - fetches an item by id
--   `/{id}` - PUT - updates an item by id
--   `/{id}` - DELETE - deletes an item by id
+- `/` POST - create new Items
+- `/` GET - fetches all items (supports pagination)=
+- `/{id}` - GET - fetches an item by id
+- `/{id}` - PUT - updates an item by id
+- `/{id}` - DELETE - deletes an item by id
 
 ## Why Rust Again
 
 I've shared these in serval places but for a recap on why I'm so focused and interested in seeing Rust more in the Serverless ecosystem.
 
--   The language
-    -   Enums are so powerful
-    -   Functional and OOP concepts are easy to reach for
-    -   Crates are maybe the best package management setup I've worked with
-    -   Type safety and no garbage collection (once you get over the borrow checker)
--   Performance - not much to say here, Rust is fast
--   Consumption of resources - I strongly believe in sustainability, and Rust helps with that as it uses so little compared to so many others
--   [The Serverless Experience](https://binaryheap.com/rust-and-lambda/)
+- The language
+  - Enums are so powerful
+  - Functional and OOP concepts are easy to reach for
+  - Crates are maybe the best package management setup I've worked with
+  - Type safety and no garbage collection (once you get over the borrow checker)
+- Performance - not much to say here, Rust is fast
+- Consumption of resources - I strongly believe in sustainability, and Rust helps with that as it uses so little compared to so many others
+- [The Serverless Experience](https://binaryheap.com/rust-and-lambda/)
 
 And if you still want to [look around](https://binaryheap.com/tag/rust/) at more of my reasons, you can find them at that link.
 
@@ -129,7 +129,7 @@ async fn main() -> Result<(), Error> {
 }
 ```
 
-The things to pay attention to in this function are that I'm using an IS\_LOCAL variable and expecting a TABLE\_NAME variable so that I can build the shared DynamoDB client. By building a shared client, I get reuse out of that object and don't have to go through the latency of building it up each time.
+The things to pay attention to in this function are that I'm using an IS_LOCAL variable and expecting a TABLE_NAME variable so that I can build the shared DynamoDB client. By building a shared client, I get reuse out of that object and don't have to go through the latency of building it up each time.
 
 #### Create Handler
 
@@ -275,7 +275,7 @@ The GET and PUT by ID functions in an API with Rust and Lambda don't have a grea
 
 #### Accessing path variables
 
-Throughout this project, I'm using the [lambda\_http](https://docs.rs/lambda_http/latest/lambda_http/) crate that is provided by the AWS Labs team. There are several useful functions that this crate provides and one of them is working with the path and query string parameters.
+Throughout this project, I'm using the [lambda_http](https://docs.rs/lambda_http/latest/lambda_http/) crate that is provided by the AWS Labs team. There are several useful functions that this crate provides and one of them is working with the path and query string parameters.
 
 Any Lambda in the API that works with the path will need to be able to fetch out those key elements. In my case, I have an `{id}` in the path that I need to fetch.
 
@@ -312,7 +312,7 @@ Again, working with DynamoDB via the SDK is straightforward. I'm issuing a `get_
 
 ### Deleting an Item
 
-My API with Rust and Lambda wouldn't be complete without a DELETE endpoint. Deleting in DynamoDB with the SDK is just as well supported as the other operations. My handler also doesn't differ that much other than I'm returning 204 NO\_CONTENT vs the 200 or 201 I'm returning in other handlers.
+My API with Rust and Lambda wouldn't be complete without a DELETE endpoint. Deleting in DynamoDB with the SDK is just as well supported as the other operations. My handler also doesn't differ that much other than I'm returning 204 NO_CONTENT vs the 200 or 201 I'm returning in other handlers.
 
 ```
 let mut status_code = StatusCode::NO_CONTENT;

@@ -36,13 +36,13 @@ Small history lesson. Back in [2006](https://aws.amazon.com/blogs/aws/amazon_sim
 
 What problems does SQS solve or questions I might ask myself about choosing SQS?
 
--   Do I want to batch event processing up in a single pull?
--   Do I want to be able to have one consumer processing a message or batch at one time?
--   Are there delayed processing requirements? Meaning might I want a message to sit for n seconds before a worker picks it up?
--   Is ordering important?
--   Am I concerned with de-duplication?
--   Are my requirements as simple as enqueue and dequeue?
--   Will a Dead Letter Queue be enough to deal with failure and do I know how to handle those failures?
+- Do I want to batch event processing up in a single pull?
+- Do I want to be able to have one consumer processing a message or batch at one time?
+- Are there delayed processing requirements? Meaning might I want a message to sit for n seconds before a worker picks it up?
+- Is ordering important?
+- Am I concerned with de-duplication?
+- Are my requirements as simple as enqueue and dequeue?
+- Will a Dead Letter Queue be enough to deal with failure and do I know how to handle those failures?
 
 If your answers are yes to the above, SQS is your service. As AWS describes it:
 
@@ -64,18 +64,18 @@ First off, as a pure streaming data platform, you can publish and consume data j
 
 Second, Kinesis comes in several flavors.
 
--   Data Streams
--   Firehose
--   Data Analytics
--   Video Streams
+- Data Streams
+- Firehose
+- Data Analytics
+- Video Streams
 
 For the balance of this article, I'm going to be talking about Data Streams. The other flavors are sort of more nuanced versions which I don't have as much experience in and would feel unprepared to discuss. Additionally, when comparing the other services, let's assume that we are moving text (JSON) around our application.
 
 The main three questions that I tend to answer yes to which leads me to Kinesis are these:
 
--   Do I have multiple consumers that want to read the same message (this CAN be done with other services)
--   Do I need to be able to replay the data?
--   Is my need real-time or super close to it?
+- Do I have multiple consumers that want to read the same message (this CAN be done with other services)
+- Do I need to be able to replay the data?
+- Is my need real-time or super close to it?
 
 ![Kinesis](/images/Kinesis.png)
 
@@ -87,8 +87,8 @@ SNS is one of those services that has also been around for a while like SQS. Bef
 
 The first two services I've focused on the consumer side. And while you 100% can use SQS as an output for a producer as well as the input to a consumer, putting SNS in front of any SQS when dealing with producing events helps to decouple the two ends. For instance, if the producer knows about SNS and the consumer knows about SQS, then the producer and consumer don't share any ties. The tie exists in the SNS->SQS subscription which can enable a 1:M relationship on producer->consumers. Secondary to that, Kinesis of course can be the output of a producer, but in the case of passing events in an EDA, generally SNS->SQS is a tried and true and simple way to go about things.
 
--   Am I connecting one event to many events?
--   Do all consumers get a copy of the same event?
+- Am I connecting one event to many events?
+- Do all consumers get a copy of the same event?
 
 In my current role as CTO, I helped implement a large SNS->SQS-based implementation 5 years ago and have been super happy with it. I mentioned above consumers get a copy of the same event and that's mostly true, however, you can do some attribute and content level filtering in your subscriptions but I found it not as good as when working with EventBridge. I'm on the record at my company saying that if EventBridge was an option when I started this implementation, we'd be using that instead.
 
@@ -100,9 +100,9 @@ That doesn't by any stretch mean that SNS is not an awesome service. Because it 
 
 The last service to speak of when dealing with Serverless Events is EventBridge. Let me be a little more specific here, EventBridge is broken into 3 parts which makes it hard to compare in totality to SNS.
 
--   Event Bus
--   Pipes
--   Scheduler
+- Event Bus
+- Pipes
+- Scheduler
 
 I'll touch a bit more on the Pipes and Scheduler later on, but for now, Event Bus is the main player in shuttling and directing events on your platform.
 
@@ -126,13 +126,13 @@ First and foremost for me is that unlike some other services described in my [Da
 
 Working with SQS on both a producer and consumer side is super straightforward. Below is a list of what I pay attention to when using the service in no particular order.
 
--   If you don't want AWS Default encryption, bring your own KMS Key
--   Make sure you have a Dead-Letter-Queue in the event of reading that message several times fails
--   Pay attention to how long your consumer will hold the message and make that be < the visibility timeout
--   Using the message delay feature can be a nice way to gain some TTL functionality out of your queues
--   If not using Lambda and an SQS Event Source, make sure to delete your message after you are done processing successfully
--   Make sure you need FIFO. It'll limit your throughput
--   Pay attention to polling timing. Since you are charged per call, long-polling can reduce cost and be tuned up to 20 seconds.
+- If you don't want AWS Default encryption, bring your own KMS Key
+- Make sure you have a Dead-Letter-Queue in the event of reading that message several times fails
+- Pay attention to how long your consumer will hold the message and make that be < the visibility timeout
+- Using the message delay feature can be a nice way to gain some TTL functionality out of your queues
+- If not using Lambda and an SQS Event Source, make sure to delete your message after you are done processing successfully
+- Make sure you need FIFO. It'll limit your throughput
+- Pay attention to polling timing. Since you are charged per call, long-polling can reduce cost and be tuned up to 20 seconds.
 
 When it comes to pricing you get charged for how many API calls you make. This dollar amount will be different depending on if you choose FIFO or Standard and it's tiered based on how many calls you make a month
 
@@ -140,13 +140,13 @@ When it comes to pricing you get charged for how many API calls you make. This d
 
 Working with Kinesis can be a little bit tricky and I've found using Lambda and a Kinesis Event Source pairs nicely to make the best developer experience. Some libraries help handle the iterator position but the most consistent experience again comes when pairing with Lambda.
 
--   Pay attention to the trim horizon. This means how long will Kinesis hang onto the data and how far back in time you can replay those chunks of data.
--   Take special care of the iterator starting position. That could either be the trim horizon (oldest data) and the last position which is when the last piece of data arrived
--   Using the Lambda Event Source is the best way to consume data.
--   Mind the number of consumers and what the max is and when you might want to fan out.
--   Use encryption. Bring your KMS key
--   Shards are your friend when you need them. And pay attention to throughput and output when scaling out via shards. This is done through message size read/write per shard.
--   [Poison Pill Messages](https://binaryheap.com/handling-poison-pill-messages-with-aws-kinesis-and-lambdas/) are bad. Use Failure Destinations to help mitigate them
+- Pay attention to the trim horizon. This means how long will Kinesis hang onto the data and how far back in time you can replay those chunks of data.
+- Take special care of the iterator starting position. That could either be the trim horizon (oldest data) and the last position which is when the last piece of data arrived
+- Using the Lambda Event Source is the best way to consume data.
+- Mind the number of consumers and what the max is and when you might want to fan out.
+- Use encryption. Bring your KMS key
+- Shards are your friend when you need them. And pay attention to throughput and output when scaling out via shards. This is done through message size read/write per shard.
+- [Poison Pill Messages](https://binaryheap.com/handling-poison-pill-messages-with-aws-kinesis-and-lambdas/) are bad. Use Failure Destinations to help mitigate them
 
 Deriving cost with Kinesis can be a little tricky. You have two options that should feel familiar if you've used DynamoDB before. Those modes are on-demand and provisioned. In a nutshell, you'll pay by data you send/receive per shard and by hour of usage. There are more details underneath that statement but for this article, that's the simple version.
 
@@ -154,10 +154,10 @@ Deriving cost with Kinesis can be a little tricky. You have two options that sho
 
 SNS is going to feel a great deal like the opposite half of SQS so some of the "tips" are going to feel similar. And it's such a simple service to use (hence its name) that there aren't too many gotchas or guidelines in there that I pay attention to.
 
--   If you don't want AWS Default encryption, bring your own KMS Key
--   Make sure you have a Dead-Letter-Queue in the event of publishing that message several times fails
--   Use subscription filters where you can. They come in either attribute or content flavors.
--   Use IaC to make those subscriptions. Don't "ClickOps" it.
+- If you don't want AWS Default encryption, bring your own KMS Key
+- Make sure you have a Dead-Letter-Queue in the event of publishing that message several times fails
+- Use subscription filters where you can. They come in either attribute or content flavors.
+- Use IaC to make those subscriptions. Don't "ClickOps" it.
 
 For costs with SNS, they again are similar to SQS in that there is a per invocation charge but then there is also a data charge. Take note, you don't pay to integrate SNS with Kinesis, SQS or Lambda you just pay for the data charge. And like SQS, if you do choose the FIFO option, the prices will be a touch more per category.
 
@@ -169,17 +169,17 @@ I mentioned above that it includes a Pipes and Scheduler component and you shoul
 
 Here are a couple of articles that explore Pipes further:
 
--   [DynamoDB to Lambda via Pipes](https://binaryheap.com/streaming-aws-dynamodb-to-a-lambda-via-eventbridge-pipes/)
--   [SNS to EventBridge Pipes](https://binaryheap.com/subscribe-sns-to-eventbridge-pipes-with-cdk/) -- this one is a custom pattern
+- [DynamoDB to Lambda via Pipes](https://binaryheap.com/streaming-aws-dynamodb-to-a-lambda-via-eventbridge-pipes/)
+- [SNS to EventBridge Pipes](https://binaryheap.com/subscribe-sns-to-eventbridge-pipes-with-cdk/) -- this one is a custom pattern
 
 The things I look for specifically though when working with Buses are below:
 
--   Pay attention to the standard message structure. It'll make sense after a while. And embrace expanding it for your needs
--   Filters with Event Patterns are powerful. Learn the syntax
--   You might be able to get away with one Bus, but if you are following Domain-Driven Design, the Bus Mesh makes a lot of sense.
--   Use IaC to build rules. Trust me on this.
--   Look into the Schema Registry. I admit I haven't used as much as I should but if I was starting my current project over and this existed, I'd be making use of it.
--   You can connect existing AWS service events via Buses. Think CloudTrail. So much that can be done with the native services.
+- Pay attention to the standard message structure. It'll make sense after a while. And embrace expanding it for your needs
+- Filters with Event Patterns are powerful. Learn the syntax
+- You might be able to get away with one Bus, but if you are following Domain-Driven Design, the Bus Mesh makes a lot of sense.
+- Use IaC to build rules. Trust me on this.
+- Look into the Schema Registry. I admit I haven't used as much as I should but if I was starting my current project over and this existed, I'd be making use of it.
+- You can connect existing AWS service events via Buses. Think CloudTrail. So much that can be done with the native services.
 
 When it comes to price, the great thing about EB Buses is the simple pricing model. You pay per request and size. 64Kb chunks are 1 request. If your message is > than 64Kb it's just another request charge. And when you look at integrating other services in the AWS ecosystem, it's free of charge!
 

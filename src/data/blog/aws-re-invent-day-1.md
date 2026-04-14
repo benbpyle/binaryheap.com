@@ -58,10 +58,10 @@ Peter DeSantis keynoted in his usual spot during Monday Night Live. My key takea
 2.  The opening cover band was incredible. Enjoyed the heck out of them warming things up.
 3.  Quantum computing ... the advancements are coming along. I don't know personally what I'd do with it, but the engineering again is pretty astonishing.
 4.  Data is continuing to move Serverless
-    -   Caspian seems pretty awesome layered on top of the hypervisor
-    -   With Caspian, Aurora Serverless can now be auto-shared yet configured for true scale-up and down capabilities
-    -   This same functionality was leveraged in the new ElastiCache Serverless
-    -   Many performance improvements were announced for Redshift Serverless as well
+    - Caspian seems pretty awesome layered on top of the hypervisor
+    - With Caspian, Aurora Serverless can now be auto-shared yet configured for true scale-up and down capabilities
+    - This same functionality was leveraged in the new ElastiCache Serverless
+    - Many performance improvements were announced for Redshift Serverless as well
 
 All in all, the magic for me is more about tradition and doing Monday Night Live. Peter is a good, but not great showman but he gets into the nuts and bolts in a very disarming way which I enjoy listening to. So I'd give the keynote a solid B+.
 

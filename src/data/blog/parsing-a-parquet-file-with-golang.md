@@ -18,7 +18,7 @@ As always, here is the link to the [Github Repository](https://github.com/benbpy
 ## What is Apache Parquet
 
 > Apache Parquet is an open source, column-oriented data file format designed for efficient data storage and retrieval. It provides efficient data compression and encoding schemes with enhanced performance to handle complex data in bulk. Parquet is available in multiple languages including Java, C++, Python, etc…
-> 
+>
 > https://parquet.apache.org/
 
 ## Downloading the Parquet File
@@ -169,10 +169,10 @@ func main() {
 
 In a nutshell ...
 
--   Download the file
--   Parse the file
--   Delete the file
--   Loop and print output
+- Download the file
+- Parse the file
+- Delete the file
+- Loop and print output
 
 ![parsing output](/images/Screenshot-2023-02-19-at-9.58.00-AM.png)
 

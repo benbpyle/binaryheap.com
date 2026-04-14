@@ -175,9 +175,9 @@ The Advanced Redrive tool comes with a built-in processor, but since we are deal
 
 At this point, you can take any individual message and move it into:
 
--   `./messages/<queue_name>/updates/pending` - Will send the message to the destination queue. You can modify the message beforehand using any method of your choosing.
--   `./messages/<queue_name>/deletes/pending` - Will delete the message from the source queue.
--   `./messages/<queue_name>/skips` - Will do nothing with the message.
+- `./messages/<queue_name>/updates/pending` - Will send the message to the destination queue. You can modify the message beforehand using any method of your choosing.
+- `./messages/<queue_name>/deletes/pending` - Will delete the message from the source queue.
+- `./messages/<queue_name>/skips` - Will do nothing with the message.
 
 You can also use our TypeScript-based processor tooling if you wish:
 

@@ -34,7 +34,7 @@ For the balance of the article, I'm going to walk through some TypeScript CDK co
 
 ### DynamoDB Table
 
-The TableConstruct builds a simple table with PAY\_PER\_REQUEST pricing, a customer-managed KMS and a single PARTITION\_KEY.
+The TableConstruct builds a simple table with PAY_PER_REQUEST pricing, a customer-managed KMS and a single PARTITION_KEY.
 
 ```
 this._table = new Table(this, id, {
@@ -143,7 +143,7 @@ Top-level properties give me the option to name the stream and choose the stream
 
 #### Encryption
 
-The encryption configuration should seem pretty obvious. I'm leveraging the shared KMS Key I built in the stack. And then for the stream, specifying that it's a CUSTOMER\_MANAGED\_CMK
+The encryption configuration should seem pretty obvious. I'm leveraging the shared KMS Key I built in the stack. And then for the stream, specifying that it's a CUSTOMER_MANAGED_CMK
 
 ```typescript
 deliveryStreamEncryptionConfigurationInput: {
@@ -156,15 +156,15 @@ deliveryStreamEncryptionConfigurationInput: {
 
 The output is where this gets fun. Building a partitioned S3 bucket is natively supported in Firehose. Quick aside, why does partitioning matter? A couple of key things.
 
--   Data organization
--   Data query performance
+- Data organization
+- Data query performance
 
 The extendedS3DestinationConfiguration can be a little long to build, but let me highlight some key pieces.
 
--   bufferingHints: The right interval and size take a little bit of art and science. For small samples of data, it doesn't matter much, but performance can be impacted or improved by tweaking these.
--   roleArn: In the repository, you'll see the specific permissions you need, but the role matters.
--   prefix: The bucket prefixing that'll take place in S3. There are a few options to leverage, but in my example, I'm picking up these dynamic partitions from my Lambda. I'm structuring it like this `site=1/year=2023/month=11/day=17/minute=32/<some data>`dynamicPartitioningConfiguration: to support this partitioning, I need to enable dynamic partitioning.
--   processingConfiguration: Firehose supports in-line (jQ) based processing or you can use a Lambda function. In most cases, I'd like to use jQ, but for this example, I went with a Lambda
+- bufferingHints: The right interval and size take a little bit of art and science. For small samples of data, it doesn't matter much, but performance can be impacted or improved by tweaking these.
+- roleArn: In the repository, you'll see the specific permissions you need, but the role matters.
+- prefix: The bucket prefixing that'll take place in S3. There are a few options to leverage, but in my example, I'm picking up these dynamic partitions from my Lambda. I'm structuring it like this `site=1/year=2023/month=11/day=17/minute=32/<some data>`dynamicPartitioningConfiguration: to support this partitioning, I need to enable dynamic partitioning.
+- processingConfiguration: Firehose supports in-line (jQ) based processing or you can use a Lambda function. In most cases, I'd like to use jQ, but for this example, I went with a Lambda
 
 ```typescript
 extendedS3DestinationConfiguration: {
@@ -245,17 +245,17 @@ cdk deploy
 
 Your AWS Account should have the following resources configured.
 
--   S3 Bucket
--   DynamoDB Table
-    -   Configured for streams
--   EventBridge Pipe
-    -   Filtering rule
-    -   Target transformation
--   Kinesis Firehose
-    -   Direct PUT integration
-    -   Transformation enabled using a Lambda
--   KMS Key for encryption throughout
--   Various IAM policies for the services
+- S3 Bucket
+- DynamoDB Table
+  - Configured for streams
+- EventBridge Pipe
+  - Filtering rule
+  - Target transformation
+- Kinesis Firehose
+  - Direct PUT integration
+  - Transformation enabled using a Lambda
+- KMS Key for encryption throughout
+- Various IAM policies for the services
 
 Let's take a small tour.
 

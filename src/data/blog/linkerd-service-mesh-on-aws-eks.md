@@ -13,12 +13,12 @@ draft: false
 
 I've been writing for a while now on setting up Kubernetes specifically with AWS' EKS. I love how EKS gives me the flexibility to install the standard and custom Kubernetes resources that I need and want for my projects. In this article, I want to explore setting up Linkerd, a service mesh for Kubernetes, on EKS. Linkerd is a popular service mesh that provides a set of features such as service discovery, [load balancing](https://binaryheap.com/api-gateway-with-istio-and-eks/), and traffic management. By using Linkerd, we can easily [manage and monitor our Kubernetes](https://binaryheap.com/chart-an-extensible-course-with-helm/) applications and ensure that they are running smoothly. I did some light comparisons a while back between Istio and Linkerd in this [article](https://binaryheap.com/evaluating-2-popular-service-meshes/). But let's dive in a little bit deeper and setup the Linkerd Service Mesh on AWS EKS!
 
--   [Setting up Linkerd on EKS](#setting-up-linkerd-on-eks)
-    -   [Configuring the EKS Cluster](#configuring-the-eks-cluster)
-    -   [Deploying Linkerd](#deploying-linkerd)
--   [Deploying Applications](#deploying-applications)
--   [Next Steps](#next-steps)
--   [Wrapping Up](#wrapping-up)
+- [Setting up Linkerd on EKS](#setting-up-linkerd-on-eks)
+  - [Configuring the EKS Cluster](#configuring-the-eks-cluster)
+  - [Deploying Linkerd](#deploying-linkerd)
+- [Deploying Applications](#deploying-applications)
+- [Next Steps](#next-steps)
+- [Wrapping Up](#wrapping-up)
 
 ## Setting up Linkerd on EKS
 
@@ -55,10 +55,10 @@ eksctl create cluster -f cluster.yaml
 
 I love deploying applications in Kubernetes either software I've produced or community applications such as Linkerd. For convenience, I've created a shell script for deploying Linkerd. The script includes:
 
--   Installing the Linkerd tooling
--   Deploying the Kubernetes CRDs
--   Installing the Linkerd control plane
--   Installing the Linkerd visualization dashboard
+- Installing the Linkerd tooling
+- Deploying the Kubernetes CRDs
+- Installing the Linkerd control plane
+- Installing the Linkerd visualization dashboard
 
 Launching the script looks like this:
 
@@ -82,7 +82,7 @@ kind: Service
 metadata:
   name: comms-service
   annotations:
-  # Adding in Linkerd
+    # Adding in Linkerd
     linkerd.io/inject: enabled
 spec:
   selector:
@@ -166,9 +166,9 @@ First, I'd recommend that if you followed along, you should clean up the resourc
 
 As for Linkerd, I've barely scratched the surface of what I can accomplish with [it](https://linkerd.io/2.18/getting-started/). The following capabilities are what I'd recommend exploring next (and I just might in future posts):
 
--   [Linkerd's Retries](https://linkerd.io/2.18/reference/retries/)
--   [Linkerd's Circuit Breaking](https://linkerd.io/2.18/reference/circuit-breaking/)
--   [Linkerd's Telemetry](https://linkerd.io/2.18/features/telemetry/)
+- [Linkerd's Retries](https://linkerd.io/2.18/reference/retries/)
+- [Linkerd's Circuit Breaking](https://linkerd.io/2.18/reference/circuit-breaking/)
+- [Linkerd's Telemetry](https://linkerd.io/2.18/features/telemetry/)
 
 These 3 topics would be a great next step for adding robustness to a Kubernetes managed application. What I love about using a Service Mesh is that I don't have to hand code or pick libraries to handle additional features. I get this at the infrastructure level so developers (like myself) can focus on [building great applications](https://binaryheap.com/building-serverless-applications-with-aws-compute/).
 

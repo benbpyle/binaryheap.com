@@ -37,10 +37,10 @@ Creating an application that allows Amazon Q to meet Taylor Swift is fairly stra
 
 The wizard walks you through the steps which are:
 
--   Create and Name
--   Enhance and Customize
--   Preview the web experience
--   Deploy the web experience
+- Create and Name
+- Enhance and Customize
+- Preview the web experience
+- Deploy the web experience
 
 ![Q Workflow](/images/q_workflow.png)
 

@@ -88,10 +88,10 @@ The `POST /` Lambda Function handler is responsible for writing the `recipe` int
 
 Setting that up in CDK is step one and the parts of this snippet that I want to highlight are:
 
--   The environment variables
-    -   TYPESENSE\_CLUSTER\_URL: is the cluster URL from my Typesense Cloud Account
-    -   TYPESENSE\_API\_KEY: is the key I created like in the above section
--   Granting access and specifying the Stream as a trigger for my Lambda Function
+- The environment variables
+  - TYPESENSE_CLUSTER_URL: is the cluster URL from my Typesense Cloud Account
+  - TYPESENSE_API_KEY: is the key I created like in the above section
+- Granting access and specifying the Stream as a trigger for my Lambda Function
 
 ```typescript
 export default class CdcFunctionConstruct extends Construct {
@@ -113,7 +113,7 @@ export default class CdcFunctionConstruct extends Construct {
     func.addEventSource(
       new DynamoEventSource(table, {
         startingPosition: StartingPosition.LATEST,
-      }),
+      })
     );
     table.grantStream(func);
   }
@@ -233,7 +233,7 @@ export default class SearchFunctionConstruct extends Construct {
       "GET",
       new LambdaIntegration(func, {
         proxy: true,
-      }),
+      })
     );
   }
 }
@@ -351,9 +351,9 @@ The first endpoint is the `POST /` which will create a recipe. Feel free to play
 
 ```json
 {
-    "author": "New Author",
-    "name": "Somthing Amazing and Tasty",
-    "description": "A useful new recipe"
+  "author": "New Author",
+  "name": "Somthing Amazing and Tasty",
+  "description": "A useful new recipe"
 }
 ```
 

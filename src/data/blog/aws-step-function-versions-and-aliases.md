@@ -42,43 +42,42 @@ The ASL for the workflow will start like this
 
 ```json
 {
-    "StartAt": "Basic Choice",
-    "States": {
-        "Basic Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.type",
-                    "StringEquals": "B",
-                    "Next": "Passed"
-                },
-                {
-                    "Variable": "$.type",
-                    "StringEquals": "C",
-                    "Next": "Passed"
-                },
-                {
-                    "Variable": "$.type",
-                    "StringEquals": "D",
-                    "Next": "Passed"
-                },
-                {
-                    "Variable": "$.type",
-                    "StringEquals": "A",
-                    "Next": "Failed"
-                }
-            ]
+  "StartAt": "Basic Choice",
+  "States": {
+    "Basic Choice": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.type",
+          "StringEquals": "B",
+          "Next": "Passed"
         },
-        "Passed": {
-            "Type": "Succeed"
+        {
+          "Variable": "$.type",
+          "StringEquals": "C",
+          "Next": "Passed"
         },
-        "Failed": {
-            "Type": "Fail"
+        {
+          "Variable": "$.type",
+          "StringEquals": "D",
+          "Next": "Passed"
+        },
+        {
+          "Variable": "$.type",
+          "StringEquals": "A",
+          "Next": "Failed"
         }
+      ]
     },
-    "TimeoutSeconds": 30
+    "Passed": {
+      "Type": "Succeed"
+    },
+    "Failed": {
+      "Type": "Fail"
+    }
+  },
+  "TimeoutSeconds": 30
 }
-
 ```
 
 Now let's walk through the SAM Template to build and deploy the infrastructure.
@@ -89,34 +88,33 @@ Now let's walk through the SAM Template to build and deploy the infrastructure.
 
 ```yaml
 AliasStateMachine:
-    Type: AWS::Serverless::StateMachine
-    DependsOn: StateMachineLogGroup
-    Properties:
-        Type: EXPRESS
-        AutoPublishAlias: "main"
-        Name: "SampleAliasMachine"
-        DefinitionUri: statemachine/alias.asl.json
-        Role:
-            Fn::GetAtt: [StatesExecutionRole, Arn]
-        Logging:
-            Destinations:
-                - CloudWatchLogsLogGroup:
-                      LogGroupArn: !GetAtt StateMachineLogGroup.Arn
-            IncludeExecutionData: True
-            Level: ALL
-        DeploymentPreference:
-            Alarms:
-                - !Ref AliasStateMachineFailureAlarm
-            Interval: 2
-            Percentage: 50
-            Type: LINEAR
-
+  Type: AWS::Serverless::StateMachine
+  DependsOn: StateMachineLogGroup
+  Properties:
+    Type: EXPRESS
+    AutoPublishAlias: "main"
+    Name: "SampleAliasMachine"
+    DefinitionUri: statemachine/alias.asl.json
+    Role:
+      Fn::GetAtt: [StatesExecutionRole, Arn]
+    Logging:
+      Destinations:
+        - CloudWatchLogsLogGroup:
+            LogGroupArn: !GetAtt StateMachineLogGroup.Arn
+      IncludeExecutionData: True
+      Level: ALL
+    DeploymentPreference:
+      Alarms:
+        - !Ref AliasStateMachineFailureAlarm
+      Interval: 2
+      Percentage: 50
+      Type: LINEAR
 ```
 
 So if you've built a State Machine before with SAM, some of this will look pretty standard. Bonus points if you've built a Lambda with SAM because the DeploymentPreference section should also look familiar. The things to take note of though are this.
 
--   `AutoPublishAlias`: this will automatically create the alias for you and keep it up to date with the latest version
--   `DeploymentPreference`: if you view the spec, it requires a Version, but when using it in SAM like this, the version will get added for you in the transform so no worries.
+- `AutoPublishAlias`: this will automatically create the alias for you and keep it up to date with the latest version
+- `DeploymentPreference`: if you view the spec, it requires a Version, but when using it in SAM like this, the version will get added for you in the transform so no worries.
 
 Running `sam deploy` will produce the following State Machine Alias setup.
 
@@ -128,31 +126,30 @@ Looking further at the DeploymentPreference, there is an Alarm defined in there.
 
 ```yaml
 AliasStateMachineFailureAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-        AlarmDescription: Invocation alarm for Alias State Machine
-        Namespace: AWS/States
-        MetricName: ExecutionsFailed
-        Dimensions:
-            - Name: StateMachineArn
-              Value: !Ref AliasStateMachine
-            - Name: Alias
-              Value: "main"
-        Statistic: Sum
-        ComparisonOperator: GreaterThanOrEqualToThreshold
-        Threshold: 1
-        EvaluationPeriods: 1
-        Period: 300
-        TreatMissingData: notBreaching
-
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmDescription: Invocation alarm for Alias State Machine
+    Namespace: AWS/States
+    MetricName: ExecutionsFailed
+    Dimensions:
+      - Name: StateMachineArn
+        Value: !Ref AliasStateMachine
+      - Name: Alias
+        Value: "main"
+    Statistic: Sum
+    ComparisonOperator: GreaterThanOrEqualToThreshold
+    Threshold: 1
+    EvaluationPeriods: 1
+    Period: 300
+    TreatMissingData: notBreaching
 ```
 
 Building a CloudWatch alarm is about defining what metric to watch for, which dimensions or criteria are you paying attention to, what period to evaluate, how to evaluate missing data, what is the calculation and what's the comparator. With this release from AWS, they've also rolled out CloudWatch Step Function dimensions for Version and Alias. The alarm defined above does this:
 
--   Sum the number of FailedExecutions over 5 minutes
--   Filter those by the ARN of the State Machine and by the Alias supplied
--   Treat no data as "OK"
--   Compare that SUM that if it's >= 1 then ALARM
+- Sum the number of FailedExecutions over 5 minutes
+- Filter those by the ARN of the State Machine and by the Alias supplied
+- Treat no data as "OK"
+- Compare that SUM that if it's >= 1 then ALARM
 
 ## Testing the Workflow
 
@@ -173,11 +170,10 @@ But let's for the sake of testing the deployment say that we change the workflow
 
 ```json
 {
-    "Variable": "$.type",
-    "StringEquals": "B",
-    "Next": "Failed"
+  "Variable": "$.type",
+  "StringEquals": "B",
+  "Next": "Failed"
 }
-
 ```
 
 This could be bad, but thankfully when deploying, in this example, I'm using a LINEAR style deployment where traffic is weighted 50/50 for 2 minutes to monitor for issues and then the rest of the traffic is switched over to the new version should everything look good. [This article](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-cd-aliasing-versioning.html) will explain more of the options.

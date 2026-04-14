@@ -13,8 +13,8 @@ draft: false
 
 Short post on unmarshalling a DynamoDB Map into something strongly typed like a Go struct. If you want to jump straight to some code, here are the Github gists
 
--   [Data Model](https://gist.github.com/benbpyle/20c313b853fb745e07c428132386b8b5)
--   [Go Code](https://gist.github.com/benbpyle/66be02d7e90147c3c8c2bba123dbfb25#file-user_role-go)
+- [Data Model](https://gist.github.com/benbpyle/20c313b853fb745e07c428132386b8b5)
+- [Go Code](https://gist.github.com/benbpyle/66be02d7e90147c3c8c2bba123dbfb25#file-user_role-go)
 
 So what is "unmarshalling"? It's the act of taking one representation of data and converting it into another. For instance when we store data in DynamoDB one of the native data types is a "map". A map is really nothing more than a dictionary/key value type look up. Think of a dictionary as a data structure that has a key and a subsequent value. The key **must** be unique. Take this data for example
 

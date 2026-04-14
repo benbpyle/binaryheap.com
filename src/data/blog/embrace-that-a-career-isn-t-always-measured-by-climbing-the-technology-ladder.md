@@ -57,12 +57,12 @@ A few months back, I set out to [introduce](https://binaryheap.com/benjamen-pyle
 
 As a leader who was climbing the technology ladder, I've taken plenty of personality and culture profiles. I know the following things about myself and knew them even before I filled out the surveys.
 
--   I'm a heavy learner. But only as it applies to using that knowledge to do something.
--   Achievement is high up on my list of priorities (hence the ladder)
--   I need frequent recharging because I am what I am all the time. I only have 1 version of me.
--   I like macro-level problems more than details. But when I find a detail I find interesting, I'm like a dog with a bone. Have you been paying attention to all of my [Rust](https://binaryheap.com/serverless-rust-developer-experience/) content?
--   I tend to be more introverted. I love people, but I refuel in private.
--   Creativity and individuality are important to me.
+- I'm a heavy learner. But only as it applies to using that knowledge to do something.
+- Achievement is high up on my list of priorities (hence the ladder)
+- I need frequent recharging because I am what I am all the time. I only have 1 version of me.
+- I like macro-level problems more than details. But when I find a detail I find interesting, I'm like a dog with a bone. Have you been paying attention to all of my [Rust](https://binaryheap.com/serverless-rust-developer-experience/) content?
+- I tend to be more introverted. I love people, but I refuel in private.
+- Creativity and individuality are important to me.
 
 OK, so I knew all these attributes about myself, but why did I keep ending up in these frying pans? Because I never understood what was important to me at my core. I had never evaluated an organization and a role against my values. And I had never looked at those "non-negotiables" for me before. Like I'd never ship Lambdas in Python or TypeScript. Completely kidding there ... but you get the point that knowing the things I wasn't willing to give up and do was never part of the equation.
 

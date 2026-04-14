@@ -31,12 +31,12 @@ If you've been following along with the previous five articles, thank you. I hav
 
 Before getting started, I want to lay out a few topics that we need to cover in this article.
 
--   What is observability?
--   Logging is your friend and the way you log has an impact on your ability to troubleshoot. That includes context, content and the appropriate level
--   Traces coupled with logs are a mighty powerful ally.
--   Events happen fast and they move rapidly through your system, put a plan in place to be able to trace them.
--   Metrics and alarms can let you know about issues before your customers do.
--   Putting it all together
+- What is observability?
+- Logging is your friend and the way you log has an impact on your ability to troubleshoot. That includes context, content and the appropriate level
+- Traces coupled with logs are a mighty powerful ally.
+- Events happen fast and they move rapidly through your system, put a plan in place to be able to trace them.
+- Metrics and alarms can let you know about issues before your customers do.
+- Putting it all together
 
 ### General Advice
 
@@ -77,19 +77,19 @@ logrus.Debug("this is a log message")
 
 The most common log levels in logging libraries are as follows. FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL.
 
-Again, these matter because they help you organize your messages based on the severity of the message. I **strongly** recommend that you set a LOG\_LEVEL environment variable in your Lambda or Fargate task definition.
+Again, these matter because they help you organize your messages based on the severity of the message. I **strongly** recommend that you set a LOG_LEVEL environment variable in your Lambda or Fargate task definition.
 
 I use something like this often in my CDK code to determine the logging level.
 
 ```typescript
 export const getLogLevel = (stage: StageEnvironment): string => {
-    switch (stage) {
-        case StageEnvironment.DEV:
-        case StageEnvironment.QA:
-            return "debug";
-    }
+  switch (stage) {
+    case StageEnvironment.DEV:
+    case StageEnvironment.QA:
+      return "debug";
+  }
 
-    return "error";
+  return "error";
 };
 ```
 
@@ -172,13 +172,13 @@ Tip 4: Give your message structures a meta section so that you are consistent wi
 
 ```json
 {
-    "meta": {
-        "source": "<source>",
-        "correlationId": "<id>"
-    },
-    "details": {
-        // insert the body
-    }
+  "meta": {
+    "source": "<source>",
+    "correlationId": "<id>"
+  },
+  "details": {
+    // insert the body
+  }
 }
 ```
 

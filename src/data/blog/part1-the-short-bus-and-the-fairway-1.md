@@ -16,7 +16,7 @@ This year marks 30 years in the industry. An industry that provided me a challen
 
 This is the first of three pieces. This one is about how I got here.
 
-* * *
+---
 
 Technology, and more specifically the art of programming, was a not-so-soft landing spot for me when I was younger. My dream from my youngest memories was to play professional golf. It was all I worked towards. Everything.
 
@@ -32,7 +32,7 @@ Fast forward a few years and a devastating wrist injury ruined my hopes of playi
 
 Back then, information was consumed from books. I spent hundreds of dollars on texts from physical bookstores. I can remember visiting the library and grabbing anything I could find to expand my knowledge. There was no Stack Overflow. No YouTube tutorial. No AI assistant. You bought an O'Reilly book with an animal on the cover, and you read it until the spine cracked.
 
-* * *
+---
 
 The first five years post-college were rough. I want to write that plainly because I think it's important for anyone launching into this industry right now to hear it.
 
@@ -50,6 +50,6 @@ If I could throw one of those Hollywood cheats like "10 Years Later" on the bott
 
 That clarity is what made everything that came next possible.
 
-* * *
+---
 
 _Next: What happened when I took that clarity into the world and tried to connect. [Read Part 2: The Fear of Being Included →](/part-2-url)_

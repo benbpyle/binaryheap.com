@@ -15,19 +15,19 @@ I love reflecting. It's one of my favorite mental exercises to do. And especiall
 
 Having a mindset built around adaptability through learned experiences has served me well and 2024 was no exception.
 
--   [The Setting](#the-setting)
--   [Note to Myself](#note-to-myself)
-    -   [What Ended up Being True](#what-ended-up-being-true)
-        -   [Family](#family)
-        -   [Take the Leap](#take-the-leap)
-    -   [What will be OK](#what-will-be-ok)
-        -   [Sales and Pipeline](#sales-and-pipeline)
-        -   [Insurance, Taxes, and the Back Office](#insurance-taxes-and-the-back-office)
-    -   [What I've Learned](#what-ive-learned)
-        -   [I'm a White Collar Uber Driver](#im-a-white-collar-uber-driver)
-        -   [Save, Save, Save](#save-save-save)
--   [Takeaways](#takeaways)
--   [Wrapping Up](#wrapping-up)
+- [The Setting](#the-setting)
+- [Note to Myself](#note-to-myself)
+  - [What Ended up Being True](#what-ended-up-being-true)
+    - [Family](#family)
+    - [Take the Leap](#take-the-leap)
+  - [What will be OK](#what-will-be-ok)
+    - [Sales and Pipeline](#sales-and-pipeline)
+    - [Insurance, Taxes, and the Back Office](#insurance-taxes-and-the-back-office)
+  - [What I've Learned](#what-ive-learned)
+    - [I'm a White Collar Uber Driver](#im-a-white-collar-uber-driver)
+    - [Save, Save, Save](#save-save-save)
+- [Takeaways](#takeaways)
+- [Wrapping Up](#wrapping-up)
 
 ## The Setting
 
@@ -35,7 +35,7 @@ I love a good origin story. How did this character get to this pivotal juncture 
 
 I've been asked what lead me to starting my own business. What would posses me to do it with my spouse? And how in the world would I walk away from being a CTO, which is essentially the pinnacle of a career in tech. Or is it?
 
-This time last year Elizabeth (my wife) and I were having discussions around what we were going to do in the upcoming year. I spent the fall of 2023 evaluating my options. I had developed this passion for creating developer content, but I was also feeling a strong draw towards being more present at home. A friend of mine gave me a very sobering stat that by 15 years old, you've already spent 90% of the time you'll spend with your kid. That hit me like a ton of TypeScript code packing a punch greater than the node\_modules required to run the script. I just didn't feel like my priorities were aligned and that my skills were best being utilized.
+This time last year Elizabeth (my wife) and I were having discussions around what we were going to do in the upcoming year. I spent the fall of 2023 evaluating my options. I had developed this passion for creating developer content, but I was also feeling a strong draw towards being more present at home. A friend of mine gave me a very sobering stat that by 15 years old, you've already spent 90% of the time you'll spend with your kid. That hit me like a ton of TypeScript code packing a punch greater than the node_modules required to run the script. I just didn't feel like my priorities were aligned and that my skills were best being utilized.
 
 I'd been building a software solution for 5 years as the Chief Architect and CTO. I had hired everyone in the technology department outside of 2 people. That was 35 + hires in 5 years with 25 of them happening in 2022. I had the team I wanted and was proud of the work they were doing, but I kept getting pulled further and further away from the Rust (see how I managed to slip Rust into a personal piece) and AWS I loved. I was coordinating, organizing, and delegating. All of the things I'd learned in my 15 + years leading people.
 

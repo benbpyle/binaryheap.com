@@ -19,17 +19,17 @@ communication simpler, safer, more consistent, and observable. I want to
 explore to very popular implementations in the Kubernetes ecosystem  
 which are [Istio](https://istio.io) and [Linkerd](https://linkerd.io/).
 
--   [Why a Service Mesh?](#why-a-service-mesh)
--   [Common Implementation Details](#common-implementation-details)
--   [Linkerd vs Istio](#linkerd-vs-istio)
-    -   [Linkerd](#linkerd)
-    -   [Drawbacks](#drawbacks)
-        -   [External Service Configuration](#external-service-configuration)
-        -   [Rate Limiting](#rate-limiting)
-    -   [Istio](#istio)
-        -   [Drawbacks](#drawbacks-1)
-    -   [Concluding Thoughts](#concluding-thoughts)
--   [Wrapping Up](#wrapping-up)
+- [Why a Service Mesh?](#why-a-service-mesh)
+- [Common Implementation Details](#common-implementation-details)
+- [Linkerd vs Istio](#linkerd-vs-istio)
+  - [Linkerd](#linkerd)
+  - [Drawbacks](#drawbacks)
+    - [External Service Configuration](#external-service-configuration)
+    - [Rate Limiting](#rate-limiting)
+  - [Istio](#istio)
+    - [Drawbacks](#drawbacks-1)
+  - [Concluding Thoughts](#concluding-thoughts)
+- [Wrapping Up](#wrapping-up)
 
 # Why a Service Mesh?
 
@@ -121,15 +121,15 @@ resource with Linkerd enabled.
 apiVersion: v1
 kind: Pod
 metadata:
-    name: nginx-pod
-    annotations:
-        linkerd.io/inject: enabled # Enable injection
-    spec:
-        containers:
-        - name: nginx
-          image: nginx:latest
-          ports:
-              - containerPort: 80
+  name: nginx-pod
+  annotations:
+    linkerd.io/inject: enabled # Enable injection
+  spec:
+    containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+          - containerPort: 80
 ```
 
 The second point that sets Linkerd apart is performance. By being simple  

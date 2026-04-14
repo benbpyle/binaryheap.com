@@ -80,9 +80,9 @@ When you work backward to solve problems, you will be presented with several cho
 
 When you start to think like a consultant you will start to answer a lot of questions with "it depends".
 
--   Should I use Lambda or Fargate here? [It depends](https://binaryheap.com/building-serverless-applications-with-aws-compute/)
--   DynamoDB or RDS? [It depends](https://binaryheap.com/building-serverless-applications-with-aws-data/)
--   Should my team build this Lambda in [Rust](https://binaryheap.com/rust-and-lambda/) or [Go](https://binaryheap.com/choosing-go-when-building-lambdas/)? Again, It depends.
+- Should I use Lambda or Fargate here? [It depends](https://binaryheap.com/building-serverless-applications-with-aws-compute/)
+- DynamoDB or RDS? [It depends](https://binaryheap.com/building-serverless-applications-with-aws-data/)
+- Should my team build this Lambda in [Rust](https://binaryheap.com/rust-and-lambda/) or [Go](https://binaryheap.com/choosing-go-when-building-lambdas/)? Again, It depends.
 
 Thinking like a consultant who listens, adds value, and works backward will give you a macro-level perspective on things. And people like consultants who take a macro-level view of problems. And when you pair this macro-level thinking with experience in assembling details like the type of person in bucket number one, you start to find yourself as a bucket three person.
 

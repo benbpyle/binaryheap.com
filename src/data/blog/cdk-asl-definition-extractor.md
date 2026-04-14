@@ -20,8 +20,8 @@ I've written a good bit about CDK so if you are looking for some [intro](https:/
 
 If you just want to jump straight to the README or the NPM package you can do that here:
 
--   [GitHub Repository](https://github.com/benbpyle/cdk-state-machine-extractor)
--   [NPM](https://www.npmjs.com/package/cdk-asl-definition-extractor)
+- [GitHub Repository](https://github.com/benbpyle/cdk-state-machine-extractor)
+- [NPM](https://www.npmjs.com/package/cdk-asl-definition-extractor)
 
 This is a simple command line utility that takes the CDK Template output and parses through to extract out the `AWS::StepFunctions::StateMachine` resources and then outputs them to the STDOUT so that you can do something with that definition.
 
@@ -45,20 +45,19 @@ Options:
 **Extract ASL**
 
 ```bash
-cdk-asl-definition-extractor  -f 
+cdk-asl-definition-extractor  -f
 
 ```
 
 **The Output**
 
 ```json
-    [
-        {
-            "identifier": "",
-            "definition": ""
-        }
-    ]
-
+[
+  {
+    "identifier": "",
+    "definition": ""
+  }
+]
 ```
 
 ### Wrap Up

@@ -51,53 +51,53 @@ The first step in preparing for our export is to build a role that has access to
 
 ```typescript
 const manageExportPolicy = new iam.PolicyDocument({
-    statements: [
-        new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            resources: [props.datastore.attrDatastoreArn],
-            actions: [
-                "healthlake:StartFHIRExportJobWithPost",
-                "healthlake:DescribeFHIRExportJobWithGet",
-                "healthlake:CancelFHIRExportJobWithDelete",
-                "healthlake:StartFHIRExportJob",
-            ],
-        }),
-        new iam.PolicyStatement({
-            actions: [
-                "s3:ListBucket",
-                "s3:GetBucketPublicAccessBlock",
-                "s3:GetEncryptionConfiguration",
-            ],
-            effect: iam.Effect.ALLOW,
-            resources: [`${props.bucket.bucketArn}`],
-        }),
-        new iam.PolicyStatement({
-            actions: ["s3:PutObject"],
-            effect: iam.Effect.ALLOW,
-            resources: [`${props.bucket.bucketArn}/*`],
-        }),
+  statements: [
+    new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: [props.datastore.attrDatastoreArn],
+      actions: [
+        "healthlake:StartFHIRExportJobWithPost",
+        "healthlake:DescribeFHIRExportJobWithGet",
+        "healthlake:CancelFHIRExportJobWithDelete",
+        "healthlake:StartFHIRExportJob",
+      ],
+    }),
+    new iam.PolicyStatement({
+      actions: [
+        "s3:ListBucket",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:GetEncryptionConfiguration",
+      ],
+      effect: iam.Effect.ALLOW,
+      resources: [`${props.bucket.bucketArn}`],
+    }),
+    new iam.PolicyStatement({
+      actions: ["s3:PutObject"],
+      effect: iam.Effect.ALLOW,
+      resources: [`${props.bucket.bucketArn}/*`],
+    }),
 
-        new iam.PolicyStatement({
-            actions: ["kms:DescribeKey", "kms:GenerateDataKey*"],
-            effect: iam.Effect.ALLOW,
-            resources: [props.key.keyArn],
-        }),
-    ],
+    new iam.PolicyStatement({
+      actions: ["kms:DescribeKey", "kms:GenerateDataKey*"],
+      effect: iam.Effect.ALLOW,
+      resources: [props.key.keyArn],
+    }),
+  ],
 });
 
 this._role = new iam.Role(scope, "HealthLakeExportRole", {
-    roleName: "healthlake-cdc-export-role",
-    assumedBy: new iam.PrincipalWithConditions(assumedBy, {
-        StringEquals: {
-            "aws:SourceAccount": props.accountId,
-        },
-        ArnEquals: {
-            "aws:SourceArn": props.datastore.attrDatastoreArn,
-        },
-    }),
-    inlinePolicies: {
-        healthlakePolicy: manageExportPolicy,
+  roleName: "healthlake-cdc-export-role",
+  assumedBy: new iam.PrincipalWithConditions(assumedBy, {
+    StringEquals: {
+      "aws:SourceAccount": props.accountId,
     },
+    ArnEquals: {
+      "aws:SourceArn": props.datastore.attrDatastoreArn,
+    },
+  }),
+  inlinePolicies: {
+    healthlakePolicy: manageExportPolicy,
+  },
 });
 ```
 
@@ -123,11 +123,11 @@ The last piece of the role is that I'm limiting access via a Trust Policy so tha
 To demonstrate exports with AWS HealthLake I'm going to use a simple API call and show you the cURL requests. At the bottom of the article will be the link to the full repository I used in the Callback article, so you can refer to that as well.
 
 ```bash
-curl --location 'https://healthlake.us-west-2.amazonaws.com/datastore/<datastoreid>/r4/$export?_since=2023-07-18T00%3A00%3A00.461Z' 
---header 'Content-Type: application/fhir+json' 
---header 'Prefer: respond-async' 
---header 'X-Amz-Content-Sha256: beaead3198f7da1e70d03ab969765e0821b24fc913697e929e726aeaebf0eba3' 
---header 'X-Amz-Date: 20230826T132701Z' 
+curl --location 'https://healthlake.us-west-2.amazonaws.com/datastore/<datastoreid>/r4/$export?_since=2023-07-18T00%3A00%3A00.461Z'
+--header 'Content-Type: application/fhir+json'
+--header 'Prefer: respond-async'
+--header 'X-Amz-Content-Sha256: beaead3198f7da1e70d03ab969765e0821b24fc913697e929e726aeaebf0eba3'
+--header 'X-Amz-Date: 20230826T132701Z'
 --data '{
     "JobName": "<whatever you want>",
     "OutputDataConfig": {
@@ -142,22 +142,22 @@ curl --location 'https://healthlake.us-west-2.amazonaws.com/datastore/<datastore
 
 I left out the "Authorization" header for obvious reasons. But things to note that are meaningful.
 
--   Header: `Prefer: respond-async`
--   Header: `Content-Type: application/fhir+json`
+- Header: `Prefer: respond-async`
+- Header: `Content-Type: application/fhir+json`
 
 The Payload you pass into the POST request is specific as well. You'll need to supply:
 
--   S3Uri - this is the bucket/key that you want to dump the results. You used this when building your role
--   KmsKeyId - this is the encryption key used for the S3 bucket and the role needs to have this as well
--   DataAccessRoleArn - the role that's built in the above code.
+- S3Uri - this is the bucket/key that you want to dump the results. You used this when building your role
+- KmsKeyId - this is the encryption key used for the S3 bucket and the role needs to have this as well
+- DataAccessRoleArn - the role that's built in the above code.
 
 When you run the request, the following output will be returned.
 
 ```json
 {
-    "datastoreId": "<your datastoreid>",
-    "jobStatus": "SUBMITTED",
-    "jobId": "<jobId>"
+  "datastoreId": "<your datastoreid>",
+  "jobStatus": "SUBMITTED",
+  "jobId": "<jobId>"
 }
 ```
 
@@ -168,8 +168,8 @@ AWS HealthLake exports are async operations. You POST into the API and you get a
 The API provides a GET request that allows you to describe the job you are interrogating.
 
 ```bash
-curl --location 'https://healthlake.us-west-2.amazonaws.com/datastore/<datastoreid>/r4/export/<jobId>' 
---header 'X-Amz-Date: 20230826T134903Z' 
+curl --location 'https://healthlake.us-west-2.amazonaws.com/datastore/<datastoreid>/r4/export/<jobId>'
+--header 'X-Amz-Date: 20230826T134903Z'
 ```
 
 Remember from the previous article, you can only have 1 job running at a time but you can always go back and inspect older jobs. I can't find information around how long the job history hangs around but I generally am not looking back that far so I haven't noticed.
@@ -178,31 +178,31 @@ The response to the describe call is going to look like this:
 
 ```json
 {
-    "exportJobProperties": {
-        "jobId": "<jobId>",
-        "jobName": "2023-07-19 15:06:49 +0000 UTC",
-        "jobStatus": "COMPLETED",
-        "submitTime": "Aug 26, 2023 1:46:56 PM",
-        "endTime": "Aug 26, 2023 1:48:25 PM",
-        "datastoreId": "<datastoreId>",
-        "outputDataConfig": {
-            "s3Configuration": {
-                "s3Uri": "s3://<bucket/key>/<datastoreId>-FHIR_EXPORT-<jobId>/",
-                "kmsKeyId": "arn:aws:kms:us-west-2:<accountId>:key/<keyId>"
-            }
-        },
-        "dataAccessRoleArn": "arn:aws:iam::<accountId>:role/healthlake-cdc-export-role"
+  "exportJobProperties": {
+    "jobId": "<jobId>",
+    "jobName": "2023-07-19 15:06:49 +0000 UTC",
+    "jobStatus": "COMPLETED",
+    "submitTime": "Aug 26, 2023 1:46:56 PM",
+    "endTime": "Aug 26, 2023 1:48:25 PM",
+    "datastoreId": "<datastoreId>",
+    "outputDataConfig": {
+      "s3Configuration": {
+        "s3Uri": "s3://<bucket/key>/<datastoreId>-FHIR_EXPORT-<jobId>/",
+        "kmsKeyId": "arn:aws:kms:us-west-2:<accountId>:key/<keyId>"
+      }
     },
-    "transactionTime": "2023-08-26T13:49:03.424Z",
-    "request": "https://healthlake.us-west-2.amazonaws.com/datastore/<datastoreId>/r4/$export?_type&_since=2023-07-18T00:00:00.461Z&_outputFormat=application/fhir+ndjson",
-    "requiresAccessToken": false,
-    "output": [
-        {
-            "type": "ResourceType",
-            "url": "s3://<bucket/key>/<datastoreId>-FHIR_EXPORT-<jobId>/ResourceType/ResourceType-1022280015944103279-3-0.ndjson"
-        }
-    ],
-    "error": []
+    "dataAccessRoleArn": "arn:aws:iam::<accountId>:role/healthlake-cdc-export-role"
+  },
+  "transactionTime": "2023-08-26T13:49:03.424Z",
+  "request": "https://healthlake.us-west-2.amazonaws.com/datastore/<datastoreId>/r4/$export?_type&_since=2023-07-18T00:00:00.461Z&_outputFormat=application/fhir+ndjson",
+  "requiresAccessToken": false,
+  "output": [
+    {
+      "type": "ResourceType",
+      "url": "s3://<bucket/key>/<datastoreId>-FHIR_EXPORT-<jobId>/ResourceType/ResourceType-1022280015944103279-3-0.ndjson"
+    }
+  ],
+  "error": []
 }
 ```
 

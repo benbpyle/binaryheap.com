@@ -1,7 +1,7 @@
 ---
 title: "My Personal Serverless Rust Developer Experience.  It's Better Than You Think"
 author: "Benjamen Pyle"
-description: "One of the things that can be difficult when starting with a new technology, framework or tool is where to get started. That \"get started\" can mean a great many things to many people. Over the past 6"
+description: 'One of the things that can be difficult when starting with a new technology, framework or tool is where to get started. That "get started" can mean a great many things to many people. Over the past 6'
 pubDatetime: 2024-02-10T00:00:00Z
 tags:
   - aws
@@ -31,13 +31,13 @@ So I want to build a Lambda that handles a user web request. What kinds of tools
 
 The topic of developer experience is highly subjective. However, I tend to group what it's like to perform the following activities during the delivery process.
 
--   Writing the code
-    -   Which IDE
-    -   Project organization
--   Build and debug process
--   Testing locally with close-to-real scenarios
--   Deploying the bundle which could be with Docker, binaries and bundled code
--   Observability falls here too but I addressed that [here](https://binaryheap.com/open-telemetry-and-lambda/)
+- Writing the code
+  - Which IDE
+  - Project organization
+- Build and debug process
+- Testing locally with close-to-real scenarios
+- Deploying the bundle which could be with Docker, binaries and bundled code
+- Observability falls here too but I addressed that [here](https://binaryheap.com/open-telemetry-and-lambda/)
 
 ### Writing the Code
 
@@ -59,10 +59,10 @@ When crafting a solid Serverless Rust Developer Experience, the layout of the pr
 
 When working with Cargo, Cargo Lambda and CDK I like to break my Lambda projects like this:
 
--   Directory for each Lambda function
--   Directory that holds the shared code library
--   Directory for `infra` which is the CDK code
--   One final for test events
+- Directory for each Lambda function
+- Directory that holds the shared code library
+- Directory for `infra` which is the CDK code
+- One final for test events
 
 ![Project Setup](/images/project_org.png)
 
@@ -160,10 +160,10 @@ While Cargo Lambda does have a way to deploy your stack, which I like, I find th
 
 A Serverless Rust Developer Experience can take on many shapes and is often a personal thing. However, the below will be pretty consistent throughout.
 
--   Writing code
--   Building code
--   Testing code
--   Deploying code
+- Writing code
+- Building code
+- Testing code
+- Deploying code
 
 Other things to consider that I didn't mention.
 

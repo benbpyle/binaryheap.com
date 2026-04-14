@@ -16,29 +16,28 @@ Using CDK for building Golang Lambda functions is a super simple process and eas
 
 I've written quite a few articles lately that have CDK with TypeScript examples highlighting the build of Golang-based Lambdas. But it dawned on me that I hadn't shown some of the additional capabilities that the `Construct` exposes. I want to walk through the following set of options.
 
--   Entry point
--   Runtime selected
--   Timeout
--   Function Name
--   Lambda Environment Definition
--   Building Arguments including Build Flags
+- Entry point
+- Runtime selected
+- Timeout
+- Function Name
+- Lambda Environment Definition
+- Building Arguments including Build Flags
 
 An example to walk through for the remainder of this article.
 
 ```typescript
 new GoFunction(scope, "ExampleFuncHandler", {
-    entry: path.join(__dirname, "./example-func"),
-    functionName: "example-func",
-    timeout: Duration.seconds(30),
-    bundling: {
-        goBuildFlags: ['-ldflags "-s -w"'],
-    },
-    environment: {
-        LOG_LEVEL: "INFO",
-        TABLE_NAME: "ExampleTable",
-    },
+  entry: path.join(__dirname, "./example-func"),
+  functionName: "example-func",
+  timeout: Duration.seconds(30),
+  bundling: {
+    goBuildFlags: ['-ldflags "-s -w"'],
+  },
+  environment: {
+    LOG_LEVEL: "INFO",
+    TABLE_NAME: "ExampleTable",
+  },
 });
-
 ```
 
 ### Entry Point
@@ -54,8 +53,8 @@ The entry property on the `GoFunction` tells the construct where to find your `m
 
 Deploying your Golang Lambda functions after the build provides a couple of options when choosing that runtime environment. Personally, the choice comes down to this:
 
--   Do you want to run default?
--   Do you want to have the ability to run [Lambda Extensions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-extensions.html)?
+- Do you want to run default?
+- Do you want to have the ability to run [Lambda Extensions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-extensions.html)?
 
 If the answer to either of those is yes, then just stick with the default runtime that the Construct selects. That is going to be the AL2 (Amazon Linux 2). If you were to pick this from the console, it will be in the Custom Runtime options. Keep in mind, that when using AL2, you will need to keep your binary named `bootstrap`.
 
@@ -93,15 +92,14 @@ A simple Log Level function might look like this
 
 ```typescript
 export const getLogLevel = (stage: StageEnvironment): string => {
-    switch (stage) {
-        case StageEnvironment.DEV:
-        case StageEnvironment.QA:
-            return "debug";
-    }
+  switch (stage) {
+    case StageEnvironment.DEV:
+    case StageEnvironment.QA:
+      return "debug";
+  }
 
-    return "error";
+  return "error";
 };
-
 ```
 
 ### Build Arguments
@@ -128,8 +126,8 @@ With Golang, 'ldflags' stand for Linker Flags and that instructs the Golang buil
 
 These two options should shrink your executable by 20 - 25% which has some impact on the following.
 
--   Smaller the binary, the quicker the launch and cold start
--   Smaller the binary, the less to copy out to S3 during the CI/CD process
+- Smaller the binary, the quicker the launch and cold start
+- Smaller the binary, the less to copy out to S3 during the CI/CD process
 
 ### Wrap Up Building Golang Lambda Functions
 

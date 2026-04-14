@@ -15,20 +15,20 @@ Working with Kubernetes opens a world of possibilities in a software project. Th
 
 However, a limitation of a mesh is that it deals with east/west traffic. That means service to service communication. But what about that critical north/south traffic? The kind that comes from users? Can my mesh provider in [Istio](https://istio.io/) play a role in this as well? And how about pairing with [Amazon's EKS](https://aws.amazon.com/eks/)? Let's get started Building an API Gateway with Istio and EKS!
 
--   [API Gateway](#api-gateway)
-    -   [What is an API Gateway](#what-is-an-api-gateway)
--   [Istio Platform Install](#istio-platform-install)
-    -   [EKS Cluster](#eks-cluster)
-    -   [AWS Gateway Controller](#aws-gateway-controller)
-    -   [Kubernetes Gateway CRDs](#kubernetes-gateway-cr-ds)
-    -   [Installing Istio](#installing-istio)
--   [Deploying Rust Code](#deploying-rust-code)
-    -   [Deploy Service-A](#deploy-service-a)
-    -   [Deploy Service-B](#deploy-service-b)
-    -   [Connecting Service-B to the Gateway](#connecting-service-b-to-the-gateway)
--   [Putting it All Together](#putting-it-all-together)
--   [Cleaning Up](#cleaning-up)
--   [Wrapping Up](#wrapping-up)
+- [API Gateway](#api-gateway)
+  - [What is an API Gateway](#what-is-an-api-gateway)
+- [Istio Platform Install](#istio-platform-install)
+  - [EKS Cluster](#eks-cluster)
+  - [AWS Gateway Controller](#aws-gateway-controller)
+  - [Kubernetes Gateway CRDs](#kubernetes-gateway-cr-ds)
+  - [Installing Istio](#installing-istio)
+- [Deploying Rust Code](#deploying-rust-code)
+  - [Deploy Service-A](#deploy-service-a)
+  - [Deploy Service-B](#deploy-service-b)
+  - [Connecting Service-B to the Gateway](#connecting-service-b-to-the-gateway)
+- [Putting it All Together](#putting-it-all-together)
+- [Cleaning Up](#cleaning-up)
+- [Wrapping Up](#wrapping-up)
 
 ## API Gateway
 
@@ -40,12 +40,12 @@ An API Gateway acts as a reverse proxy, routing external traffic to your interna
 
 Here are key reasons to implement an API Gateway in your Kubernetes setup:
 
--   **Traffic Management**: Centralized control over routing, load balancing, and traffic splitting between different service versions
--   **Security**: Consolidated authentication, authorization, and SSL/TLS termination
--   **Monitoring**: Single point for collecting metrics, logging, and tracing data
--   **API Composition**: Ability to aggregate multiple backend services into a single API
--   **Rate Limiting**: Protection against abuse through request throttling
--   **Protocol Translation**: Converting between different protocols (HTTP/1.1, HTTP/2, gRPC) as needed
+- **Traffic Management**: Centralized control over routing, load balancing, and traffic splitting between different service versions
+- **Security**: Consolidated authentication, authorization, and SSL/TLS termination
+- **Monitoring**: Single point for collecting metrics, logging, and tracing data
+- **API Composition**: Ability to aggregate multiple backend services into a single API
+- **Rate Limiting**: Protection against abuse through request throttling
+- **Protocol Translation**: Converting between different protocols (HTTP/1.1, HTTP/2, gRPC) as needed
 
 ## Istio Platform Install
 
@@ -82,33 +82,33 @@ I've created a shell script that encapsulates some of the tasks that are needed 
 
 ```bash
 # Associate IAM OIDC provider with the cluster
-eksctl utils associate-iam-oidc-provider 
-    --region us-west-2 
-    --cluster sandbox 
+eksctl utils associate-iam-oidc-provider
+    --region us-west-2
+    --cluster sandbox
     --approve
 
 # Download IAM policy for the AWS Load Balancer Controller
 curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.3/docs/install/iam_policy.json
 
 # Create IAM policy using the downloaded policy document
-aws iam create-policy 
-    --policy-name AWSLoadBalancerControllerIAMPolicy 
+aws iam create-policy
+    --policy-name AWSLoadBalancerControllerIAMPolicy
     --policy-document file://iam-policy.json
 
 # Create service account and attach IAM policy
-eksctl create iamserviceaccount 
---cluster=sandbox 
---namespace=kube-system 
---name=aws-load-balancer-controller 
---attach-policy-arn=arn:aws:iam::252703795646:policy/AWSLoadBalancerControllerIAMPolicy 
---override-existing-serviceaccounts 
---region us-west-2 
+eksctl create iamserviceaccount
+--cluster=sandbox
+--namespace=kube-system
+--name=aws-load-balancer-controller
+--attach-policy-arn=arn:aws:iam::252703795646:policy/AWSLoadBalancerControllerIAMPolicy
+--override-existing-serviceaccounts
+--region us-west-2
 --approve
 
 # Add AWS EKS Helm repository
 helm repo add eks https://aws.github.io/x-charts
 
-# Apply AWS Load Balancer Controller CRDs 
+# Apply AWS Load Balancer Controller CRDs
 kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/crds?ref=master"
 
 # Install AWS Load Balancer Controller using Helm
@@ -143,8 +143,8 @@ kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || { kubectl kus
 I need to get Istio installed and into my cluster if I want to have it  
 control my ingress traffic.
 
--   Up first, download and unzip the [Istio binaries](https://istio.io/latest/docs/setup/getting-started/#download)
--   Run the `istioctl` command.
+- Up first, download and unzip the [Istio binaries](https://istio.io/latest/docs/setup/getting-started/#download)
+- Run the `istioctl` command.
 
 ```bash
 # sets up some namespaces
@@ -156,13 +156,13 @@ istioctl install -f kubernetes/istio/istio-installation.yaml
 
 Let's recap so far!
 
--   ✓ Created an EKS cluster with managed node groups using eksctl
--   ✓ Associated IAM OIDC provider with the cluster
--   ✓ Created and attached IAM policy for AWS Load Balancer Controller
--   ✓ Installed AWS Load Balancer Controller via Helm
--   ✓ Added Kubernetes Gateway CRDs
--   ✓ Downloaded and installed Istio using istioctl
--   ✓ Configured Istio with custom installation settings
+- ✓ Created an EKS cluster with managed node groups using eksctl
+- ✓ Associated IAM OIDC provider with the cluster
+- ✓ Created and attached IAM policy for AWS Load Balancer Controller
+- ✓ Installed AWS Load Balancer Controller via Helm
+- ✓ Added Kubernetes Gateway CRDs
+- ✓ Downloaded and installed Istio using istioctl
+- ✓ Configured Istio with custom installation settings
 
 Now onto my application!
 
@@ -183,11 +183,11 @@ kubectl apply -f service-a-service.yaml
 
 I've included a few other Istio resources in this build below.
 
--   Deployment has the pod definition and spec
--   Service is a standard Kubernetes resource that sets up the port
--   DestinationRule is where I'm building some outlier configuration. I'll  
-    address this in a future article where I talk about Service Mesh Circuit  
-    Breaking
+- Deployment has the pod definition and spec
+- Service is a standard Kubernetes resource that sets up the port
+- DestinationRule is where I'm building some outlier configuration. I'll  
+  address this in a future article where I talk about Service Mesh Circuit  
+  Breaking
 
 ```yaml
 apiVersion: apps/v1
@@ -267,7 +267,6 @@ spec:
       baseEjectionTime: 30s
       maxEjectionPercent: 100
       minHealthPercent: 50
-
 ```
 
 ### Deploy Service-B

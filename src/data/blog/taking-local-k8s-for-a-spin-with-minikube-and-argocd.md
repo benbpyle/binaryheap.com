@@ -19,9 +19,9 @@ To quickly define what is K8s if you haven't used it, here's the definition stra
 
 My intention in this article is to just scratch the surface of a local K8s setup using the following:
 
--   [Minikube](https://minikube.sigs.k8s.io/docsv/)
--   [ArgoCD](https://argo-cd.readthedocs.io/en/stable/)
--   A couple of services I wrote using Rust and Axum that are deployed with [Helm](https://helm.sh)
+- [Minikube](https://minikube.sigs.k8s.io/docsv/)
+- [ArgoCD](https://argo-cd.readthedocs.io/en/stable/)
+- A couple of services I wrote using Rust and Axum that are deployed with [Helm](https://helm.sh)
 
 This article will just scratch the surface of some of these technologies but I plan to dig further into them as the months go by.
 
@@ -57,7 +57,7 @@ A quick aside as I mentioned the default namespace above. In K8s you can define 
 For this working sample, I created a namespace to run the 2 services that I'm going to launch.
 
 ```bash
-kubectl create namespace payload-changer  
+kubectl create namespace payload-changer
 ```
 
 ## Deploying some Code
@@ -70,8 +70,8 @@ Instead of basic YAML, I'm going to be leveraging [Helm](https://helm.sh) for re
 
 For the balance of the article, I'm going to be working with two Rust services that leverage the Axum framework. These are similar to the services I wrote about [here](https://binaryheap.com/ecs-serviceconnect-with-cdk/)
 
--   [Rust Service A](https://github.com/benbpyle/argocd-k8s-service-a)
--   [Rust Service B](https://github.com/benbpyle/argocd-k8s-service-b)
+- [Rust Service A](https://github.com/benbpyle/argocd-k8s-service-a)
+- [Rust Service B](https://github.com/benbpyle/argocd-k8s-service-b)
 
 ## ArgoCD Launch and Run
 
@@ -114,18 +114,18 @@ Note the `path infra` in there. If you explore the repositories you'll notice th
 ```bash
 # Add Service A
 
-argocd app create service-a 
---repo https://github.com/benbpyle/argocd-k8s-service-a.git 
---path infra 
---dest-server https://kubernetes.default.svc 
+argocd app create service-a
+--repo https://github.com/benbpyle/argocd-k8s-service-a.git
+--path infra
+--dest-server https://kubernetes.default.svc
 --dest-namespace default
 
 # Add Service B
 
-argocd app create service-b 
---repo https://github.com/benbpyle/argocd-k8s-service-b.git 
---path infra 
---dest-server https://kubernetes.default.svc 
+argocd app create service-b
+--repo https://github.com/benbpyle/argocd-k8s-service-b.git
+--path infra
+--dest-server https://kubernetes.default.svc
 --dest-namespace default
 ```
 

@@ -37,29 +37,29 @@ For the balance of this article, I'll be walking through some code that brings a
 
 I want to point out a few things in the below snippet from the `template.yaml`
 
--   Handler: bootstrap - I'm using a single function in this template and while you can change the binary and the output, for my first, I just stuck with the default `bootstrap` binary
--   Architecture: I'm using the arm64 runtime. When doing cross-compiles with x86, I ran into a Core Dump that I traced back to the architecture. I didn't dig too deeply so might be worth exploring, but go Arm and you'll be fine.
--   BuildMethod: rust-cargolambda - This one was new for me but using Cargo Lambda is a dream.
+- Handler: bootstrap - I'm using a single function in this template and while you can change the binary and the output, for my first, I just stuck with the default `bootstrap` binary
+- Architecture: I'm using the arm64 runtime. When doing cross-compiles with x86, I ran into a Core Dump that I traced back to the architecture. I didn't dig too deeply so might be worth exploring, but go Arm and you'll be fine.
+- BuildMethod: rust-cargolambda - This one was new for me but using Cargo Lambda is a dream.
 
 ```yaml
 Resources:
-    SampleFunction:
-        Type: AWS::Serverless::Function
-        Metadata:
-            BuildMethod: rust-cargolambda
-        Properties:
-            FunctionName: sample-rust-function
-            CodeUri: ./ # Points to dir of Cargo.toml
-            Handler: bootstrap # Do not change, as this is the default executable name produced by Cargo Lambda
-            Runtime: provided.al2
-            Architectures:
-                - arm64
-            Events:
-                StreamEvent:
-                    Type: SQS
-                    Properties:
-                        Queue: !GetAtt SourceQueue.Arn
-                        BatchSize: 10
+  SampleFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: rust-cargolambda
+    Properties:
+      FunctionName: sample-rust-function
+      CodeUri: ./ # Points to dir of Cargo.toml
+      Handler: bootstrap # Do not change, as this is the default executable name produced by Cargo Lambda
+      Runtime: provided.al2
+      Architectures:
+        - arm64
+      Events:
+        StreamEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SourceQueue.Arn
+            BatchSize: 10
 ```
 
 ## Cargo Lambda
@@ -92,31 +92,31 @@ My sample event (while make-believe) is compliant with a normal DDB stream recor
 
 ```json
 {
-    "awsRegion": "us-west-2",
-    "dynamodb": {
-        "ApproximateCreationDateTime": 1698684566,
-        "Keys": { "id": { "S": "12345" } },
-        "NewImage": {
-            "id": { "S": "12345" },
-            "name": { "S": "Sample event name" },
-            "description": { "S": "Sample description is here" },
-            "customNote": { "S": "Custom note to test the deserialization" }
-        },
-        "OldImage": {
-            "id": { "S": "12345" },
-            "name": { "S": "Old event name" },
-            "description": { "S": "Old description is here" },
-            "customNote": { "S": "Old custom note to test the deserialization" }
-        },
-        "SequenceNumber": "1085327500000000022289801774",
-        "SizeBytes": 1245,
-        "StreamViewType": "NEW_AND_OLD_IMAGES"
+  "awsRegion": "us-west-2",
+  "dynamodb": {
+    "ApproximateCreationDateTime": 1698684566,
+    "Keys": { "id": { "S": "12345" } },
+    "NewImage": {
+      "id": { "S": "12345" },
+      "name": { "S": "Sample event name" },
+      "description": { "S": "Sample description is here" },
+      "customNote": { "S": "Custom note to test the deserialization" }
     },
-    "eventID": "86bde389b5c7566b6d22295e02514c74",
-    "eventName": "MODIFY",
-    "eventSource": "aws:dynamodb",
-    "eventVersion": "1.1",
-    "eventSourceARN": "arn:aws:dynamodb:us-west-2:123:table/Table/stream/2023-10-30T16:25:48.204"
+    "OldImage": {
+      "id": { "S": "12345" },
+      "name": { "S": "Old event name" },
+      "description": { "S": "Old description is here" },
+      "customNote": { "S": "Old custom note to test the deserialization" }
+    },
+    "SequenceNumber": "1085327500000000022289801774",
+    "SizeBytes": 1245,
+    "StreamViewType": "NEW_AND_OLD_IMAGES"
+  },
+  "eventID": "86bde389b5c7566b6d22295e02514c74",
+  "eventName": "MODIFY",
+  "eventSource": "aws:dynamodb",
+  "eventVersion": "1.1",
+  "eventSourceARN": "arn:aws:dynamodb:us-west-2:123:table/Table/stream/2023-10-30T16:25:48.204"
 }
 ```
 
@@ -139,7 +139,7 @@ pub struct MainModel {
 
 Something that might feel common coming from C# or Java is the ability to annotate code. These annotations are powerful and give you control over how behavior and operations might be applied to your function or struct. In this case, I'm bringing in the `serde` "Serializer/Deserializer" crate which is a framework for doing just what it says.
 
-In Rust, conventions are that variables are named in snake\_case and not camelCase so while this might take some getting used to, SerDe provides a way to enable this transformation. Notice that the struct above matches the shape of the `New_Image` in the DynamoDB Stream Event.
+In Rust, conventions are that variables are named in snake_case and not camelCase so while this might take some getting used to, SerDe provides a way to enable this transformation. Notice that the struct above matches the shape of the `New_Image` in the DynamoDB Stream Event.
 
 ### Main
 
@@ -151,7 +151,7 @@ Another thing to point out is that `async` is a thing in Rust. I'm not going to 
 
 The neatest little detail that I love, is that in my func parameters, I have `LambdaEvent<SqsEventObj<EventRecord>>`. What the LambdaEvent struct will do, is marshall my incoming data into the inner-most templated struct.
 
-In my case, the inner record is part of the lambda\_events crate. These two structs below hold the shape and behavior of my incoming data. Be careful though when working with Lambda Events and the official DDB Crate. If you've worked in other languages before you know that each team owns its libraries and there are some small nuances. The Rust implementation is no different.
+In my case, the inner record is part of the lambda_events crate. These two structs below hold the shape and behavior of my incoming data. Be careful though when working with Lambda Events and the official DDB Crate. If you've worked in other languages before you know that each team owns its libraries and there are some small nuances. The Rust implementation is no different.
 
 ```rust
 use aws_lambda_events::dynamodb::EventRecord;

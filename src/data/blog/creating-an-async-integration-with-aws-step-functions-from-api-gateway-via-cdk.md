@@ -99,47 +99,50 @@ That above Express Workflow is so simple, but it still requires some Typescript 
 With that said, here's how it looks
 
 ```typescript
-import {IFunction} from "aws-cdk-lib/aws-lambda";
-import {Construct} from "constructs";
+import { IFunction } from "aws-cdk-lib/aws-lambda";
+import { Construct } from "constructs";
 import * as sf from "aws-cdk-lib/aws-stepfunctions";
 import * as stepfunctions from "aws-cdk-lib/aws-stepfunctions";
-import {LogLevel} from "aws-cdk-lib/aws-stepfunctions";
-import * as logs from 'aws-cdk-lib/aws-logs';
-import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import { LogLevel } from "aws-cdk-lib/aws-stepfunctions";
+import * as logs from "aws-cdk-lib/aws-logs";
+import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 
 export class StateMachineStack extends Construct {
-    private readonly _stateMachine: sf.StateMachine;
+  private readonly _stateMachine: sf.StateMachine;
 
-    get stateMachine(): sf.StateMachine {
-        return this._stateMachine;
-    }
+  get stateMachine(): sf.StateMachine {
+    return this._stateMachine;
+  }
 
-    constructor(scope: Construct, id: string, oneFunc: IFunction) {
-        super(scope, id);
+  constructor(scope: Construct, id: string, oneFunc: IFunction) {
+    super(scope, id);
 
-        const successState = new stepfunctions.Pass(this, 'SuccessState');
-        let oneFuncInvoke = new tasks.LambdaInvoke(this, 'OneFuncInvoke', {
-            lambdaFunction: oneFunc,
-            comment: 'For the demo',
-            outputPath: '$.Payload'
-        })
+    const successState = new stepfunctions.Pass(this, "SuccessState");
+    let oneFuncInvoke = new tasks.LambdaInvoke(this, "OneFuncInvoke", {
+      lambdaFunction: oneFunc,
+      comment: "For the demo",
+      outputPath: "$.Payload",
+    });
 
-        oneFuncInvoke.next(successState);
-        const logGroup = new logs.LogGroup(this, 'sample-state-machine', {
-            logGroupName: '/aws/vendedlogs/states/sample'
-        });
+    oneFuncInvoke.next(successState);
+    const logGroup = new logs.LogGroup(this, "sample-state-machine", {
+      logGroupName: "/aws/vendedlogs/states/sample",
+    });
 
-        this._stateMachine = new stepfunctions.StateMachine(this, 'MyStateMachine', {
-            definition: oneFuncInvoke,
-            stateMachineType: stepfunctions.StateMachineType.EXPRESS,
-            logs: {
-                level: LogLevel.ALL,
-                destination: logGroup,
-                includeExecutionData: true
-            }
-        });
-
-    }
+    this._stateMachine = new stepfunctions.StateMachine(
+      this,
+      "MyStateMachine",
+      {
+        definition: oneFuncInvoke,
+        stateMachineType: stepfunctions.StateMachineType.EXPRESS,
+        logs: {
+          level: LogLevel.ALL,
+          destination: logGroup,
+          includeExecutionData: true,
+        },
+      }
+    );
+  }
 }
 ```
 
@@ -167,97 +170,101 @@ new CallAwsService(this, 'KinesisPublish', {
 The last step of this is to wire up the API Gateway. For that, we are going to use AWS Service Integrations. There are so many services you can directly call from API Gateway which you can look further into. The main thing to take care of is the resource policy that grants API Gateway to make the operation happen. Remember, don't grant "\*" and don't grant all operations. Just do what you need in order to make that operation happen.
 
 ```typescript
-import {Construct} from "constructs";
-import {StateMachine} from "aws-cdk-lib/aws-stepfunctions";
-import {Effect, Policy, PolicyStatement, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
-import {AwsIntegration, RestApi} from "aws-cdk-lib/aws-apigateway";
+import { Construct } from "constructs";
+import { StateMachine } from "aws-cdk-lib/aws-stepfunctions";
+import {
+  Effect,
+  Policy,
+  PolicyStatement,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
+import { AwsIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 
 export class ApiGatewayConstruct extends Construct {
-    private readonly _api: RestApi;
+  private readonly _api: RestApi;
 
-    constructor(scope: Construct, id: string, stateMachine: StateMachine) {
-        super(scope, id);
+  constructor(scope: Construct, id: string, stateMachine: StateMachine) {
+    super(scope, id);
 
-        this._api = new RestApi(this,
-            'RestApi', {
-                description: 'Sample API',
-                restApiName: 'Sample API',
-                disableExecuteApiEndpoint: false,
-                deployOptions: {
-                    stageName: main,
-                },
-            });
+    this._api = new RestApi(this, "RestApi", {
+      description: "Sample API",
+      restApiName: "Sample API",
+      disableExecuteApiEndpoint: false,
+      deployOptions: {
+        stageName: main,
+      },
+    });
 
-        // Api Gateway Direct Integration
-        const credentialsRole = new Role(this, "StartExecution", {
-            assumedBy: new ServicePrincipal("apigateway.amazonaws.com"),
-        });
+    // Api Gateway Direct Integration
+    const credentialsRole = new Role(this, "StartExecution", {
+      assumedBy: new ServicePrincipal("apigateway.amazonaws.com"),
+    });
 
-        credentialsRole.attachInlinePolicy(
-            new Policy(this, "StartExecutionPolicy", {
-                statements: [
-                    new PolicyStatement({
-                        actions: ["states:StartExecution"],
-                        effect: Effect.ALLOW,
-                        resources: [stateMachine.stateMachineArn],
-                    }),
-                ],
-            })
-        );
+    credentialsRole.attachInlinePolicy(
+      new Policy(this, "StartExecutionPolicy", {
+        statements: [
+          new PolicyStatement({
+            actions: ["states:StartExecution"],
+            effect: Effect.ALLOW,
+            resources: [stateMachine.stateMachineArn],
+          }),
+        ],
+      })
+    );
 
-        this._api.root.addMethod(
-            "POST",
-            new AwsIntegration({
-                service: "states",
-                action: "StartExecution",
-                integrationHttpMethod: "POST",
-                options: {
-                    credentialsRole,
-                    integrationResponses: [
-                        {
-                            statusCode: "200",
-                            responseTemplates: {
-                                "application/json": {"status": "webhook submitted"},
-                            }
-                        },
-                        {
-                            statusCode: "500",
-                            responseTemplates: {
-                                "application/json": {"status": "webhook failed"},
-                            },
-                        }
-                    ],
-                    requestTemplates: {
-                        "application/json": `
+    this._api.root.addMethod(
+      "POST",
+      new AwsIntegration({
+        service: "states",
+        action: "StartExecution",
+        integrationHttpMethod: "POST",
+        options: {
+          credentialsRole,
+          integrationResponses: [
+            {
+              statusCode: "200",
+              responseTemplates: {
+                "application/json": { status: "webhook submitted" },
+              },
+            },
+            {
+              statusCode: "500",
+              responseTemplates: {
+                "application/json": { status: "webhook failed" },
+              },
+            },
+          ],
+          requestTemplates: {
+            "application/json": `
                         #set($input = $input.json('$'))
                          {
                            "input": "$util.escapeJavaScript($input).replaceAll("\\\\'", "'")",
               "stateMachineArn": "${stateMachine.stateMachineArn}"
             }`,
-                    },
-                },
-            }),
-            {
-                methodResponses: [{statusCode: "200"}],
-            }
-        );
-    }
+          },
+        },
+      }),
+      {
+        methodResponses: [{ statusCode: "200" }],
+      }
+    );
+  }
 }
-
 ```
 
 Things to pay attention to.
 
--   AwsIntegration is the class you want to use
--   Look at the
-    -   Service: 'states'. this is the State Machine service
-    -   Action: 'StartExecution'. the operation. Notice the difference in StartSyncExecution. That'll run this operation in sync.
--   Integration responses. You can customize what you return based upon what's return from the States call. You could just as easily return the execution ID among other things
--   The request template
+- AwsIntegration is the class you want to use
+- Look at the
+  - Service: 'states'. this is the State Machine service
+  - Action: 'StartExecution'. the operation. Notice the difference in StartSyncExecution. That'll run this operation in sync.
+- Integration responses. You can customize what you return based upon what's return from the States call. You could just as easily return the execution ID among other things
+- The request template
 
 ```typescript
 requestTemplates: {
-    "application/json": 
+    "application/json":
     `#set($input = $input.json('$'))
      {
           "input": "$util.escapeJavaScript($input).replaceAll("\\\\'", "'")",
@@ -270,8 +277,8 @@ The above blocks transforms the input to API Gateway into the input required for
 
 ```json
 {
-   "input": "<the input>",
-   "stateMachineArn": "<the arn>"
+  "input": "<the input>",
+  "stateMachineArn": "<the arn>"
 }
 ```
 

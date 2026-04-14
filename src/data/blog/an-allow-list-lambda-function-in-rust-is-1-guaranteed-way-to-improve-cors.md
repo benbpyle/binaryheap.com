@@ -109,7 +109,7 @@ async fn function_handler(
 
 Notice that I'm making use of Rust's Option enumeration and the match construct so that I can validate that I've received an allowed value from the origin header. In the case of matching, I can return anything that I want in the response headers. These values are 100% up to your use case.
 
-In the scenario where I'm not finding a match to the allow list, I just return a 400 BAD\_REQUEST.
+In the scenario where I'm not finding a match to the allow list, I just return a 400 BAD_REQUEST.
 
 That's all there is to it. A non-mirrored allow list performed by a Lambda Function in Rust can then be connected to an API Gateway.
 

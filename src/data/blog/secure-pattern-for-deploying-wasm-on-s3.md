@@ -52,14 +52,14 @@ To start deploying WASM on S3, I need to set up a bucket that is geared towards 
 The code to accomplish that looks like this:
 
 ```typescript
-const bucket = new Bucket(this, 'Bucket', {
-    accessControl: BucketAccessControl.PRIVATE,
+const bucket = new Bucket(this, "Bucket", {
+  accessControl: BucketAccessControl.PRIVATE,
 });
 
-new BucketDeployment(this, 'BucketDeployment', {
-    destinationBucket: bucket,
-    sources: [Source.asset('./dist')]
-})
+new BucketDeployment(this, "BucketDeployment", {
+  destinationBucket: bucket,
+  sources: [Source.asset("./dist")],
+});
 ```
 
 What's going on above is that I'm creating a new bucket by "newing" a Bucket construct. And then from that bucket, I'm creating another construct called BucketDeployment and sending two things in.
@@ -76,15 +76,18 @@ There's no magic in any of this. Sure CDK makes it easy to build and package inf
 Creating a CloudFront distribution in front of my S3 bucket gives me the ability to ship my `./dist` output to all of the edge locations that AWS provides and when a user requests access, it'll grab from that edge cache first before reaching out to the S3 origin. Using this technique when deploying WASM on S3 works just like any other static website.
 
 ```typescript
-const originAccessIdentity = new OriginAccessIdentity(this, 'OriginAccessIdentity');
+const originAccessIdentity = new OriginAccessIdentity(
+  this,
+  "OriginAccessIdentity"
+);
 bucket.grantRead(originAccessIdentity);
 
-new Distribution(this, 'Distribution', {
-    defaultRootObject: 'index.html',
-    defaultBehavior: {
+new Distribution(this, "Distribution", {
+  defaultRootObject: "index.html",
+  defaultBehavior: {
     origin: new S3Origin(bucket, { originAccessIdentity }),
-    },
-})
+  },
+});
 ```
 
 Here's what is happening in this code:

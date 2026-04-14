@@ -34,12 +34,12 @@ To build our WebSocket with AWS API Gateway and Serverless, I'm going to use [CD
 
 I'm going to break down the article in this order
 
--   Setting up the DynamoDB Table for the SocketRoster
--   Defining the AWS API Gateway V2
--   [Building Lambdas for handling](https://binaryheap.com/building-serverless-applications-with-aws-handling-events/ "Building Serverless Applications with AWS – Handling Events")
-    -   OnConnect
-    -   OnDisconnect
-    -   Listening to an SQS for changes and Publishing
+- Setting up the DynamoDB Table for the SocketRoster
+- Defining the AWS API Gateway V2
+- [Building Lambdas for handling](https://binaryheap.com/building-serverless-applications-with-aws-handling-events/ "Building Serverless Applications with AWS – Handling Events")
+  - OnConnect
+  - OnDisconnect
+  - Listening to an SQS for changes and Publishing
 
 ### DynamoDB Table
 
@@ -49,31 +49,31 @@ The table is super simple and is set up with a basic partition key and sort key.
 
 ```typescript
 export class TableConstruct extends Construct {
-    private readonly _table: Table;
+  private readonly _table: Table;
 
-    get table(): Table {
-        return this._table;
-    }
+  get table(): Table {
+    return this._table;
+  }
 
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        this._table = new Table(scope, "SocketTable", {
-            billingMode: BillingMode.PAY_PER_REQUEST,
-            removalPolicy: RemovalPolicy.DESTROY,
-            partitionKey: { name: "PK", type: AttributeType.STRING },
-            sortKey: { name: "SK", type: AttributeType.STRING },
-            tableName: `SocketRoster`,
-        });
-    }
+    this._table = new Table(scope, "SocketTable", {
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      removalPolicy: RemovalPolicy.DESTROY,
+      partitionKey: { name: "PK", type: AttributeType.STRING },
+      sortKey: { name: "SK", type: AttributeType.STRING },
+      tableName: `SocketRoster`,
+    });
+  }
 }
 ```
 
 A few things to note.
 
--   The table is set to be destroyed when the stack is destroyed
--   Pay-per-request pricing vs reserved
--   Notice the key that I discussed above
+- The table is set to be destroyed when the stack is destroyed
+- Pay-per-request pricing vs reserved
+- Notice the key that I discussed above
 
 ### AWS API Gateway V2
 
@@ -86,8 +86,8 @@ I don't think most people reach for AWS API Gateway when building a WebSocket. F
 
 To define an AWS API Gateway for building WebSockets, you'll need two additional CDK Packages.
 
--   [WebSocket Integration](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-apigatewayv2-integrations-alpha-readme.html)
--   [AWS API Gateway V2](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-apigatewayv2-alpha-readme.html)
+- [WebSocket Integration](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-apigatewayv2-integrations-alpha-readme.html)
+- [AWS API Gateway V2](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-apigatewayv2-alpha-readme.html)
 
 ```typescript
 import { WebSocketApi, WebSocketStage } from "@aws-cdk/aws-apigatewayv2-alpha";
@@ -98,24 +98,21 @@ The API will be defined like this:
 
 ```typescript
 this._api = new WebSocketApi(this, "RestApi", {
-    description: "Sockets API",
-    apiName: "sockets-api",
-    connectRouteOptions: {
-        integration: new WebSocketLambdaIntegration("ConnectIntegration", f),
-    },
-    disconnectRouteOptions: {
-        integration: new WebSocketLambdaIntegration(
-            "DisConnectIntegration",
-            f2
-        ),
-    },
+  description: "Sockets API",
+  apiName: "sockets-api",
+  connectRouteOptions: {
+    integration: new WebSocketLambdaIntegration("ConnectIntegration", f),
+  },
+  disconnectRouteOptions: {
+    integration: new WebSocketLambdaIntegration("DisConnectIntegration", f2),
+  },
 });
 
 this._api.grantManageConnections(f3);
 new WebSocketStage(this, "SocketStage", {
-    webSocketApi: this._api,
-    stageName: "main",
-    autoDeploy: true,
+  webSocketApi: this._api,
+  stageName: "main",
+  autoDeploy: true,
 });
 ```
 
@@ -129,13 +126,13 @@ When the user or client connects to your WebSocket API you'll have the opportuni
 
 ```typescript
 const f = new GoFunction(scope, "SocketConnectFunction", {
-    entry: "src/socket-connect",
-    functionName: `socket-connect`,
-    timeout: Duration.seconds(15),
-    environment: {
-        IS_LOCAL: "false",
-        LOG_LEVEL: "DEBUG",
-    },
+  entry: "src/socket-connect",
+  functionName: `socket-connect`,
+  timeout: Duration.seconds(15),
+  environment: {
+    IS_LOCAL: "false",
+    LOG_LEVEL: "DEBUG",
+  },
 });
 ```
 
@@ -199,13 +196,13 @@ Disconnect in CDK looks just like Connect.
 
 ```typescript
 const f2 = new GoFunction(scope, "SocketDisConnectFunction", {
-    entry: "src/socket-disconnect",
-    functionName: `socket-disconnect`,
-    timeout: Duration.seconds(15),
-    environment: {
-        IS_LOCAL: "false",
-        LOG_LEVEL: "DEBUG",
-    },
+  entry: "src/socket-disconnect",
+  functionName: `socket-disconnect`,
+  timeout: Duration.seconds(15),
+  environment: {
+    IS_LOCAL: "false",
+    LOG_LEVEL: "DEBUG",
+  },
 });
 ```
 
@@ -244,27 +241,27 @@ Building the queue is simple with CDK. I'm also adding a DLQ just for good pract
 
 ```typescript
 export class QueueConstruct extends Construct {
-    private readonly _queue: Queue;
+  private readonly _queue: Queue;
 
-    get queue(): Queue {
-        return this._queue;
-    }
+  get queue(): Queue {
+    return this._queue;
+  }
 
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        const dlq = new Queue(scope, "PublishDLQ", {
-            queueName: "socket-dlq",
-        });
+    const dlq = new Queue(scope, "PublishDLQ", {
+      queueName: "socket-dlq",
+    });
 
-        this._queue = new Queue(scope, "PublishQueue", {
-            queueName: "socket-queue",
-            deadLetterQueue: {
-                queue: dlq,
-                maxReceiveCount: 1,
-            },
-        });
-    }
+    this._queue = new Queue(scope, "PublishQueue", {
+      queueName: "socket-queue",
+      deadLetterQueue: {
+        queue: dlq,
+        maxReceiveCount: 1,
+      },
+    });
+  }
 }
 ```
 
@@ -274,21 +271,21 @@ Now with a queue built, I can develop the Lambda to handle the queue message and
 
 ```typescript
 const f3 = new GoFunction(scope, "SocketPublisher", {
-    entry: "src/socket-publisher",
-    functionName: `socket-stream-publisher`,
-    timeout: Duration.seconds(15),
-    environment: {
-        IS_LOCAL: "false",
-        LOG_LEVEL: "DEBUG",
-        API_ENDPOINT: "<insert endpoint>", // fill in your details
-        REGION: "<insert region>", // fill in your details
-    },
+  entry: "src/socket-publisher",
+  functionName: `socket-stream-publisher`,
+  timeout: Duration.seconds(15),
+  environment: {
+    IS_LOCAL: "false",
+    LOG_LEVEL: "DEBUG",
+    API_ENDPOINT: "<insert endpoint>", // fill in your details
+    REGION: "<insert region>", // fill in your details
+  },
 });
 
 f3.addEventSource(
-    new SqsEventSource(queue, {
-        batchSize: 10,
-    })
+  new SqsEventSource(queue, {
+    batchSize: 10,
+  })
 );
 ```
 

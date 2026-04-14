@@ -35,11 +35,11 @@ phases:
 
 Just lightly touching upon what's in the Rust code, here is what happens when a POST hits the Function.
 
--   Checks for a BODY in the payload
--   Deserializes the JSON body into a Rust struct
--   Verifies the BODY was generated within the last 60 seconds
--   Uses a Secret stored in AWS Secret Manager to HMAC the request and verify the signature
--   Publishes an Event to AWS' EventBridge using the PutEvent API and the AWS Rust SDK
+- Checks for a BODY in the payload
+- Deserializes the JSON body into a Rust struct
+- Verifies the BODY was generated within the last 60 seconds
+- Uses a Secret stored in AWS Secret Manager to HMAC the request and verify the signature
+- Publishes an Event to AWS' EventBridge using the PutEvent API and the AWS Rust SDK
 
 This is a pretty standard set of operations that I typically put in a Lambda. Again, it's just a Function or an Event handler. It shouldn't be huge. [Here's a deep link](https://github.com/momentohq/topics-eventbridge-integration/blob/main/src/main.rs) to the source code.
 

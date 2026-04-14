@@ -14,8 +14,8 @@ draft: false
 So there are a couple of interesting topics in here.
 
 1.  I've been really leaning into code-less workflows with AWS Step Functions and this State Machine has nothing but native SDK integrations which include
-    -   DynamoDB (Put, Delete, Get)
-    -   Cognito/User Pools (AdminCreateUser)
+    - DynamoDB (Put, Delete, Get)
+    - Cognito/User Pools (AdminCreateUser)
 2.  I've run into some legacy code that requires a Username to be a bigint and I don't want to use an RDBMS so I'm using DynamoDB to generate one for me while also being "race condition" proof
 
 As always, if you want to jump straight to the code, here is the [Github repository](https://github.com/benbpyle/cdk-user-creation-auto-id)
@@ -59,30 +59,30 @@ The sole purpose of this `getItem` is to fetch the `LastId` from the table so it
 
 ```typescript
 buildFindLastId = (t: ITable): CallAwsService => {
-    return new CallAwsService(this, 'FindLastId', {
-        action: "getItem",
-        iamResources: [t.tableArn],
-        parameters: {
-            TableName: t.tableName,
-            ConsistentRead: true,
-            Key: {
-                PK: {
-                    S: "USERMETADATA"
-                },
-                SK: {
-                    S: "USERMETADATA"
-                }
-            }
+  return new CallAwsService(this, "FindLastId", {
+    action: "getItem",
+    iamResources: [t.tableArn],
+    parameters: {
+      TableName: t.tableName,
+      ConsistentRead: true,
+      Key: {
+        PK: {
+          S: "USERMETADATA",
         },
-        service: "dynamodb",
-        resultSelector: {
-            "previousUserId.$": "$.Item.LastId.N",
-            "userId.$": "States.Format('{}', States.MathAdd(States.StringToJson($.Item.LastId.N), 1))"
+        SK: {
+          S: "USERMETADATA",
         },
-        resultPath: "$.context"
-    });
-}
-
+      },
+    },
+    service: "dynamodb",
+    resultSelector: {
+      "previousUserId.$": "$.Item.LastId.N",
+      "userId.$":
+        "States.Format('{}', States.MathAdd(States.StringToJson($.Item.LastId.N), 1))",
+    },
+    resultPath: "$.context",
+  });
+};
 ```
 
 ### Creating the DynamoDB User
@@ -96,68 +96,66 @@ A couple of things to note
 
 ```typescript
 buildCreateDynamoDBUser = (t: ITable): CallAwsService => {
-    return new CallAwsService(this, 'CreateDynamoDBUser', {
-        action: "transactWriteItems",
-        iamResources: [t.tableArn],
-        parameters: {
-            "TransactItems": [
-                {
-                    "Put": {
-                        "Item": {
-                            PK: {
-                                "S.$": "States.Format('USERPROFILE#{}', $.context.userId)"
-                            },
-                            SK: {
-                                "S.$": "States.Format('USERPROFILE#{}', $.context.userId)"
-                            },
-                            FirstName: {
-                                "S.$": "$.firstName"
-                            },
-                            LastName: {
-                                "S.$": "$.lastName"
-                            },
-                            EmailAddress: {
-                                "S.$": "$.emailAddress"
-                            },
-                            PhoneNumber: {
-                                "S.$": "$.phoneNumber"
-                            }
-                        },
-                        "ConditionExpression": "attribute_not_exists(PK)",
-                        "TableName": t.tableName
-                    }
-                },
-                {
-                    "Update": {
-                        "ConditionExpression": "LastId = :previousUserId",
-                        "UpdateExpression": "SET LastId = :newUserId",
-                        "ExpressionAttributeValues": {
-                            ":previousUserId": {
-                                "N.$": "$.context.previousUserId"
-                            },
-                            ":newUserId": {
-                                "N.$": "$.context.userId"
-                            }
-                        },
-                        "Key": {
-                            "PK": {
-                                "S": "USERMETADATA"
-                            },
-                            "SK": {
-                                "S": "USERMETADATA"
-                            }
-                        },
-                        "TableName": t.tableName
-                    }
-                }
-            ]
+  return new CallAwsService(this, "CreateDynamoDBUser", {
+    action: "transactWriteItems",
+    iamResources: [t.tableArn],
+    parameters: {
+      TransactItems: [
+        {
+          Put: {
+            Item: {
+              PK: {
+                "S.$": "States.Format('USERPROFILE#{}', $.context.userId)",
+              },
+              SK: {
+                "S.$": "States.Format('USERPROFILE#{}', $.context.userId)",
+              },
+              FirstName: {
+                "S.$": "$.firstName",
+              },
+              LastName: {
+                "S.$": "$.lastName",
+              },
+              EmailAddress: {
+                "S.$": "$.emailAddress",
+              },
+              PhoneNumber: {
+                "S.$": "$.phoneNumber",
+              },
+            },
+            ConditionExpression: "attribute_not_exists(PK)",
+            TableName: t.tableName,
+          },
         },
-        service: "dynamodb",
-        resultPath: JsonPath.DISCARD,
-
-    });
-}
-
+        {
+          Update: {
+            ConditionExpression: "LastId = :previousUserId",
+            UpdateExpression: "SET LastId = :newUserId",
+            ExpressionAttributeValues: {
+              ":previousUserId": {
+                "N.$": "$.context.previousUserId",
+              },
+              ":newUserId": {
+                "N.$": "$.context.userId",
+              },
+            },
+            Key: {
+              PK: {
+                S: "USERMETADATA",
+              },
+              SK: {
+                S: "USERMETADATA",
+              },
+            },
+            TableName: t.tableName,
+          },
+        },
+      ],
+    },
+    service: "dynamodb",
+    resultPath: JsonPath.DISCARD,
+  });
+};
 ```
 
 So I think I might guess what you are thinking. That's a lot of code and Javascript/Typescript to make that API call happen. And I'd argue actually it's far less code than trying to do this with a Lambda. And it's cheaper as well because I'm not wasting the step of starting up a Lambda and incurring the execution cost to only run an API call. Not to mention, I'm not paying for nor waiting for a Cold Start to happen. Sure, they aren't much these days, but they aren't nothing either.
@@ -172,27 +170,26 @@ The moment of truth has come. I've got the latest ID, created a new user in a ta
 
 ```typescript
 buildCreateCognitoUser = (u: IUserPool): CallAwsService => {
-    return new CallAwsService(this, 'CreateCognitoUser', {
-        action: "adminCreateUser",
-        iamResources: [u.userPoolArn],
-        parameters: {
-            "UserPoolId": u.userPoolId,
-            "Username.$": "$.context.userId",
-            "UserAttributes": [
-                {
-                    "Name": "email",
-                    "Value.$": "$.emailAddress"
-                },
-                {
-                    "Name": "email_verified",
-                    "Value": "true"
-                }
-            ]
+  return new CallAwsService(this, "CreateCognitoUser", {
+    action: "adminCreateUser",
+    iamResources: [u.userPoolArn],
+    parameters: {
+      UserPoolId: u.userPoolId,
+      "Username.$": "$.context.userId",
+      UserAttributes: [
+        {
+          Name: "email",
+          "Value.$": "$.emailAddress",
         },
-        service: "cognitoidentityprovider",
-    });
-}
-
+        {
+          Name: "email_verified",
+          Value: "true",
+        },
+      ],
+    },
+    service: "cognitoidentityprovider",
+  });
+};
 ```
 
 This part is really simple. Take the input from above and call the Cognito `adminCreateUser` API call and you will magically get a new user that is email verified that requires a force password change. Additionally like I mentioned, you'll be able to customize those [JWT Claims from the data in the table.](https://binaryheap.com/w6t7)
@@ -239,26 +236,25 @@ And in the rollback, I'm simply cleaning up.
 
 ```typescript
 buildRollbackUser = (t: ITable): CallAwsService => {
-    return new CallAwsService(this, 'RollbackUser', {
-        action: "deleteItem",
-        iamResources: [t.tableArn],
-        parameters: {
-            "TableName": t.tableName,
-            "Key": {
-                "PK": {
-                    "S.$": "States.Format('USERPROFILE#{}', $.context.userId)"
-                },
-                "SK": {
-                    "S.$": "States.Format('USERPROFILE#{}', $.context.userId)"
-                }
-            }
+  return new CallAwsService(this, "RollbackUser", {
+    action: "deleteItem",
+    iamResources: [t.tableArn],
+    parameters: {
+      TableName: t.tableName,
+      Key: {
+        PK: {
+          "S.$": "States.Format('USERPROFILE#{}', $.context.userId)",
         },
+        SK: {
+          "S.$": "States.Format('USERPROFILE#{}', $.context.userId)",
+        },
+      },
+    },
 
-        resultPath: "$.results",
-        service: "dynamodb",
-    });
-}
-
+    resultPath: "$.results",
+    service: "dynamodb",
+  });
+};
 ```
 
 ## Wrapping Up

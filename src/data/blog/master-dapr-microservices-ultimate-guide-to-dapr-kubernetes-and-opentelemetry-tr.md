@@ -19,28 +19,28 @@ This is an excellent foundation for adaptability as you can leverage numerous op
 
 In this ultimate guide, you'll master **distributed tracing with OpenTelemetry**, implement production-ready **Dapr microservices on Kubernetes**, and achieve comprehensive **observability with Datadog**. Let's dive deep into building resilient, traceable microservices!
 
--   [Solution Architecture](#solution-architecture)
--   [Complete Implementation Walkthrough](#complete-implementation-walkthrough)
-    -   [Building the Production-Ready EKS Cluster](#building-the-production-ready-eks-cluster)
-    -   [Implementing Enterprise Observability with Datadog](#implementing-enterprise-observability-with-datadog)
-    -   [Implementing Dapr for Distributed Microservices](#implementing-dapr-for-distributed-microservices)
-    -   [Building Production Microservices with NestJS and Dapr](#building-production-microservices-with-nest-js-and-dapr)
-        -   [Deploying Microservices to Kubernetes](#deploying-microservices-to-kubernetes)
-        -   [Deep Dive: NestJS Microservices with Dapr SDK](#deep-dive-nest-js-microservices-with-dapr-sdk)
-    -   [Load Testing and Distributed Tracing Validation](#load-testing-and-distributed-tracing-validation)
-    -   [Comprehensive Observability: Dapr Dashboard and Datadog APM Analysis](#comprehensive-observability-dapr-dashboard-and-datadog-apm-analysis)
-        -   [Dapr Dashboard: Service Management and Monitoring](#dapr-dashboard-service-management-and-monitoring)
-            -   [Dapr Services Overview](#dapr-services-overview)
-            -   [Individual Service Monitoring](#individual-service-monitoring)
-            -   [Datadog APM: Enterprise-Grade Service Monitoring](#datadog-apm-enterprise-grade-service-monitoring)
-            -   [Distributed Trace Performance Analysis](#distributed-trace-performance-analysis)
-            -   [Individual Trace Investigation](#individual-trace-investigation)
-            -   [Deep Trace Analysis: Spans and Performance Insights](#deep-trace-analysis-spans-and-performance-insights)
-            -   [Dapr-Generated Observability Insights](#dapr-generated-observability-insights)
--   [Expert Insights and Advanced Microservices Patterns](#expert-insights-and-advanced-microservices-patterns)
-    -   [Future Advanced Patterns](#future-advanced-patterns)
--   [Key Takeaways: Mastering Modern Microservices Architecture](#key-takeaways-mastering-modern-microservices-architecture)
-    -   [Resource Management](#resource-management)
+- [Solution Architecture](#solution-architecture)
+- [Complete Implementation Walkthrough](#complete-implementation-walkthrough)
+  - [Building the Production-Ready EKS Cluster](#building-the-production-ready-eks-cluster)
+  - [Implementing Enterprise Observability with Datadog](#implementing-enterprise-observability-with-datadog)
+  - [Implementing Dapr for Distributed Microservices](#implementing-dapr-for-distributed-microservices)
+  - [Building Production Microservices with NestJS and Dapr](#building-production-microservices-with-nest-js-and-dapr)
+    - [Deploying Microservices to Kubernetes](#deploying-microservices-to-kubernetes)
+    - [Deep Dive: NestJS Microservices with Dapr SDK](#deep-dive-nest-js-microservices-with-dapr-sdk)
+  - [Load Testing and Distributed Tracing Validation](#load-testing-and-distributed-tracing-validation)
+  - [Comprehensive Observability: Dapr Dashboard and Datadog APM Analysis](#comprehensive-observability-dapr-dashboard-and-datadog-apm-analysis)
+    - [Dapr Dashboard: Service Management and Monitoring](#dapr-dashboard-service-management-and-monitoring)
+      - [Dapr Services Overview](#dapr-services-overview)
+      - [Individual Service Monitoring](#individual-service-monitoring)
+      - [Datadog APM: Enterprise-Grade Service Monitoring](#datadog-apm-enterprise-grade-service-monitoring)
+      - [Distributed Trace Performance Analysis](#distributed-trace-performance-analysis)
+      - [Individual Trace Investigation](#individual-trace-investigation)
+      - [Deep Trace Analysis: Spans and Performance Insights](#deep-trace-analysis-spans-and-performance-insights)
+      - [Dapr-Generated Observability Insights](#dapr-generated-observability-insights)
+- [Expert Insights and Advanced Microservices Patterns](#expert-insights-and-advanced-microservices-patterns)
+  - [Future Advanced Patterns](#future-advanced-patterns)
+- [Key Takeaways: Mastering Modern Microservices Architecture](#key-takeaways-mastering-modern-microservices-architecture)
+  - [Resource Management](#resource-management)
 
 ## Solution Architecture
 
@@ -116,9 +116,9 @@ helm install datadog-operator datadog/datadog-operator -n datadog-operator
 
 # Create Datadog secret from environment variable and apply agent
 export DATADOG_API_KEY='your-datadog-api-key-here'
-kubectl create secret generic datadog-secret 
-    --from-literal=api-key="$DATADOG_API_KEY" 
-    -n datadog-operator 
+kubectl create secret generic datadog-secret
+    --from-literal=api-key="$DATADOG_API_KEY"
+    -n datadog-operator
     --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply -f kubernetes/datadog/datadog-agent.yaml
 ```
@@ -198,11 +198,11 @@ This technology choice demonstrates **Dapr's language-agnostic nature** - while 
 
 This **microservices implementation** demonstrates several powerful patterns:
 
--   **2 containerized NestJS services** optimized for Kubernetes deployment
--   A **Comms service** that handles incoming requests and orchestrates calls to the **Greeter service**
--   **Service-to-service communication through the Dapr SDK** - showcasing the ports and adapters (hexagonal architecture) pattern
--   **Automatic distributed tracing via OpenTelemetry** that flows to **Datadog** without requiring OTel dependencies in application code
--   **Zero-code observability** - traces are automatically generated and propagated by the **Dapr sidecar**
+- **2 containerized NestJS services** optimized for Kubernetes deployment
+- A **Comms service** that handles incoming requests and orchestrates calls to the **Greeter service**
+- **Service-to-service communication through the Dapr SDK** - showcasing the ports and adapters (hexagonal architecture) pattern
+- **Automatic distributed tracing via OpenTelemetry** that flows to **Datadog** without requiring OTel dependencies in application code
+- **Zero-code observability** - traces are automatically generated and propagated by the **Dapr sidecar**
 
 This architecture delivers enterprise-grade **microservices observability** with minimal developer overhead!
 
@@ -305,7 +305,6 @@ Excellent! Our **Dapr microservices** are now running successfully:
 
 ![Kubernetes pods showing Dapr sidecar containers running alongside NestJS microservices](/images/pods-1024x767.png)
 
-  
 _Each pod contains both the NestJS application container and the Dapr sidecar, enabling distributed communication and automatic tracing_
 
 #### Deep Dive: NestJS Microservices with Dapr SDK
@@ -376,12 +375,11 @@ const requestBody = { name };
 // Use Dapr Client for service invocation
 // This automatically handles W3C trace context propagation
 const response = await this.daprClient.invoker.invoke(
-    'greeter',        // App ID of the target service
-    'greet',          // Method name
-    HttpMethod.POST,  // HTTP method
-    requestBody       // Request body
+  "greeter", // App ID of the target service
+  "greet", // Method name
+  HttpMethod.POST, // HTTP method
+  requestBody // Request body
 );
-
 ```
 
 ### Load Testing and Distributed Tracing Validation
@@ -395,10 +393,10 @@ kubectl port-forward -n dapr-services svc/comms-service 8080:80
 Now let's generate **distributed trace data** with concurrent requests:
 
 ```bash
-seq 1 100 | xargs -n1 -P10 -I{} sh -c 'curl -s 
-    --location "http://localhost:8080/greet" 
-    --header "Content-Type: application/json" 
-    --data "{"name": "Benjamen{}"}" | json_pp; 
+seq 1 100 | xargs -n1 -P10 -I{} sh -c 'curl -s
+    --location "http://localhost:8080/greet"
+    --header "Content-Type: application/json"
+    --data "{"name": "Benjamen{}"}" | json_pp;
     echo "--- Request {} ---"'
 ```
 
@@ -418,7 +416,6 @@ The **Dapr Dashboard overview** displays all registered **microservices** in our
 
 ![Dapr Dashboard showing all registered microservices and their health status](/images/dapr_overview-1024x475.png)
 
-  
 _Dapr Dashboard overview displaying the comms and greeter microservices with their current status and configuration_
 
 ##### Individual Service Monitoring
@@ -483,10 +480,10 @@ This implementation demonstrates **Dapr functioning as an intelligent service me
 
 My next exploration will focus on **event-driven microservices** using **Dapr Pub/Sub with AWS SQS**, combined with **KEDA autoscaling**. This pattern would deliver:
 
--   **Message queue abstraction** through Dapr's pub/sub components
--   **Dynamic scaling** based on queue depth via KEDA
--   **Vendor-agnostic messaging** with easy queue implementation swapping
--   **Zero-code observability** for async message processing
+- **Message queue abstraction** through Dapr's pub/sub components
+- **Dynamic scaling** based on queue depth via KEDA
+- **Vendor-agnostic messaging** with easy queue implementation swapping
+- **Zero-code observability** for async message processing
 
 This builds upon patterns I've explored in my [KEDA scaling articles](https://binaryheap.com), creating truly **cloud-native microservices architectures**.
 
@@ -494,11 +491,11 @@ This builds upon patterns I've explored in my [KEDA scaling articles](https://bi
 
 Congratulations on completing this **comprehensive guide to Dapr microservices on Kubernetes**! You've mastered:
 
--   **Production-ready EKS cluster** setup with optimal configurations
--   **Enterprise observability** with Datadog and OpenTelemetry integration
--   **Dapr microservices patterns** with automatic distributed tracing
--   **Zero-code observability** implementation across service boundaries
--   **Ports and adapters architecture** for truly adaptable systems
+- **Production-ready EKS cluster** setup with optimal configurations
+- **Enterprise observability** with Datadog and OpenTelemetry integration
+- **Dapr microservices patterns** with automatic distributed tracing
+- **Zero-code observability** implementation across service boundaries
+- **Ports and adapters architecture** for truly adaptable systems
 
 Integrating **Dapr into your Kubernetes deployments** unlocks unprecedented **adaptability and observability** for modern **distributed applications**. This foundation enables you to build **scalable, resilient microservices** that adapt to changing business requirements.
 

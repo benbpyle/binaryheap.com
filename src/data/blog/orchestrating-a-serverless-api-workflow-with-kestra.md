@@ -21,21 +21,21 @@ This is exactly what Kestra was designed to do! And what they are currently work
 
 As a developer, I'm going to demonstrate an example of just how to do that with AWS, Lambda, DynamoDB, and Kestra.
 
--   [Disclosure](#disclosure)
--   [Solution Overview](#solution-overview)
--   [Solution Components](#solution-components)
-    -   [POST Operation](#post-operation)
-    -   [Query DynamoDB](#query-dynamo-db)
-    -   [Invoking a Lambda](#invoking-a-lambda)
--   [Kestra Control Plane](#kestra-control-plane)
-    -   [Metrics](#metrics)
-    -   [Executions](#executions)
-    -   [Logs](#logs)
-    -   [Editor](#editor)
--   [Final Thoughts](#final-thoughts)
-    -   [The Good](#the-good)
-    -   [Looking Forward To](#looking-forward-to)
--   [Wrapping Up](#wrapping-up)
+- [Disclosure](#disclosure)
+- [Solution Overview](#solution-overview)
+- [Solution Components](#solution-components)
+  - [POST Operation](#post-operation)
+  - [Query DynamoDB](#query-dynamo-db)
+  - [Invoking a Lambda](#invoking-a-lambda)
+- [Kestra Control Plane](#kestra-control-plane)
+  - [Metrics](#metrics)
+  - [Executions](#executions)
+  - [Logs](#logs)
+  - [Editor](#editor)
+- [Final Thoughts](#final-thoughts)
+  - [The Good](#the-good)
+  - [Looking Forward To](#looking-forward-to)
+- [Wrapping Up](#wrapping-up)
 
 ## Disclosure
 
@@ -101,7 +101,7 @@ inputs:
 tasks:
   - id: post_item
     type: "io.kestra.plugin.core.http.Request"
-    uri: <URL> 
+    uri: <URL>
     method: POST
     contentType: application/json
     body: "{{ inputs.payload }}"
@@ -126,7 +126,7 @@ Below is the Kestra Task for fetching data from DynamoDB. Notice again that the 
   secretKeyId: <SECRET KEY ID>
   region: us-west-2
   key:
-     id: "{{ outputs.post_item.body | jq('.id') | first }}"
+    id: "{{ outputs.post_item.body | jq('.id') | first }}"
 ```
 
 ### Invoking a Lambda
@@ -140,14 +140,14 @@ At this point, you should expect the common task format that includes a `type` a
   type: io.kestra.plugin.aws.lambda.Invoke
   accessKeyId: <ACCESS KEY ID>
   secretKeyId: <SECRET KEY KD>
-  region: us-west-2    
+  region: us-west-2
   functionArn: "<FUNCTION ARN>"
-  functionPayload: 
-      id: "{{ outputs.extract_data.row.id }}"
-      name: "{{ outputs.extract_data.row.name }}"
-      description: "{{ outputs.extract_data.row.description }}"
-      createdTimestamp: "{{ outputs.extract_data.row.created_at }}"
-      updatedTimestamp: "{{ outputs.extract_data.row.updated_at }}"
+  functionPayload:
+    id: "{{ outputs.extract_data.row.id }}"
+    name: "{{ outputs.extract_data.row.name }}"
+    description: "{{ outputs.extract_data.row.description }}"
+    createdTimestamp: "{{ outputs.extract_data.row.created_at }}"
+    updatedTimestamp: "{{ outputs.extract_data.row.updated_at }}"
 ```
 
 Code to update the timestamp.
@@ -165,21 +165,21 @@ To validate the success of my workflow, here are two log statements I'm emitting
 
 ```json
 {
-  "id":"2pH2X871xkhAbcMZ6Tsnoo18oxN",
-  "name":"One",
-  "createdTimestamp":"2024-11-24 00:38:36.833892903 UTC",
-  "description":"Description",
-  "updatedTimestamp":"2024-11-24 00:38:36.833892903 UTC" // <--- Timestamp
+  "id": "2pH2X871xkhAbcMZ6Tsnoo18oxN",
+  "name": "One",
+  "createdTimestamp": "2024-11-24 00:38:36.833892903 UTC",
+  "description": "Description",
+  "updatedTimestamp": "2024-11-24 00:38:36.833892903 UTC" // <--- Timestamp
 }
 ```
 
 ```json
-{ 
-  "id":"2pH2X871xkhAbcMZ6Tsnoo18oxN",
-    "name":"One",
-  "description":"Description",
-  "createdTimestamp":"2024-11-24T00:38:36.833892903Z",
-  "updatedTimestamp":"2024-11-24T00:38:37.749102734Z" // <--- Timestamp Updated
+{
+  "id": "2pH2X871xkhAbcMZ6Tsnoo18oxN",
+  "name": "One",
+  "description": "Description",
+  "createdTimestamp": "2024-11-24T00:38:36.833892903Z",
+  "updatedTimestamp": "2024-11-24T00:38:37.749102734Z" // <--- Timestamp Updated
 }
 ```
 

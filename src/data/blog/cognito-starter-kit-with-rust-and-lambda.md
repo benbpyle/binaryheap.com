@@ -18,15 +18,15 @@ Welcome to the Cognito Starter Kit with a large helping of Rust seasoned with so
 
 I've written a good bit about Cognito in addition to customizing tokens and building authorizers. You can find those articles below:
 
--   [Customizing Access Tokens with Rust](https://binaryheap.com/customize-cognito-access-token-with-rust/)
--   [Customizing ID Tokens with Go](https://binaryheap.com/extending-and-customizing-the-jwt-from-cognito-via-aws-lambda-using-go/)
--   [API Gateway Lambda Authorizer with Go](https://binaryheap.com/custom-api-gateway-authorizer-with-golang/)
+- [Customizing Access Tokens with Rust](https://binaryheap.com/customize-cognito-access-token-with-rust/)
+- [Customizing ID Tokens with Go](https://binaryheap.com/extending-and-customizing-the-jwt-from-cognito-via-aws-lambda-using-go/)
+- [API Gateway Lambda Authorizer with Go](https://binaryheap.com/custom-api-gateway-authorizer-with-golang/)
 
 With this Cognito Start Kit, I'm going to walk through building the below components.
 
--   Cognito User Pool with Advanced Security Features
--   A pre-authentication token customization Lambda written in Rust
--   An API Gateway Lambda authorizer written in Rust that verifies the JWT supplied by Cognito
+- Cognito User Pool with Advanced Security Features
+- A pre-authentication token customization Lambda written in Rust
+- An API Gateway Lambda authorizer written in Rust that verifies the JWT supplied by Cognito
 
 ## Cognito User Pool
 
@@ -40,24 +40,24 @@ For a quick point of clarity, when I say L1 construct, I mean the lowest-level c
 
 ```typescript
 const cfnUserPool = new CfnUserPool(this, "CfnUserPool", {
-    userPoolName: `ExampleUserPool`,
-    userPoolAddOns: {
-        advancedSecurityMode: AdvancedSecurityMode.AUDIT,
+  userPoolName: `ExampleUserPool`,
+  userPoolAddOns: {
+    advancedSecurityMode: AdvancedSecurityMode.AUDIT,
+  },
+  lambdaConfig: {
+    // @ts-ignore
+    preTokenGenerationConfig: {
+      lambdaArn: props.function.functionArn,
+      lambdaVersion: "V2_0",
     },
-    lambdaConfig: {
-        // @ts-ignore
-        preTokenGenerationConfig: {
-            lambdaArn: props.function.functionArn,
-            lambdaVersion: "V2_0",
-        },
-    },
-    policies: {},
+  },
+  policies: {},
 });
 ```
 
 The main 2 things to point out are that I'm enabling the advanced security mode to be able to customize the access token. As a fair word of warning, doing this will incur costs even below the 50,000-user free tier for non-advanced setups.
 
-The second thing is to assign the token customizing Lambda to the configuration. And then to set the `lambdaVerision` to "V2\_0" which enables that advanced payload.
+The second thing is to assign the token customizing Lambda to the configuration. And then to set the `lambdaVerision` to "V2_0" which enables that advanced payload.
 
 Here's a small tip that I picked up from a GitHub discussion. There's nothing that says you can't convert that L1 INTO an L2 and then work with the higher-level API if you want to. Here's how I'm doing that for futher property settings. Pretty neat trick.
 
@@ -76,14 +76,14 @@ Nothing fancy with this setup. A pay-per-request table with just a partition key
 ```typescript
 // dynamodb table
 this._table = new dynamodb.Table(this, id, {
-    billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-    removalPolicy: cdk.RemovalPolicy.DESTROY,
-    partitionKey: {
-        name: "id",
-        type: dynamodb.AttributeType.STRING,
-    },
-    tableName: `SampleUserCustomized`,
-    encryption: dynamodb.TableEncryption.AWS_MANAGED,
+  billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+  removalPolicy: cdk.RemovalPolicy.DESTROY,
+  partitionKey: {
+    name: "id",
+    type: dynamodb.AttributeType.STRING,
+  },
+  tableName: `SampleUserCustomized`,
+  encryption: dynamodb.TableEncryption.AWS_MANAGED,
 });
 ```
 
@@ -99,12 +99,12 @@ Here's a quick peek at the record.
 
 ```json
 {
-    "id": "USER#ben",
-    "user_id": "ben",
-    "first_name": "Ben",
-    "last_name": "Pyle",
-    "interesting_value": "Golf",
-    "entity_type": "User"
+  "id": "USER#ben",
+  "user_id": "ben",
+  "first_name": "Ben",
+  "last_name": "Pyle",
+  "interesting_value": "Golf",
+  "entity_type": "User"
 }
 ```
 
@@ -303,9 +303,9 @@ With the Rust and Lambda handler in place, when a user logs in and authenticates
 
 ![Cognito Start Kit ID Token](/images/id_token_customized.png)
 
-Note the first\_name and last\_name claims that were added in the code.
+Note the first_name and last_name claims that were added in the code.
 
-And the same thing holds for the access token. Look in the image for the interesting\_value claim that should say Golf.
+And the same thing holds for the access token. Look in the image for the interesting_value claim that should say Golf.
 
 **Access Token**
 

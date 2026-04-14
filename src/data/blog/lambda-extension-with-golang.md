@@ -172,9 +172,9 @@ This a simple read-through cache example but again, shows the power of abstracti
 
 As I mentioned, the Web Server is launched in a Go Routine but the main event loop is waiting on "events" from the attached Lambda.
 
--   Invocation
--   Execution
--   Shutdown. etc
+- Invocation
+- Execution
+- Shutdown. etc
 
 ```go
 func main() {
@@ -254,57 +254,55 @@ Here's the TypeScript code for bringing in the layer, defining the Lambda and th
 
 ```typescript
 buildTopLevelResources = (
-    scope: Construct,
-    resource: IResource,
-    table: Table
+  scope: Construct,
+  resource: IResource,
+  table: Table
 ) => {
-    const layer = LayerVersion.fromLayerVersionArn(
-        scope,
-        "CacheLayer",
-        "arn:aws:lambda:::layer::"
-    );
+  const layer = LayerVersion.fromLayerVersionArn(
+    scope,
+    "CacheLayer",
+    "arn:aws:lambda:::layer::"
+  );
 
-    const func = new GoFunction(scope, "SampleFunction", {
-        entry: path.join(__dirname, `../src/sample`),
-        functionName: `lambda-extension-cache-sample`,
-        timeout: Duration.seconds(10),
-        layers: [layer],
-        environment: {
-            IS_LOCAL: "false",
-            LOG_LEVEL: "debug",
-        },
-    });
+  const func = new GoFunction(scope, "SampleFunction", {
+    entry: path.join(__dirname, `../src/sample`),
+    functionName: `lambda-extension-cache-sample`,
+    timeout: Duration.seconds(10),
+    layers: [layer],
+    environment: {
+      IS_LOCAL: "false",
+      LOG_LEVEL: "debug",
+    },
+  });
 
-    resource.addMethod(
-        "GET",
-        new LambdaIntegration(func, {
-            proxy: true,
-        }),
-        {}
-    );
-    table.grantReadData(func);
-    const s = Secret.fromSecretNameV2(this, "Secrets", "");
-    s.grantRead(func);
+  resource.addMethod(
+    "GET",
+    new LambdaIntegration(func, {
+      proxy: true,
+    }),
+    {}
+  );
+  table.grantReadData(func);
+  const s = Secret.fromSecretNameV2(this, "Secrets", "");
+  s.grantRead(func);
 };
-
 ```
 
 I want to walk through a few sections of this.
 
 I haven't shown code before in my articles with layers. Below is how you define one in TypeScript for CDK. You need to give it a "name", and specify the "arn" which includes
 
--   Region
--   AccountId
--   Layer Name
--   Version -- this part matters
+- Region
+- AccountId
+- Layer Name
+- Version -- this part matters
 
 ```typescript
 const layer = LayerVersion.fromLayerVersionArn(
-    scope,
-    "CacheLayer",
-    "arn:aws:lambda:::layer::"
+  scope,
+  "CacheLayer",
+  "arn:aws:lambda:::layer::"
 );
-
 ```
 
 The second part of this block is the granting of access to the AWS Secret that is storing my Momento Token. For more on that process and my previous write-up on using Momento with Golang, [here is an article](https://binaryheap.com/caching-with-momento-and-golang/)
@@ -312,7 +310,6 @@ The second part of this block is the granting of access to the AWS Secret that i
 ```typescript
 const s = Secret.fromSecretNameV2(this, "Secrets", "");
 s.grantRead(func);
-
 ```
 
 #### Leveraging the Layer in Code
@@ -365,11 +362,10 @@ First, let's put a record in the DynamoDB CacheSample table.
 
 ```json
 {
-    "id": "1",
-    "fieldOne": "abc",
-    "fieldTwo": "def"
+  "id": "1",
+  "fieldOne": "abc",
+  "fieldTwo": "def"
 }
-
 ```
 
 Now, let's make the API GET request via curl to run the API.

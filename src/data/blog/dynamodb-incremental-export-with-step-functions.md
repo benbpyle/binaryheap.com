@@ -46,59 +46,59 @@ Triggering the State Machine is super simple when doing it from an EventBridge S
 
 ```typescript
 export class ScheduleConstruct extends Construct {
-    constructor(scope: Construct, id: string, props: ScheduleProps) {
-        super(scope, id);
+  constructor(scope: Construct, id: string, props: ScheduleProps) {
+    super(scope, id);
 
-        const rule = new Rule(scope, "ExportRule", {
-            description: "Runs the DynamoDB Export Process",
-            schedule: Schedule.expression("cron(0/" + 30 + " * * * ? *)"),
-        });
+    const rule = new Rule(scope, "ExportRule", {
+      description: "Runs the DynamoDB Export Process",
+      schedule: Schedule.expression("cron(0/" + 30 + " * * * ? *)"),
+    });
 
-        const dlq = new Queue(this, "RuleDeadLetterQueue", {
-            queueName: "ddb-trigger-dlq",
-        });
+    const dlq = new Queue(this, "RuleDeadLetterQueue", {
+      queueName: "ddb-trigger-dlq",
+    });
 
-        const role = new Role(this, "Role", {
-            assumedBy: new ServicePrincipal("events.amazonaws.com"),
-        });
+    const role = new Role(this, "Role", {
+      assumedBy: new ServicePrincipal("events.amazonaws.com"),
+    });
 
-        rule.addTarget(
-            new SfnStateMachine(props.stateMachine, {
-                deadLetterQueue: dlq,
-                role: role,
-            })
-        );
-    }
+    rule.addTarget(
+      new SfnStateMachine(props.stateMachine, {
+        deadLetterQueue: dlq,
+        role: role,
+      })
+    );
+  }
 }
 ```
 
 At the start of every execution when building an incremental DynamoDB export with Step Functions, the first thing that the state machine does is find the last run in the job table. Once that run has been found, the state machine will proceed to the finished state if there is a job still running. In any other case, it'll move onto
 
--   Getting the last run time
--   Setting the main job record to running
+- Getting the last run time
+- Setting the main job record to running
 
 ```json
 {
-    "Find Last Run": {
-        "Next": "Last Run State",
-        "Type": "Task",
-        "ResultPath": "$.context",
-        "ResultSelector": {
-            "runStatus.$": "$.Item.runStatus.S",
-            "lastRunTime.$": "$.Item.lastRunTime.S",
-            "currentRunTime.$": "$.Execution.StartTime"
-        },
-        "Resource": "arn:aws:states:::dynamodb:getItem",
-        "Parameters": {
-            "Key": {
-                "id": {
-                    "S": "RUN"
-                }
-            },
-            "TableName": "JobExport",
-            "ConsistentRead": true
+  "Find Last Run": {
+    "Next": "Last Run State",
+    "Type": "Task",
+    "ResultPath": "$.context",
+    "ResultSelector": {
+      "runStatus.$": "$.Item.runStatus.S",
+      "lastRunTime.$": "$.Item.lastRunTime.S",
+      "currentRunTime.$": "$.Execution.StartTime"
+    },
+    "Resource": "arn:aws:states:::dynamodb:getItem",
+    "Parameters": {
+      "Key": {
+        "id": {
+          "S": "RUN"
         }
+      },
+      "TableName": "JobExport",
+      "ConsistentRead": true
     }
+  }
 }
 ```
 
@@ -115,21 +115,21 @@ Here is a subset of the State:
 
 ```json
 {
-    "ExportTableToPointInTime": {
-        "Type": "Task",
-        "Next": "Export Status",
-        "Parameters": {
-            "S3Bucket": "<Bucket-Name>",
-            "TableArn": "<Table-Arn>",
-            "ExportFormat": "DYNAMODB_JSON",
-            "ExportType": "INCREMENTAL_EXPORT",
-            "IncrementalExportSpecification": {
-                "ExportFromTime.$": "$.context.lastRunTime",
-                "ExportToTime.$": "$.context.currentRunTime",
-                "ExportViewType": "NEW_IMAGE"
-            }
-        }
+  "ExportTableToPointInTime": {
+    "Type": "Task",
+    "Next": "Export Status",
+    "Parameters": {
+      "S3Bucket": "<Bucket-Name>",
+      "TableArn": "<Table-Arn>",
+      "ExportFormat": "DYNAMODB_JSON",
+      "ExportType": "INCREMENTAL_EXPORT",
+      "IncrementalExportSpecification": {
+        "ExportFromTime.$": "$.context.lastRunTime",
+        "ExportToTime.$": "$.context.currentRunTime",
+        "ExportViewType": "NEW_IMAGE"
+      }
     }
+  }
 }
 ```
 
@@ -154,27 +154,27 @@ The Choice State:
 
 ```json
 {
-    "Export Status": {
-        "Type": "Choice",
-        "Choices": [
-            {
-                "Variable": "$.ExportDescription.ExportStatus",
-                "StringEquals": "IN_PROGRESS",
-                "Next": "Pause To Verify Export"
-            },
-            {
-                "Variable": "$.ExportDescription.ExportStatus",
-                "StringEquals": "FAILED",
-                "Next": "Set Failed"
-            },
-            {
-                "Variable": "$.ExportDescription.ExportStatus",
-                "StringEquals": "COMPLETED",
-                "Next": "Get Triggered Time"
-            }
-        ],
-        "Default": "Get Triggered Time"
-    }
+  "Export Status": {
+    "Type": "Choice",
+    "Choices": [
+      {
+        "Variable": "$.ExportDescription.ExportStatus",
+        "StringEquals": "IN_PROGRESS",
+        "Next": "Pause To Verify Export"
+      },
+      {
+        "Variable": "$.ExportDescription.ExportStatus",
+        "StringEquals": "FAILED",
+        "Next": "Set Failed"
+      },
+      {
+        "Variable": "$.ExportDescription.ExportStatus",
+        "StringEquals": "COMPLETED",
+        "Next": "Get Triggered Time"
+      }
+    ],
+    "Default": "Get Triggered Time"
+  }
 }
 ```
 
@@ -182,25 +182,25 @@ Pause and Describe:
 
 ```json
 {
-    "Pause To Verify Export": {
-        "Type": "Wait",
-        "Seconds": 60,
-        "Next": "DescribeExport"
+  "Pause To Verify Export": {
+    "Type": "Wait",
+    "Seconds": 60,
+    "Next": "DescribeExport"
+  },
+  "DescribeExport": {
+    "Type": "Task",
+    "Next": "Export Status",
+    "Parameters": {
+      "ExportArn.$": "$.ExportDescription.ExportArn"
     },
-    "DescribeExport": {
-        "Type": "Task",
-        "Next": "Export Status",
-        "Parameters": {
-            "ExportArn.$": "$.ExportDescription.ExportArn"
-        },
-        "Resource": "arn:aws:states:::aws-sdk:dynamodb:describeExport",
-        "Catch": [
-            {
-                "ErrorEquals": ["States.ALL"],
-                "Next": "Set Failed"
-            }
-        ]
-    }
+    "Resource": "arn:aws:states:::aws-sdk:dynamodb:describeExport",
+    "Catch": [
+      {
+        "ErrorEquals": ["States.ALL"],
+        "Next": "Set Failed"
+      }
+    ]
+  }
 }
 ```
 

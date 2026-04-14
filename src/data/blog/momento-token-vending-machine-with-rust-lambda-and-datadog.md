@@ -15,19 +15,19 @@ draft: false
 
 Working with browser hosted code (UI) requires a developer to be cautious about exposing secrets and tokens. A less than trustworthy person could take these secrets and do things that the user doesn't intend. And while we are all responsible for our internet usage, token and secrets security from an application standpoint falls squarely on a developer's shoulders. This is why when using [Momento](https://www.gomomento.com/), I like to take advantage of the Authorization API. What the Authorization API allows me to do is create a disposable token from a secure location, so that my UI clients can just refresh them as needed to work with Topics or Caches. Thus, not having the credential leak up into the "easy to see" JavaScript code. Let's dive into a Lambda Function coded in Rust that implements this Token Vending Machine concept with Momento.
 
--   [Article Architecture](#article-architecture)
--   [Implementing a Momento Token Vending Machine with Rust](#implementing-a-momento-token-vending-machine-with-rust)
-    -   [AWS CDK Code](#aws-cdk-code)
-        -   [Adding the Datadog Extension](#adding-the-datadog-extension)
-        -   [Long-Lived API Key](#long-lived-api-key)
-        -   [Cargo Lambda Rust Function](#cargo-lambda-rust-function)
-    -   [Rust Lambda Function](#rust-lambda-function)
-        -   [Main and Initializing](#main-and-initializing)
-        -   [Function Handler](#function-handler)
-        -   [Generating the Disposable Token](#generating-the-disposable-token)
--   [Measuring Performance with Datadog and OpenTelemetry](#measuring-performance-with-datadog-and-open-telemetry)
-    -   [High Level Function Latency](#high-level-function-latency)
-    -   [Breaking it Down Further](#breaking-it-down-further)
+- [Article Architecture](#article-architecture)
+- [Implementing a Momento Token Vending Machine with Rust](#implementing-a-momento-token-vending-machine-with-rust)
+  - [AWS CDK Code](#aws-cdk-code)
+    - [Adding the Datadog Extension](#adding-the-datadog-extension)
+    - [Long-Lived API Key](#long-lived-api-key)
+    - [Cargo Lambda Rust Function](#cargo-lambda-rust-function)
+  - [Rust Lambda Function](#rust-lambda-function)
+    - [Main and Initializing](#main-and-initializing)
+    - [Function Handler](#function-handler)
+    - [Generating the Disposable Token](#generating-the-disposable-token)
+- [Measuring Performance with Datadog and OpenTelemetry](#measuring-performance-with-datadog-and-open-telemetry)
+  - [High Level Function Latency](#high-level-function-latency)
+  - [Breaking it Down Further](#breaking-it-down-further)
 
 ### Article Architecture
 
@@ -37,12 +37,12 @@ I usually like to work backwards to forwards, meaning I establish what I want in
 
 A user's session will need to establish an authenticated and authorized connection to Momento by way of the JavaScript client SDK. Every call to Momento is over an HTTP API request so it's going to get authenticated and authorized. Which is a good thing! However, doing this, requires a token which is what I'll be fetching from the Rust Lambda Function that will be demonstrated throughout the article. The flow goes like this:
 
-1) User requires a token to connect to Momento  
-2) Browser makes a request to an endpoint backed by a Lambda Function  
-3) Rust Lambda Function uses a long-lived and secure API Token that has permissions to create short-lived disposable tokens  
-4) Rust Function uses the Momento SDK to request a token with the supplied Topic and Cache names with scopes to publish and subscribe  
-5) A token is returned from the Lambda Function where the client code can use to subscribe to a Momento topic.  
-6) The token has an expiration timestamp represented as a Unix Epoch so that the client can refresh before the token has a chance to expire
+1. User requires a token to connect to Momento
+2. Browser makes a request to an endpoint backed by a Lambda Function
+3. Rust Lambda Function uses a long-lived and secure API Token that has permissions to create short-lived disposable tokens
+4. Rust Function uses the Momento SDK to request a token with the supplied Topic and Cache names with scopes to publish and subscribe
+5. A token is returned from the Lambda Function where the client code can use to subscribe to a Momento topic.
+6. The token has an expiration timestamp represented as a Unix Epoch so that the client can refresh before the token has a chance to expire
 
 So let's walk through those steps above and explore the implementation.
 
@@ -60,17 +60,16 @@ Here we go! The below is the CDK code that brings the above together.
 
 Pay special attention to the following when adding the Datadog extension.
 
--   Region: I'm using the region my Lambda function is hosted in
--   ARM/x64: I'm picking the chip architecture that my Lambda Function is compiled for.
--   Version: 68 in this case, but `:latest` can also be used.
+- Region: I'm using the region my Lambda function is hosted in
+- ARM/x64: I'm picking the chip architecture that my Lambda Function is compiled for.
+- Version: 68 in this case, but `:latest` can also be used.
 
 ```typescript
 const layer = LayerVersion.fromLayerVersionArn(
   scope,
-  'DatadogExtension',
-  'arn:aws:lambda:us-east-1:464622532012:layer:Datadog-Extension-ARM:68'
-)
-
+  "DatadogExtension",
+  "arn:aws:lambda:us-east-1:464622532012:layer:Datadog-Extension-ARM:68"
+);
 ```
 
 ##### Long-Lived API Key
@@ -78,13 +77,12 @@ const layer = LayerVersion.fromLayerVersionArn(
 I'm going to use a long-lived API key with Momento so that this Lambda Function can make requests without worrying about expiration. This is completely acceptable solution. Think of it like a scoped API key essentially. To set that up, I'm using AWS SecretsManager.
 
 ```typescript
-const secret = new Secret(scope, 'MomentoKeySecret', {
-  secretName: 'MomentoApiKeySecret',
+const secret = new Secret(scope, "MomentoKeySecret", {
+  secretName: "MomentoApiKeySecret",
   secretObjectValue: {
-    momentoSecret: SecretValue.unsafePlainText(process.env.MOMENTO_API_KEY!)
-  }
+    momentoSecret: SecretValue.unsafePlainText(process.env.MOMENTO_API_KEY!),
+  },
 });
-
 ```
 
 ##### Cargo Lambda Rust Function
@@ -93,37 +91,36 @@ Wrapping up the infrastructure components is the definition of the Rust Lambda F
 
 Key things to point out in the `RustFunction` are:
 
--   Architecture: set to ARM because I prefer to run on the AWS Graviton chips
--   Environment:
-    -   Setting RUST\_LOG allows me to control crate log levels (this is a convention)
+- Architecture: set to ARM because I prefer to run on the AWS Graviton chips
+- Environment:
+  - Setting RUST_LOG allows me to control crate log levels (this is a convention)
 
 ```typescript
-const vendingMachine = new RustFunction(scope, 'TokenVendingMachineFunction', {
+const vendingMachine = new RustFunction(scope, "TokenVendingMachineFunction", {
   architecture: Architecture.ARM_64,
   functionName: "momento-token-vending-machine",
   manifestPath: path.join(__dirname, `../../../lambdas/`),
   memorySize: 256,
   environment: {
-    RUST_LOG: 'info',
+    RUST_LOG: "info",
     FUNCTION_NAME: "token-vending-machine",
     DD_API_KEY: process.env.DD_API_KEY!,
     DD_SITE: process.env.DD_SITE!,
-    AGENT_ADDRESS: '127.0.0.1'
+    AGENT_ADDRESS: "127.0.0.1",
   },
-  layers: [layer]
+  layers: [layer],
 });
 
-new FunctionUrl(scope, 'AuthUrl', {
+new FunctionUrl(scope, "AuthUrl", {
   function: vendingMachine,
   authType: FunctionUrlAuthType.NONE,
   cors: {
     allowedOrigins: ["*"],
-    allowedHeaders: ["*"]
-  }
-})
+    allowedHeaders: ["*"],
+  },
+});
 
 secret.grantRead(vendingMachine);
-
 ```
 
 #### Rust Lambda Function
@@ -239,17 +236,17 @@ async fn handler(
 
 The Lambda Function handler does the following.
 
--   Take in the request
--   Parse the body of the request
-    -   Body in the correct format then generate the token
-    -   If not, return a 400 BAD REQUEST
+- Take in the request
+- Parse the body of the request
+  - Body in the correct format then generate the token
+  - If not, return a 400 BAD REQUEST
 
 For the request body, I'm expecting it to look like this.
 
 ```json
 {
-    "cacheName": "SampleCache",
-    "topicName": "SampleTopic"
+  "cacheName": "SampleCache",
+  "topicName": "SampleTopic"
 }
 ```
 

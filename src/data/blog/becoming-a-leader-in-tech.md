@@ -58,17 +58,17 @@ Leadership is nothing more than navigating problems and situations in a relation
 
 Let me first preface this part with, I'm not a trained psychologist or anything closely related to that. However, even without that expertise, you should start doing some self-exploration. Ask for feedback from those around you. That 360-degree view of yourself is invaluable. The types of things I would be seeking are this:
 
--   Do I listen more than I speak?
--   Where do I draw my energy from?
-    -   Being around people
-    -   Cranking out some code
--   When solving problems, do I go step by step or do I like to work backwards from the outcome?
--   How am I under pressure?
--   Am I a delegator or someone who holds onto details?
--   Do I guide people towards answers or do I push for my outcome?
--   How often do I say thank you?
--   Do people trust me with important details?
--   Do I show vulnerability?
+- Do I listen more than I speak?
+- Where do I draw my energy from?
+  - Being around people
+  - Cranking out some code
+- When solving problems, do I go step by step or do I like to work backwards from the outcome?
+- How am I under pressure?
+- Am I a delegator or someone who holds onto details?
+- Do I guide people towards answers or do I push for my outcome?
+- How often do I say thank you?
+- Do people trust me with important details?
+- Do I show vulnerability?
 
 This is just a start. In the absence of fancy tooling, I'd encourage you just to ask those around you some of those questions in addition to asking them of yourself. You should start to get a feel for how you are perceived. And remember, perception is 9/10th of the truth.
 

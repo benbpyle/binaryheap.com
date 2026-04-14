@@ -17,9 +17,9 @@ Agile and Serverless go together like peanut butter and jelly. Ham and eggs. Cof
 
 I tend to view IT Professionals in two camps. Yes, there is a third camp but I find that the third camp is smaller in numbers than the other 2. For clarification, those camps are:
 
--   Old enough to remember Client/Server applications and maybe the Mainframe thus familiar with Waterfall, RUP, early days XP and then later on Scrum and Kanban
--   Those who only know software delivery in the cloud. This means that they probably didn't have to experience much Waterfall and big upfront design delivery.
--   The smallest last group is one that caught the tail end of the client/server and Waterfall boom and probably started working late 2000's and early 2010's.
+- Old enough to remember Client/Server applications and maybe the Mainframe thus familiar with Waterfall, RUP, early days XP and then later on Scrum and Kanban
+- Those who only know software delivery in the cloud. This means that they probably didn't have to experience much Waterfall and big upfront design delivery.
+- The smallest last group is one that caught the tail end of the client/server and Waterfall boom and probably started working late 2000's and early 2010's.
 
 With that context set, the word Agile almost seems synonymous with the SDLC (Software Development Life Cycle). But that wasn't always the case and the industry spent many years working to make that so. On the flip side, Executives and Product leaders spent many years equating Agile with more for less. Better, cheaper, faster.
 
@@ -35,10 +35,10 @@ It's that statement above that I want to focus on in addition to looking at some
 
 12 Principles were written in the Agile Manifesto all those years ago. I am not going to list them all out here, but they [can be found at this link](https://agilemanifesto.org/principles.html). I am going to focus on the 4 that I feel are key when looking at choosing Serverless when building software. They are in no order:
 
--   Our highest priority is to satisfy the customer through early and continuous delivery of valuable software.
--   Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to the shorter timescale.
--   Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done.
--   Simplicity--the art of maximizing the amount of work not done--is essential.
+- Our highest priority is to satisfy the customer through early and continuous delivery of valuable software.
+- Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to the shorter timescale.
+- Build projects around motivated individuals. Give them the environment and support they need, and trust them to get the job done.
+- Simplicity--the art of maximizing the amount of work not done--is essential.
 
 ### Customer Satisfaction
 
@@ -85,7 +85,7 @@ Even beyond the physical nature of the component, simplicity comes in the design
 
 And while keeping things as simple as possible, I am afforded the ability to pivot and adapt.
 
-> Focus first on your people. Make a conscious choice that you want to be Agile and put customer satisfaction first. And then dive into your Serverless development craft. When you join motivated people with a focus on the customer and give them an amazing development experience, magic will happen.  
+> Focus first on your people. Make a conscious choice that you want to be Agile and put customer satisfaction first. And then dive into your Serverless development craft. When you join motivated people with a focus on the customer and give them an amazing development experience, magic will happen.
 
 ## I Believe in Agile and Serverless
 

@@ -18,11 +18,11 @@ This is great if you are building a transactional system. You've got isolation, 
 
 What's the point in having everything in the same place you ask? Simple. Source of truth for:
 
--   Reporting
--   Public APIs
--   Versioning
--   Audits
--   Data Sandbox
+- Reporting
+- Public APIs
+- Versioning
+- Audits
+- Data Sandbox
 
 These are just the tip of the iceberg. When you are working on a big system with lots of data, having a single ingress and egress point is important when you are talking about the above.
 
@@ -32,12 +32,12 @@ Let me be clear, the above can be accomplished without AWS and its plethora of c
 
 Take for instance that this data needs to be stored in FHIR format. Is there a Data Lake that natively does that? How well does it manage versioning and upgrades? Sure, the HAPI FHIR engine is really good and I'd recommend it for a lot of use cases but it's just one part. From my best estimates here are the high-level parts that you must have.
 
--   Data change detection and capture (source systems)
--   Transformation and standardization tools
--   Scalable and highly available data store for transformed data
--   [FHIR](https://fhir.org) capable. This is a big deal with Healthcare data. [CMS](https://www.cms.gov) is pushing hard for organizations to adopt this standard
--   Extensibility - how can the data be used and expanded? Reports, dashboards, analytics, machine learning, and APIs just to name a few.
--   Governance and Security - goes without saying for almost all data, but in Healthcare this is super important
+- Data change detection and capture (source systems)
+- Transformation and standardization tools
+- Scalable and highly available data store for transformed data
+- [FHIR](https://fhir.org) capable. This is a big deal with Healthcare data. [CMS](https://www.cms.gov) is pushing hard for organizations to adopt this standard
+- Extensibility - how can the data be used and expanded? Reports, dashboards, analytics, machine learning, and APIs just to name a few.
+- Governance and Security - goes without saying for almost all data, but in Healthcare this is super important
 
 This isn't an article about alternatives but the above list could easily bring in 6, 8, 10 or even 20 different tools and projects to be accomplished. And not to mention that none of it is managed. Therefore once the architecture and software are built and connected, it will still need to be managed, patched, monitored and everything in between.
 
@@ -61,10 +61,10 @@ I'm going to break down the 4 lanes of this diagram into different sections and 
 
 When you look at the world through a Serverless and Event-Driven set of glasses you start to see everything as an event. This isn't necessarily a bad thing but sources are producers of events. On the left-most column, the diagram highlights the following sources:
 
--   API Gateway - external API events that might come in externally (hopefully in FHIR format as shown)
--   RDS - so many systems have relational data at their core. Nothing at all wrong with it but don't sleep on it, as it can be an EDA source
--   DynamoDB - in the AWS world there is no better EDA data source than DyanamoDB with its built-in Streams support. If you haven't read up on that, [here's an article that talks more about it.](https://binaryheap.com/streaming-aws-dynamodb-to-a-lambda-via-eventbridge-pipes/)
--   S3/Transfer - Doesn't matter what you work on, it's hard to get away from file-based transfers and [S3 and AWS Transfer](https://aws.amazon.com/aws-transfer-family/) are great choices for that.
+- API Gateway - external API events that might come in externally (hopefully in FHIR format as shown)
+- RDS - so many systems have relational data at their core. Nothing at all wrong with it but don't sleep on it, as it can be an EDA source
+- DynamoDB - in the AWS world there is no better EDA data source than DyanamoDB with its built-in Streams support. If you haven't read up on that, [here's an article that talks more about it.](https://binaryheap.com/streaming-aws-dynamodb-to-a-lambda-via-eventbridge-pipes/)
+- S3/Transfer - Doesn't matter what you work on, it's hard to get away from file-based transfers and [S3 and AWS Transfer](https://aws.amazon.com/aws-transfer-family/) are great choices for that.
 
 The important thing to note about the sources is that they produce things, mostly change. The term Change Data Capture or CDC is very important to this architecture as those changes turn into events that are "sources" that then can be turned into "unified data".
 
@@ -82,10 +82,10 @@ When I work on this stage of the workflow the transformations and preparations d
 
 ### State Machines Shine
 
--   RDS - Use DMS to pick up transaction logs to push into S3 and store in Parquet. If you want to see how to parse parquet, [head over here](https://binaryheap.com/parsing-an-apache-parquet-file-with-golang/).
--   DynamoDB - Streams, streams, streams. You need to be using streams.
--   API Gateway - if the data is formatted in FHIR, it's cake. If not, a State Machine started from the gateway works great.
--   AWS Transfer - Similar to the RDS approach. Get the Data in S3 first, and go from there.
+- RDS - Use DMS to pick up transaction logs to push into S3 and store in Parquet. If you want to see how to parse parquet, [head over here](https://binaryheap.com/parsing-an-apache-parquet-file-with-golang/).
+- DynamoDB - Streams, streams, streams. You need to be using streams.
+- API Gateway - if the data is formatted in FHIR, it's cake. If not, a State Machine started from the gateway works great.
+- AWS Transfer - Similar to the RDS approach. Get the Data in S3 first, and go from there.
 
 Each of these paths ultimately needs to flow into a State Machine. What I've found is that once I used the right AWS tool to handle the CDC from the source, Step Functions, Lambdas and EventBridge could easily be used to take care of the rest.
 
@@ -133,8 +133,8 @@ As far as accomplishing those with AWS, I've been using Quicksight and Sage Make
 
 I've been building for system value with Event-Driven Data Architecture when I talk about system value I'm talking about the ability of another system to either
 
--   Pull changes
--   Receive changes
+- Pull changes
+- Receive changes
 
 For pulling changes, this is an API. And for me, almost every API I build and publish in AWS is done with either API Gateway or AppSync. What I used for building APIs on top of Healthlake is more of a wrapper on top of the FHIR API that it currently provides. Adding in a Custom Authorizer, Cognito or both to provide an externally focused Identity Manager works super well too.
 

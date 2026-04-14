@@ -22,17 +22,17 @@ For the example below, I'm going to use [CDK with TypeScript.](https://binaryhea
 
 ```typescript
 #!/usr/bin/env node
-import 'source-map-support/register';
-import * as cdk from 'aws-cdk-lib';
-import {MainStack} from "../lib/main-stack";
+import "source-map-support/register";
+import * as cdk from "aws-cdk-lib";
+import { MainStack } from "../lib/main-stack";
 
 const app = new cdk.App();
 
 const domainOption = {
-    domainName: "sample.binaryheap.com",
-    domainNameAliasHostedZoneId: "Z2OJLYMUO9EFXC",
-    domainNameAliasTarget: "d-iclyfrt7oc.execute-api.us-west-2.amazonaws.com",
-}
+  domainName: "sample.binaryheap.com",
+  domainNameAliasHostedZoneId: "Z2OJLYMUO9EFXC",
+  domainNameAliasTarget: "d-iclyfrt7oc.execute-api.us-west-2.amazonaws.com",
+};
 
 new MainStack(app, `MainStack`, {}, domainOption);
 ```
@@ -40,26 +40,27 @@ new MainStack(app, `MainStack`, {}, domainOption);
 Below is the setup for the actual resources we need to create in order to have API Gateway Base Path Mapping. I like the create the gateway first and then add the additional Lambda resources into the gateway
 
 ```typescript
-import {Construct} from 'constructs';
-import * as cdk from 'aws-cdk-lib';
-import {OneLambda} from "./one-lambda";
-import {ApiGatewayConstruct} from "./api-gateway-construct";
-import {DomainOptions} from "../types/options";
-import {StackProps} from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as cdk from "aws-cdk-lib";
+import { OneLambda } from "./one-lambda";
+import { ApiGatewayConstruct } from "./api-gateway-construct";
+import { DomainOptions } from "../types/options";
+import { StackProps } from "aws-cdk-lib";
 
 export class MainStack extends cdk.Stack {
-    constructor(scope: Construct, id: string, props: StackProps, options: DomainOptions) {
-        super(scope, id, props);
+  constructor(
+    scope: Construct,
+    id: string,
+    props: StackProps,
+    options: DomainOptions
+  ) {
+    super(scope, id, props);
 
-        const api = new ApiGatewayConstruct(
-            this,
-            'ApiGateway',
-            options)
+    const api = new ApiGatewayConstruct(this, "ApiGateway", options);
 
-        new OneLambda(this, 'OneLambda', api.api);
-    }
+    new OneLambda(this, "OneLambda", api.api);
+  }
 }
-
 ```
 
 ## API Gateway Construct
@@ -68,39 +69,36 @@ For a simple solution like this, I tend to just use Constructs vs NestStacks so 
 
 ```typescript
 // definition of the RestAPI
-this._api = new RestApi(this,
-    'RestApi', {
-        description: 'Sample API',
-        restApiName: 'Sample API',
-        disableExecuteApiEndpoint: true, // this important to do
-        deployOptions: {
-            stageName: `main`,
-        },
-    });
-
-
-let domainName = DomainName.fromDomainNameAttributes(this, 'APIDomainName', {
-    domainName: option.domainName,
-    domainNameAliasTarget: option.domainNameAliasTarget,
-    domainNameAliasHostedZoneId: option.domainNameAliasHostedZoneId
-})
-
-// the magic of wrapping the API under the Custom Domain
-new BasePathMapping(this, 'ApiBasePathMapping', {
-    domainName: domainName,
-    restApi: this._api,
-    // the properties below are optional
-    basePath: 'my-mapping',
-    stage: this._api.deploymentStage,
+this._api = new RestApi(this, "RestApi", {
+  description: "Sample API",
+  restApiName: "Sample API",
+  disableExecuteApiEndpoint: true, // this important to do
+  deployOptions: {
+    stageName: `main`,
+  },
 });
 
+let domainName = DomainName.fromDomainNameAttributes(this, "APIDomainName", {
+  domainName: option.domainName,
+  domainNameAliasTarget: option.domainNameAliasTarget,
+  domainNameAliasHostedZoneId: option.domainNameAliasHostedZoneId,
+});
+
+// the magic of wrapping the API under the Custom Domain
+new BasePathMapping(this, "ApiBasePathMapping", {
+  domainName: domainName,
+  restApi: this._api,
+  // the properties below are optional
+  basePath: "my-mapping",
+  stage: this._api.deploymentStage,
+});
 ```
 
 Things to note in the above
 
--   disableExecuteApiEndpoint -- this stops anyone using the FQDN created by API Gateway when it was created and forces more consistent access to the API Gateway resources
--   basePath - this is what defines the path on the endpoint. For instance, the resources in this example are going to be `https://sample.binaryheap.com/my-mapping`
--   state - defines which deployment stage are used. So you can actually have different path mappings based upon how your stages are defined for your API
+- disableExecuteApiEndpoint -- this stops anyone using the FQDN created by API Gateway when it was created and forces more consistent access to the API Gateway resources
+- basePath - this is what defines the path on the endpoint. For instance, the resources in this example are going to be `https://sample.binaryheap.com/my-mapping`
+- state - defines which deployment stage are used. So you can actually have different path mappings based upon how your stages are defined for your API
 
 ## Deploying and Output of API Gateway Base Path Mapping
 
@@ -118,8 +116,8 @@ And the base path mapping looks like this
 
 And what's nice about this again is that you can access the endpoints like this
 
--   https://sample.binaryheap.com/my-mapping
--   AND NOT https://<api-id>.execute-api.us-west-2.amazonaws.com/main
+- https://sample.binaryheap.com/my-mapping
+- AND NOT https://<api-id>.execute-api.us-west-2.amazonaws.com/main
 
 ## Wrap Up
 

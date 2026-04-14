@@ -19,14 +19,14 @@ Now, let's go a bit further and imagine that there's a Lambda Function that need
 
 In this article, I'm going to dive in on how to instrument Rust Lambda Functions with OpenTelemetry so that [Datadog](https://www.datadoghq.com/) can then visualize the relationships between [Spans and the single parent Trace](https://opentelemetry.io/docs/concepts/signals/traces/). Here we go, connecting Rust Lambda Functions with OpenTelemetry and Datadog.
 
--   [Architecture](#architecture)
-    -   [Rust Lambda Function 1](#rust-lamda-function-1)
-    -   [Rust Lambda Function 2](#rust-lambda-function-2)
-    -   [Rust Lambda Function 3](#rust-lambda-function-3)
--   [Datadog to Bring it Together](#datadog-to-bring-it-together)
-    -   [Trace and Span Graphs](#trace-and-span-graphs)
-    -   [Tracing Thoughts and Comments](#tracing-thoughts-and-comments)
--   [Wrapping Up](#wrapping-up)
+- [Architecture](#architecture)
+  - [Rust Lambda Function 1](#rust-lamda-function-1)
+  - [Rust Lambda Function 2](#rust-lambda-function-2)
+  - [Rust Lambda Function 3](#rust-lambda-function-3)
+- [Datadog to Bring it Together](#datadog-to-bring-it-together)
+  - [Trace and Span Graphs](#trace-and-span-graphs)
+  - [Tracing Thoughts and Comments](#tracing-thoughts-and-comments)
+- [Wrapping Up](#wrapping-up)
 
 ## Architecture
 
@@ -53,36 +53,36 @@ To get my first Lambda Function up and running, I need that API Gateway and the 
 
 ```typescript
 let api = new RestApi(this, "RestApi", {
-  description: 'Sample API',
-  restApiName: 'Sample API',
+  description: "Sample API",
+  restApiName: "Sample API",
   disableExecuteApiEndpoint: false,
   deployOptions: {
-    stageName: 'demo',
+    stageName: "demo",
   },
 });
 
 const layer = LayerVersion.fromLayerVersionArn(
   this,
-  'DatadogExtension',
-  'arn:aws:lambda:us-east-1:464622532012:layer:Datadog-Extension-ARM:68'
-)
+  "DatadogExtension",
+  "arn:aws:lambda:us-east-1:464622532012:layer:Datadog-Extension-ARM:68"
+);
 
-const postFunction = new RustFunction(this, 'PostFunction', {
+const postFunction = new RustFunction(this, "PostFunction", {
   architecture: Architecture.ARM_64,
   functionName: "sample-post-function",
   manifestPath: path.join(__dirname, `../../lambdas/post-function`),
   memorySize: 256,
   environment: {
-    RUST_LOG: 'info',
+    RUST_LOG: "info",
     FUNCTION_NAME: "post-function",
     DD_API_KEY: process.env.DD_API_KEY!,
     DD_SITE: process.env.DD_SITE!,
-    AGENT_ADDRESS: '127.0.0.1'
+    AGENT_ADDRESS: "127.0.0.1",
   },
-  layers: [layer]
+  layers: [layer],
 });
 
-  api.root.addMethod("POST", new LambdaIntegration(postFunction))
+api.root.addMethod("POST", new LambdaIntegration(postFunction));
 ```
 
 With the Function and the API Gateway in place, let's have a look at the Rust code. My `main` function does what a `main` always does. Initialize clients, parse environment variables, and build references to things I want to reuse in future invocations. It also establishes the linkage between the Lambda Runtime and my Function Handler. However, I do want to show the `init_datadog_pipeline` function. This initializes an OpenTelemetry pipeline from a community manage project that setups the OpenTelemetry endpoints and does some resource mapping behind the scenes between OpenTelemetry and Datadog.
@@ -156,22 +156,22 @@ Even though the code to propagate to SQS is right below this, I'll touch on that
 Digging into the Read Function will show a very simple JSON response with no processing. I'm going to first create the function and then assign it to the `GET` verb on the default `/` endpoint.
 
 ```typescript
-const readFunction = new RustFunction(this, 'ReadFunction', {
+const readFunction = new RustFunction(this, "ReadFunction", {
   architecture: Architecture.ARM_64,
   functionName: "sample-read-function",
   manifestPath: path.join(__dirname, `../../lambdas/read-function`),
   memorySize: 256,
   environment: {
-    RUST_LOG: 'info',
+    RUST_LOG: "info",
     FUNCTION_NAME: "read-function",
     DD_API_KEY: process.env.DD_API_KEY!,
     DD_SITE: process.env.DD_SITE!,
-    AGENT_ADDRESS: '127.0.0.1'
+    AGENT_ADDRESS: "127.0.0.1",
   },
-  layers: [layer]
+  layers: [layer],
 });
 
-api.root.addMethod("GET", new LambdaIntegration(readFunction))
+api.root.addMethod("GET", new LambdaIntegration(readFunction));
 ```
 
 Unlike the Lambda Function 1, I am going to dig into `main` because I did something a little different here. Deep in the initialization of the Lambda Runtime, there is a span that is emitted from the Lambda Runtime. It has the simple name of "Lambda Runtime Invocation". Now normally, this might not seem like a big deal. However, if I want connected spans, I don't have access into this particular span's parent trace. Therefore, I end up with all of my spans connected, but this one lone span with its own trace parent.
@@ -246,30 +246,31 @@ fn generate_context() -> AddedContext {
 To complete the sequence, I need to build the Lambda Function that responds to the event that is posted on the SQS. With CDK, I first build the function like I did above and then I'll attach the correct permissions to read from the queue.
 
 ```typescript
-const changeFunction = new RustFunction(this, 'ChangeFunction', {
+const changeFunction = new RustFunction(this, "ChangeFunction", {
   architecture: Architecture.ARM_64,
   functionName: "sample-handle-change-function",
   manifestPath: path.join(__dirname, `../../lambdas/handle-change-function`),
   memorySize: 256,
   environment: {
-    RUST_LOG: 'info',
+    RUST_LOG: "info",
     FUNCTION_NAME: "handle-change-function",
     DD_API_KEY: process.env.DD_API_KEY!,
     DD_SITE: process.env.DD_SITE!,
-    AGENT_ADDRESS: '127.0.0.1'
+    AGENT_ADDRESS: "127.0.0.1",
   },
-  layers: [layer]
+  layers: [layer],
 });
 
-const queue = new Queue(this, 'PostQueue', {
-  queueName: 'sample-post-queue'
+const queue = new Queue(this, "PostQueue", {
+  queueName: "sample-post-queue",
 });
 
 queue.grantConsumeMessages(changeFunction);
-changeFunction.addEventSource(new SqsEventSource(queue, {
-  batchSize: 10,
-}))
-
+changeFunction.addEventSource(
+  new SqsEventSource(queue, {
+    batchSize: 10,
+  })
+);
 ```
 
 Before diving into the Function, I want to circle back to the originating Lambda Function to show how I'm connecting the `traceparent` back into this function. I'm going to carry the context in the `correlation_id` field.

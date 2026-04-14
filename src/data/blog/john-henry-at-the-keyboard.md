@@ -32,7 +32,7 @@ I think about John Henry a lot these days. The folk hero who raced the steam dri
 
 We can argue over the way things used to be or we can evolve. It might not matter either way. But the truth is I was never going to be the one to change this history. Neither are you. What we can do is decide how we move through it.
 
-* * *
+---
 
 I want to provide some context here because I think the AI conversation often gets stripped of it.
 
@@ -44,7 +44,7 @@ I'm a capitalist at heart. Humans should be able to provide for themselves and g
 
 That's a hard sentence to write. But 30 years has taught me that hard truths age better than comfortable lies.
 
-* * *
+---
 
 If you've made it this far across three pieces, first — thank you. Second, here is what I'm projecting back to you through reflecting on my career. These aren't platitudes. These are things I learned by getting them wrong first.
 
@@ -56,7 +56,7 @@ If you've made it this far across three pieces, first — thank you. Second, her
 
 **Not everyone out there is above board.** Some are out for clicks. Some are out for dollars. Some are out for reasons that don't make any sense. You have to be constantly evaluating influencers — their why, their content — to see if it's helpful to you or hurtful. And content that's hurtful to you might be helpful to someone else. Nothing in this world is black and white. But find people who speak from a place of genuinely wanting to help. People who haven't bought too heavily into their own success or fame and who are still willing to connect. And most importantly — don't let yourself fall into the trap that because a person has been on live streams or has more followers than you, they have more worth than you. You don't have to tolerate or absorb any behavior that violates you because of a mismatched balance of power.
 
-* * *
+---
 
 The world is changing. Rapidly. And what's different about this period of time is more than likely absolutely nothing. The change is the same. The reasons might be different, but as the world continues to turn, change will remain the only constant.
 
@@ -64,6 +64,6 @@ I encourage you to lean into your uniqueness, lean into your network, and make t
 
 And as they say, the rest will take care of itself.
 
-* * *
+---
 
 _This is the final part of a 3-part series. [Start from the beginning: The Short Bus and the Fairway →](https://binaryheap.com/part1-the-short-bus-and-the-fairway/)_

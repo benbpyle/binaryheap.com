@@ -23,30 +23,30 @@ As I let that first article settle, I started thinking about single read item pe
 
 Let's dive in!
 
--   [The Solution](#the-solution)
--   [Digging In](#digging-in)
-    -   [Cache Builder](#cache-builder)
-    -   [Seeding the Table](#seeding-the-table)
-    -   [Get Lambda](#get-lambda)
-        -   [Main](#main)
-        -   [Function Handler](#function-handler)
-            -   [The HTTP Part](#the-http-part)
-            -   [Query the Cache](#query-the-cache)
-            -   [Cache HIT or Miss](#cache-hit-or-miss)
-            -   [Quick Thoughts](#quick-thoughts)
-    -   [Instrumentation and Performance](#instrumentation-and-performance)
-        -   [Function Performance](#function-performance)
-        -   [Component Performance](#component-performance)
-            -   [Cache Miss](#cache-miss)
-            -   [Cache Hit](#cache-hit)
-            -   [Consistency Story](#consistency-story)
--   [Takeaways](#takeways)
-    -   [Rust Continues to Amaze Me](#rust-continues-to-amaze-me)
-    -   [Momento](#momento)
-    -   [DSQL](#dsql)
-    -   [Affects on Cost](#affects-on-cost)
-    -   [Observability](#observability)
--   [Wrap Up](#wrap-up)
+- [The Solution](#the-solution)
+- [Digging In](#digging-in)
+  - [Cache Builder](#cache-builder)
+  - [Seeding the Table](#seeding-the-table)
+  - [Get Lambda](#get-lambda)
+    - [Main](#main)
+    - [Function Handler](#function-handler)
+      - [The HTTP Part](#the-http-part)
+      - [Query the Cache](#query-the-cache)
+      - [Cache HIT or Miss](#cache-hit-or-miss)
+      - [Quick Thoughts](#quick-thoughts)
+  - [Instrumentation and Performance](#instrumentation-and-performance)
+    - [Function Performance](#function-performance)
+    - [Component Performance](#component-performance)
+      - [Cache Miss](#cache-miss)
+      - [Cache Hit](#cache-hit)
+      - [Consistency Story](#consistency-story)
+- [Takeaways](#takeways)
+  - [Rust Continues to Amaze Me](#rust-continues-to-amaze-me)
+  - [Momento](#momento)
+  - [DSQL](#dsql)
+  - [Affects on Cost](#affects-on-cost)
+  - [Observability](#observability)
+- [Wrap Up](#wrap-up)
 
 ## The Solution
 
@@ -313,8 +313,8 @@ async fn query_cache(
 
 In the even of a HIT or MISS from the cache, one of two paths will be taken.
 
--   A HIT will return the object back and that's the end of the request
--   A MISS will look for the item in the database and then write the item into the cache
+- A HIT will return the object back and that's the end of the request
+- A MISS will look for the item in the database and then write the item into the cache
 
 ```rust
 match cache_item {
@@ -391,14 +391,14 @@ Before digging into how this comes together and looking at performance, I wanted
 
 A read aside caching strategy is a straightforward approach to boosting performance. It acts like this.
 
--   Get a request from a client
--   Look for the item in cache
--   If found
-    -   Return the item
--   If not found
-    -   Read from durable storage
-    -   Write the item to cache
-    -   Return the item
+- Get a request from a client
+- Look for the item in cache
+- If found
+  - Return the item
+- If not found
+  - Read from durable storage
+  - Write the item to cache
+  - Return the item
 
 With Momento, I can set the duration on the item depending upon how often my data changes. Read aside works really well for times when the data doesn't change very often. And if the data does change, you can initiate a cache bust to force a reload via the read aside. It's not ideal in highly volatile data and a write through approach might be a better fit. I'll tackle that in a future post!
 
@@ -416,27 +416,27 @@ Starting at the top, I ran 30 virtual users through my function for a duration o
 
 ```javascript
 var ids = [
-    "1340d27f-c5fa-45d1-93ec-91b8465bce4e",
-    "12bc9d0a-3e53-45f1-9186-4d3908c5230b",
-    "26f1cb7f-94ee-46e6-b1ec-1eeca5ed35b6",
-    "cb92d622-eff1-47bc-bd5d-5446664114bc",
-    "0ace71c4-0983-453c-8932-265cec7231e2",
-    "8e1ded56-ccfb-460c-a301-a830a8d2ef9e",
-    "1340d27f-c5fa-45d1-93ec-91b8465bce4e",
-    "374fb037-12d9-430a-8fd5-dd6c538774b3",
-    "4881a44a-21be-4f93-9533-0995a4ce980a",
-    "2b174dc9-c836-441e-84c4-9e2133f2d50d",
-    "031b9117-1df6-4f3b-aac2-957ea9d57e3b",
-    "bc92ea92-17f6-4805-898f-63bcded8d853",
-    "fcbc51f0-ef79-4215-a7a7-2366a093fcf2",
-    "1bdb2581-b449-42a1-ae49-37e2e6ff4374",
-    "c2e9bd25-bc12-4eec-bd10-936e0c8ead0f",
-    "5bf7cbaf-32db-4051-9057-fee0cf4aefca",
-    "0d350981-26b5-4998-95ff-1a76b20909df",
-    "07a04b77-2010-4b42-a85f-a7a5cd4a9cb9",
-    "26740679-1a26-493e-becf-125c3611ad61",
-    "971a9f84-da91-4156-8276-5a94e6f14dca",
-    "b4c63a1d-8e2f-4589-ae32-670ab999e60d"
+  "1340d27f-c5fa-45d1-93ec-91b8465bce4e",
+  "12bc9d0a-3e53-45f1-9186-4d3908c5230b",
+  "26f1cb7f-94ee-46e6-b1ec-1eeca5ed35b6",
+  "cb92d622-eff1-47bc-bd5d-5446664114bc",
+  "0ace71c4-0983-453c-8932-265cec7231e2",
+  "8e1ded56-ccfb-460c-a301-a830a8d2ef9e",
+  "1340d27f-c5fa-45d1-93ec-91b8465bce4e",
+  "374fb037-12d9-430a-8fd5-dd6c538774b3",
+  "4881a44a-21be-4f93-9533-0995a4ce980a",
+  "2b174dc9-c836-441e-84c4-9e2133f2d50d",
+  "031b9117-1df6-4f3b-aac2-957ea9d57e3b",
+  "bc92ea92-17f6-4805-898f-63bcded8d853",
+  "fcbc51f0-ef79-4215-a7a7-2366a093fcf2",
+  "1bdb2581-b449-42a1-ae49-37e2e6ff4374",
+  "c2e9bd25-bc12-4eec-bd10-936e0c8ead0f",
+  "5bf7cbaf-32db-4051-9057-fee0cf4aefca",
+  "0d350981-26b5-4998-95ff-1a76b20909df",
+  "07a04b77-2010-4b42-a85f-a7a5cd4a9cb9",
+  "26740679-1a26-493e-becf-125c3611ad61",
+  "971a9f84-da91-4156-8276-5a94e6f14dca",
+  "b4c63a1d-8e2f-4589-ae32-670ab999e60d",
 ];
 
 var i = Math.floor(Math.random() * 20);
@@ -445,10 +445,10 @@ pm.collectionVariables.set("ID", ids[i]);
 
 I first want to look at the average function latency. This is mind boggling to me. Remember, my function does this
 
--   Handles a request
--   Deserializes the payload
--   Does the cache/DSQL pieces
--   Serializes the result and returns
+- Handles a request
+- Deserializes the payload
+- Does the cache/DSQL pieces
+- Serializes the result and returns
 
 ![](/images/function_latency-1024x435.jpg)
 
@@ -466,10 +466,10 @@ A cache miss as defined above is when I query Momento and don't find the item I'
 
 I like looking at these trace graphs in both flame and waterfall. What the below highlights are all of my available spans since the Miss runs all paths. Things to note here.
 
--   A Momento read is amazingly fast. 1.89ms is nuts
--   A DSQL query, is also super fast. It's just under 4 times slower on this particular request
--   A write to Momento looks just the same as a read at 1.90ms. That might be the most impressive and understated piece of this
--   Looking at the wrapping function which is the `DSQL Query`, I'm going to save that entire block plus the `Write Cache` block the next time I read this key
+- A Momento read is amazingly fast. 1.89ms is nuts
+- A DSQL query, is also super fast. It's just under 4 times slower on this particular request
+- A write to Momento looks just the same as a read at 1.90ms. That might be the most impressive and understated piece of this
+- Looking at the wrapping function which is the `DSQL Query`, I'm going to save that entire block plus the `Write Cache` block the next time I read this key
 
 ![Miss waterfall](/images/miss_waterfall.jpg)
 
@@ -491,8 +491,8 @@ With the proper instrumentation, I can further isolate individual resources in m
 
 A table view of the resource breakdown yields this. Each and ever span in all of my traces is represented below. Everything from the cold start `load_region` to all of the operations I've show above. A couple of things standout
 
--   DSQL performance is solid on average sitting at 8.29ms. A p95 latency on a primary key column yields 9.26ms on average. Considering early on in public preview and all of the work that it does, I'm not disappointed by that. If it never gets any better, I think I'm still OK with it honestly. And the p99 tail at 252ms is not going to impact most. I do need to look more at multiple queries, and building more complex things. But again, this is a start.
--   Momento's cache is stupid fast and consistent. I ran 29.8K GETs vs 2.4K DSQL SELECTS and the total time in Momento was still under double that of the DSQL. P95 latency of 1.87ms and an average of 1.62ms is amazing to me. That's an average 12x improvement when getting a hit vs a miss on my cache when it comes to performance.
+- DSQL performance is solid on average sitting at 8.29ms. A p95 latency on a primary key column yields 9.26ms on average. Considering early on in public preview and all of the work that it does, I'm not disappointed by that. If it never gets any better, I think I'm still OK with it honestly. And the p99 tail at 252ms is not going to impact most. I do need to look more at multiple queries, and building more complex things. But again, this is a start.
+- Momento's cache is stupid fast and consistent. I ran 29.8K GETs vs 2.4K DSQL SELECTS and the total time in Momento was still under double that of the DSQL. P95 latency of 1.87ms and an average of 1.62ms is amazing to me. That's an average 12x improvement when getting a hit vs a miss on my cache when it comes to performance.
 
 ![](/images/resource_table-1024x460.jpg)
 

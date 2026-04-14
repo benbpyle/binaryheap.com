@@ -24,10 +24,10 @@ Second thing (once you check in) is to head over to the main Swag, Expos and lau
 
 In my opinion, the most essential thing you can do for your week is plan your sessions and get them blocked/reserved as soon as the catalog releases in the fall. What this means is that each session (breakout, chalk talk, workshop, builders showcase) is list in the catalog and only has so much seating space allotted to it. And you must reserve a spot in the session. Now some sessions don't fill up and you can just walk up but every session I attended was full and it was sure a nice thing to have a reserved seat. My first time to re:Invent I was unaware and I waitlisted on many of the sessions I wanted to attend and ultimately only got into a few. And this year I saw some lines being 500 + people deep for only 10 or 20 spots. My point is, plan your week. Come up with a strategy. There are a few approaches I could come up with
 
--   Book all sessions for that day in the same hotel. This is what I did this year and I ended up taking some that were outside of my "track" but it was super easy
--   Plan around the keynotes. I didn't attend them live this year because my calendar didn't allow it. If keynotes matter to you ... then leave ample time for traveling from the keynote to your session
--   Pick a track/course level and scale back your sessions to allow for more travel. I'll probably do this next year honestly. Opt for less content but more targeted content
--   Roll the magic eight ball and enjoy the ride. :)
+- Book all sessions for that day in the same hotel. This is what I did this year and I ended up taking some that were outside of my "track" but it was super easy
+- Plan around the keynotes. I didn't attend them live this year because my calendar didn't allow it. If keynotes matter to you ... then leave ample time for traveling from the keynote to your session
+- Pick a track/course level and scale back your sessions to allow for more travel. I'll probably do this next year honestly. Opt for less content but more targeted content
+- Roll the magic eight ball and enjoy the ride. :)
 
 I'm sure you could come up with a bunch of others but I can't underscore the importance of planning your week out and taking into account travel. I think I was in 5 hotels this week and I'm pretty sure that content was in 6 so I almost touched them all.
 
@@ -73,10 +73,10 @@ Lastly, you can always walk! I took this option a couple of times as I just need
 
 ## Personal Favorite Sessions and Talks
 
--   Event Driven Architecture by [@edjgeek](https://twitter.com/edjgeek). I've been following Eric on Twitter for a while and I just enjoy the way he shares, connects and delivers content. I've personally been doing EDA for a while so this talk was more about just seeing him live but I did pick up a nugget or two about Event Bridge I wasn't aware of so I'll all it a win win!
--   Chalk talks - this is more a broad category but I liked the smaller sessions where the presenters asked questions of the audience and also do some white boarding. I attended a session on DynamoDB Design Puzzles which I really enjoyed
--   Builder sessions - these are where you get to be hands on in a lab with the presenter and actually drive some of the tech around the cloud. I use these for things I haven't done before or it hasn't crossed my design thinking for whatever reason in addition to getting a more 1:1 block of time with the instructor if I've got a lot of questions about the topic. These can be so much fun
--   Architecting Secure Serverless Applications by [@joshuaakahn](https://twitter.com/joshuaakahn). Even after doing serverless for many years, I picked up a couple of tips that I'm going to bring back into my current builds
+- Event Driven Architecture by [@edjgeek](https://twitter.com/edjgeek). I've been following Eric on Twitter for a while and I just enjoy the way he shares, connects and delivers content. I've personally been doing EDA for a while so this talk was more about just seeing him live but I did pick up a nugget or two about Event Bridge I wasn't aware of so I'll all it a win win!
+- Chalk talks - this is more a broad category but I liked the smaller sessions where the presenters asked questions of the audience and also do some white boarding. I attended a session on DynamoDB Design Puzzles which I really enjoyed
+- Builder sessions - these are where you get to be hands on in a lab with the presenter and actually drive some of the tech around the cloud. I use these for things I haven't done before or it hasn't crossed my design thinking for whatever reason in addition to getting a more 1:1 block of time with the instructor if I've got a lot of questions about the topic. These can be so much fun
+- Architecting Secure Serverless Applications by [@joshuaakahn](https://twitter.com/joshuaakahn). Even after doing serverless for many years, I picked up a couple of tips that I'm going to bring back into my current builds
 
 ## Connecting with People
 

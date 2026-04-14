@@ -26,62 +26,58 @@ Let's walk through the CodePipeline that'll be responsible for receiving changes
 
 ```typescript
 export class PipelineStack extends cdk.Stack {
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        const pipeline = new CodePipeline(this, "Pipeline", {
-            pipelineName: "SamplePipeline",
-            dockerEnabledForSynth: true,
-            synth: new CodeBuildStep("Synth", {
-                input: CodePipelineSource.gitHub(
-                    "benbpyle/cdk-step-functions-local-testing",
-                    "main",
-                    {
-                        authentication: SecretValue.secretsManager(
-                            "sf-sample",
-                            {
-                                jsonField: "github",
-                            }
-                        ),
-                    }
-                ),
-
-                buildEnvironment: {
-                    buildImage: LinuxBuildImage.STANDARD_6_0,
-                    environmentVariables: {
-                        GITHUB_USERNAME: {
-                            value: "benbpyle",
-                            type: BuildEnvironmentVariableType.PLAINTEXT,
-                        },
-                        GITHUB_TOKEN: {
-                            value: "sf-sample:github",
-                            type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-                        },
-                    },
-                },
-                partialBuildSpec: BuildSpec.fromObject({
-                    phases: {
-                        install: {
-                            "runtime-versions": {
-                                golang: "1.18",
-                            },
-                        },
-                    },
-                }),
-
-                commands: [
-                    'echo "machine github.com login $GITHUB_USERNAME password $GITHUB_TOKEN" >> ~/.netrc',
-                    "npm i",
-                    "export GOPRIVATE=github.com/benbpyle",
-                    "npx cdk synth",
-                ],
+    const pipeline = new CodePipeline(this, "Pipeline", {
+      pipelineName: "SamplePipeline",
+      dockerEnabledForSynth: true,
+      synth: new CodeBuildStep("Synth", {
+        input: CodePipelineSource.gitHub(
+          "benbpyle/cdk-step-functions-local-testing",
+          "main",
+          {
+            authentication: SecretValue.secretsManager("sf-sample", {
+              jsonField: "github",
             }),
-        });
+          }
+        ),
 
-        pipeline.addStage(new PipelineAppStage(this, `Deploy`, {}));
-    }
+        buildEnvironment: {
+          buildImage: LinuxBuildImage.STANDARD_6_0,
+          environmentVariables: {
+            GITHUB_USERNAME: {
+              value: "benbpyle",
+              type: BuildEnvironmentVariableType.PLAINTEXT,
+            },
+            GITHUB_TOKEN: {
+              value: "sf-sample:github",
+              type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+            },
+          },
+        },
+        partialBuildSpec: BuildSpec.fromObject({
+          phases: {
+            install: {
+              "runtime-versions": {
+                golang: "1.18",
+              },
+            },
+          },
+        }),
+
+        commands: [
+          'echo "machine github.com login $GITHUB_USERNAME password $GITHUB_TOKEN" >> ~/.netrc',
+          "npm i",
+          "export GOPRIVATE=github.com/benbpyle",
+          "npx cdk synth",
+        ],
+      }),
+    });
+
+    pipeline.addStage(new PipelineAppStage(this, `Deploy`, {}));
+  }
 }
-
 ```
 
 I want to break down a few of the components of this.
@@ -150,51 +146,49 @@ For this example, I've got a single Stage that I'm deploying out to but in a pro
 ```typescript
 // The stage
 export class PipelineAppStage extends cdk.Stage {
-    constructor(scope: Construct, id: string, props: cdk.StageProps) {
-        super(scope, id, props);
+  constructor(scope: Construct, id: string, props: cdk.StageProps) {
+    super(scope, id, props);
 
-        new MainStack(this, `App`, {});
-    }
+    new MainStack(this, `App`, {});
+  }
 }
 
 // MainStack
 export class MainStack extends cdk.Stack {
-    constructor(scope: Construct, id: string, props: cdk.StackProps) {
-        super(scope, id, props);
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
+    super(scope, id, props);
 
-        new ExampleFunc(this, "ExampleFunc");
-    }
+    new ExampleFunc(this, "ExampleFunc");
+  }
 }
 
 // Function Definition
 export class ExampleFunc extends Construct {
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        new GoFunction(scope, `ExampleFuncHandler`, {
-            entry: path.join(__dirname, `../../../src/example-func`),
-            functionName: `example-func`,
-            timeout: Duration.seconds(30),
-            bundling: {
-                goBuildFlags: ['-ldflags "-s -w"'],
-            },
-        });
-    }
+    new GoFunction(scope, `ExampleFuncHandler`, {
+      entry: path.join(__dirname, `../../../src/example-func`),
+      functionName: `example-func`,
+      timeout: Duration.seconds(30),
+      bundling: {
+        goBuildFlags: ['-ldflags "-s -w"'],
+      },
+    });
+  }
 }
-
 ```
 
 Not much to discuss here, but you can see the definitions of the:
 
--   AppStage
--   MainStack
--   ExampleFunc
+- AppStage
+- MainStack
+- ExampleFunc
 
 Bringing it all together, adding the stage to the Pipeline
 
 ```typescript
 pipeline.addStage(new PipelineAppStage(this, `Deploy`, {}));
-
 ```
 
 ### Building Golang private modules with CodeBuild
@@ -205,9 +199,9 @@ The `go.mod` file for this example looks like this.
 
 I've got dependencies on
 
--   AWS
--   Sirupsen (logrus)
--   My personal private library
+- AWS
+- Sirupsen (logrus)
+- My personal private library
 
 ```go
 module example
@@ -260,7 +254,7 @@ Putting this all together will give you the ability to have some level of privac
 
 As always, the source code for this article is available on [GitHub](https://github.com/benbpyle/cdk-golang-private-module). Feel free to clone it and try it out. But note that you won't have access to the following.
 
--   Replace my private repos with yours
--   The `sf-sample` Secret is one I created, you'll need to create your own
+- Replace my private repos with yours
+- The `sf-sample` Secret is one I created, you'll need to create your own
 
 Enjoy and happy building!

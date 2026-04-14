@@ -37,13 +37,13 @@ As I was putting together my thoughts for this article, I felt that I was going 
 
 I want to walk you through the following topics while giving you my thoughts on the experience when working with that part. This won't be exhaustive, but from a getting-started perspective, this will give you enough to begin being productive with API Gateway. The tour will cover:
 
--   Resources
-    -   Method Request
-    -   Integration Request
-    -   Integration Response
-    -   Method Response
--   Models
--   Custom Domain Names and Base Path Mapping
+- Resources
+  - Method Request
+  - Integration Request
+  - Integration Response
+  - Method Response
+- Models
+- Custom Domain Names and Base Path Mapping
 
 My feeling is that by covering the above, you'll be well on your way to shipping your first Gateway projects. And for our examples, I'm going to be covering a [REST API](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html) as defined by AWS inside the API Gateway Product.
 
@@ -51,9 +51,9 @@ My feeling is that by covering the above, you'll be well on your way to shipping
 
 When looking at resources, I like to think about how I'm going to organize my requests. We could get into a big debate as to the correct layout for REST resources, but in my opinion, pragmatism wins while trying to be as close to standards. Be thinking about the following things
 
--   What are the logical paths?
--   Which verbs do I want to offer?
--   Do I need CORS?
+- What are the logical paths?
+- Which verbs do I want to offer?
+- Do I need CORS?
 
 You might end up with the following routes for a basic set of endpoints:
 
@@ -96,11 +96,11 @@ Request Body. Don't sleep on this. API Gateway supports the OpenAPI specificatio
 
 Look at the options for what can be triggered by your request. So I'm going to quickly run through them but I sort of feel like I need to do some further writing on each of these.
 
--   Lambda Function. Going back to compute, this is going to be the Lambda Function that will be triggered by this request. Permission to run "lambda:Invoke" will matter. Choosing Proxy will send all data straight to the Lambda.
--   HTTP. Make a call to another endpoint somewhere else. I honestly don't use this often or if ever, but there is a use-case there.
--   Mock. Ever have a backend developer working separately from a frontend developer? Ever heard that frontend developers say they can't start coding until the backend is done? If yes to either of those, Mock is your friend. It'll do what it sounds like.
--   AWS Service. I could spend a lot of time talking about this. But you can connect pretty much any AWS service you need to an endpoint. And here's the beauty of that. Need durability above anything else? Dump the request straight to an SQS and then work the problem with Step Functions. Or just trigger the Step Function directly. Pretty cool.
--   VPC Link. Want to not expose your Private ALBs or NLBs? Who doesn't? A VPC link can connect those private resources to your API Gateway so that the only way to your containers is through Gateway. This can be done as well with CloudMap for ECS Tasks which we just discussed 2 articles ago.
+- Lambda Function. Going back to compute, this is going to be the Lambda Function that will be triggered by this request. Permission to run "lambda:Invoke" will matter. Choosing Proxy will send all data straight to the Lambda.
+- HTTP. Make a call to another endpoint somewhere else. I honestly don't use this often or if ever, but there is a use-case there.
+- Mock. Ever have a backend developer working separately from a frontend developer? Ever heard that frontend developers say they can't start coding until the backend is done? If yes to either of those, Mock is your friend. It'll do what it sounds like.
+- AWS Service. I could spend a lot of time talking about this. But you can connect pretty much any AWS service you need to an endpoint. And here's the beauty of that. Need durability above anything else? Dump the request straight to an SQS and then work the problem with Step Functions. Or just trigger the Step Function directly. Pretty cool.
+- VPC Link. Want to not expose your Private ALBs or NLBs? Who doesn't? A VPC link can connect those private resources to your API Gateway so that the only way to your containers is through Gateway. This can be done as well with CloudMap for ECS Tasks which we just discussed 2 articles ago.
 
 #### Integration Response
 
@@ -137,9 +137,9 @@ Enter, Custom Domain Names. This allows you to attach your domain name that can 
 
 When you attach your custom domain name, you then can use Base Path Mapping. For a super deep dive into that, [here's an article that explains it with CDK](https://binaryheap.com/base-path-mapping-with-cdk/). But on the surface, if your domain is this: `www.your-domain.com`. You can link API Gateways to your domain by supplying:
 
--   A Path
--   An API Gateway
--   A Stage
+- A Path
+- An API Gateway
+- A Stage
 
 So that, `www.your-domain.com/a-path` will now route to your API and all of the Requests you've defined will be accessible underneath that. This is the way when it comes to multiple API Gateways under one Domain Name.
 

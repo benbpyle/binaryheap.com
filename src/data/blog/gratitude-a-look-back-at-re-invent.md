@@ -24,11 +24,11 @@ Now you might be wondering, what does any of this have to do with re:Invent whic
 
 This was my 3rd re:Invent in person and my 5th if you count attending virtually. My previous experiences at re:Invent wrapped around the following activities.
 
--   Sessions
--   Sessions
--   Sleep
--   Eat
--   Sessions
+- Sessions
+- Sessions
+- Sleep
+- Eat
+- Sessions
 
 My previous visits to Las Vegas centered around trying to learn as much as I possibly could, I sacrificed socializing and nighttime activities to gain as much knowledge as possible. But, if I'm putting things in perspective. I didn't know anyone at the conference so I didn't have that many other options. Sure, you can network at the event and meet people but things happen so fast it's hard to truly build a bond with someone that week if there's nothing previously to build upon.
 
@@ -48,11 +48,11 @@ I'm not encouraging you to do anything I haven't done. I did it this time last y
 
 I love the buzz of the week. Multiple casinos, rails, buses, party cars, the whole thing. I did a breakdown each night while I was out there, so I won't recap the whole thing. However, if you want to look back, here are the links to the articles.
 
--   [Day 0](https://binaryheap.com/aws-reinvent-day-0/)
--   [Day 1](https://binaryheap.com/aws-reinvent-day-1/)
--   [Day 2](https://binaryheap.com/aws-reinvent-day-2/)
--   [Day 3](https://binaryheap.com/aws-reinvent-day-3/)
--   [Day 4](https://binaryheap.com/aws-reinvent-day-4/)
+- [Day 0](https://binaryheap.com/aws-reinvent-day-0/)
+- [Day 1](https://binaryheap.com/aws-reinvent-day-1/)
+- [Day 2](https://binaryheap.com/aws-reinvent-day-2/)
+- [Day 3](https://binaryheap.com/aws-reinvent-day-3/)
+- [Day 4](https://binaryheap.com/aws-reinvent-day-4/)
 
 ### The Keynotes
 
@@ -92,11 +92,11 @@ How can I make that distinction? To compare something to a term, one must have a
 
 To be Serverless, the component must meet these benchmarks. It must be:
 
--   Nothing to provision, nothing to manage
--   Usage-based pricing with no minimums
--   Ready with a single API call
--   No planned downtime
--   No instances
+- Nothing to provision, nothing to manage
+- Usage-based pricing with no minimums
+- Ready with a single API call
+- No planned downtime
+- No instances
 
 I 100% BelieveInServerless and I know for a fact having built many systems with the pattern that it's a fantastic way to go for many solutions. My future casting self though says that if AWS continues to try and split the definition into true Serverless and faux Serverless, the following will happen. More outside entities will build these components for sale on the AWS rock-solid infrastructure because builders are going to expect it.
 

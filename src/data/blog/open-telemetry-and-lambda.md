@@ -94,9 +94,9 @@ If you are implementing Open Telemetry and Lambda, you are going to need to make
 
 The ultimate hot take here is that **IF** portability is the most important thing, pick a vendor that supports the below endpoints. Put those endpoints in an environment variable that can be swapped out at a later date. And then only use the Open Telemetry SDKs so that at any point, you can pivot.
 
--   Traces: "[http://my-api-endpoint/v1/traces](http://my-api-endpoint/v1/traces)"
--   Metrics: "[http://my-api-endpoint/v1/metrics](http://my-api-endpoint/v1/metrics)"
--   Logs: "[http://my-api-endpoint/v1/logs](http://my-api-endpoint/v1/logs)"
+- Traces: "[http://my-api-endpoint/v1/traces](http://my-api-endpoint/v1/traces)"
+- Metrics: "[http://my-api-endpoint/v1/metrics](http://my-api-endpoint/v1/metrics)"
+- Logs: "[http://my-api-endpoint/v1/logs](http://my-api-endpoint/v1/logs)"
 
 If feature capability is the thing you are shopping on, then you won't get a better experience than by leaning into a vendor, using their SDK, and forgoing the portability of Open Telemetry for that deep integration. You'll get the most out of what you are looking for but it'll come at the cost of portability and the innovation roadmap of that vendor.
 

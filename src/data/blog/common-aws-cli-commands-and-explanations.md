@@ -19,11 +19,11 @@ Simple Notification Service is something is a backbone for a lot of the Apps I b
 
 Below contains
 
--   Listing all topics
--   Creating a topic
--   Subscribing an SQS to a topic
--   Listing subscriptions
--   Posting a message to a topic
+- Listing all topics
+- Creating a topic
+- Subscribing an SQS to a topic
+- Listing subscriptions
+- Posting a message to a topic
 
 ```
 # List topics
@@ -42,7 +42,7 @@ aws sns publish --topic-arn arn:aws:sns:us-west-2:123456789012:topic --message "
 
 Simple Queue Service was the first thing that AWS built back I think in 2006. That should tell you that the whole "Event Driven Architecture" that they've been pushing really goes back a while. Queues are the backbone of distributed software so this one makes sense.
 
--   Creating a queue
+- Creating a queue
 
 ```
 # Create a queue
@@ -58,7 +58,7 @@ Simple Storage Service (S3) powers so many thing that it is hard to have a list 
 aws s3 sync . s3://[bucket-to-sync]/
 
 # Delete empty bucket
-aws s3 rb s3://[bucket-to-delete] --force  
+aws s3 rb s3://[bucket-to-delete] --force
 
 # Copy local directory files to S3 Bucket
 aws s3 cp directory  s3://[bucket-to-copy-to] --recursive
@@ -71,10 +71,10 @@ aws s3 sync s3://some-bucket/ s3://another-bucket/ --acl bucket-owner-full-contr
 
 The engine that builds Infrastructure from Code.
 
--   Running a stack with IAM Capabilites
--   Validating the structure of a IaC file
--   Deleting a stack
--   Describing the events that have occurred while running a stack
+- Running a stack with IAM Capabilites
+- Validating the structure of a IaC file
+- Deleting a stack
+- Describing the events that have occurred while running a stack
 
 ```
 # Run cloudformation with IAM capabilities and using a Template from S3
@@ -95,7 +95,7 @@ aws cloudformation describe-stack-events --stack-name the-stack
 
 AWS' managed Git repositories
 
--   Creates a PR with a title specifying the Repository and the Source Branch
+- Creates a PR with a title specifying the Repository and the Source Branch
 
 ```
 # Create a pull request
@@ -106,16 +106,16 @@ aws codecommit create-pull-request --title "Merge in some improvements" --target
 
 AWS' Identity and access management and User Directory service. It's serverless and provides an OAuth2 and OIDC compliant implementation of those standards
 
--   Updates the user attributes
--   Confirms the user and sets their password
--   Signing up a new user
--   Confirming signup of the new user
+- Updates the user attributes
+- Confirms the user and sets their password
+- Signing up a new user
+- Confirming signup of the new user
 
 ```
-aws cognito-idp admin-update-user-attributes --user-pool-id us-the-pool --username ben --user-attributes Name="name",Value="Ben Pyle" 
+aws cognito-idp admin-update-user-attributes --user-pool-id us-the-pool --username ben --user-attributes Name="name",Value="Ben Pyle"
 # THIS IS GOLD
 
-aws cognito-idp admin-set-user-password --user-pool-id the-pool --username UUID --password <PASSWORD> --permanent 
+aws cognito-idp admin-set-user-password --user-pool-id the-pool --username UUID --password <PASSWORD> --permanent
 
 aws cognito-idp sign-up \
     --client-id the-id \
@@ -141,9 +141,9 @@ aws cognito-idp admin-update-user-attributes \
 
 Large scale Stream. Can be used to move data, transform data for analytics among many other things
 
--   Creating a new stream
--   Describing a stream
--   Watching a stream -- this will connect to the stream you specify and act a Consumer so you can see the data as it comes off the flow
+- Creating a new stream
+- Describing a stream
+- Watching a stream -- this will connect to the stream you specify and act a Consumer so you can see the data as it comes off the flow
 
 ```
 # create stream

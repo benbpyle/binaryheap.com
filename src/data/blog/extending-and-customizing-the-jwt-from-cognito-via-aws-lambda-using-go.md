@@ -24,19 +24,19 @@ As usual, if you want to skip straight to code, feel free to jump over to the [r
 
 One thing I really like about Cognito is that it's serverless which means I don't have to think about running infrastructure, scaling out access or dealing with any underlying software. I'm really working at an API level and interacting with it from an Application and not as much at an administration and support level. Having come from running and scaling servers on something that deals with critical infrastructure in an application like login and credentials this is really appealing. Another nice thing is that it natively supports JWTs which are super nice for handling user's credentials as they flow through the App. You get all of the normal tokens when you sign in as well
 
--   Access
--   ID
--   Refresh
+- Access
+- ID
+- Refresh
 
 I'm not going to get into using Amplify or any of the other libraries just yet but there are plenty of additional capabilities you can bolt onto this solution.
 
 Now the issue. Below is an example of the way a token comes across without customizations on it. I'm using the ID token here, because those are our options when working with the token generation triggers. ID tokens work just fine for Authorization and they are nice because they can carry private claims to be used in the app. Think of things that you might want to have at the application level that you don't have to fetch from another endpoint. Things like
 
--   User name/details
--   First/Last name
--   Perhaps the current logged in "location"
--   Maybe even the list of roles if your user permissions are simple enough
--   Other details that make future API calls easier
+- User name/details
+- First/Last name
+- Perhaps the current logged in "location"
+- Maybe even the list of roles if your user permissions are simple enough
+- Other details that make future API calls easier
 
 ![JWT pre-customization](/images/uncustomized-1024x667.jpg)
 
@@ -60,34 +60,32 @@ First lets look at the CDK code that sets this up. The Lambda first
 
 ```typescript
 interface TokenCustomizerProps {
-    table: ITable
+  table: ITable;
 }
 
 export class TokenCustomizerFunction extends Construct {
-    private readonly _func: GoFunction;
+  private readonly _func: GoFunction;
 
-    get func(): GoFunction {
-        return this._func;
-    }
+  get func(): GoFunction {
+    return this._func;
+  }
 
-    constructor(scope: Construct, id: string, props: TokenCustomizerProps) {
-        super(scope, id);
-        this._func = new GoFunction(this, `TokenCustomizerFunction`, {
-            entry: path.join(__dirname, `../src/token-customizer`),
-            functionName: `token-customizer`,
-            timeout: Duration.seconds(10),
-            environment: {
-                "LOG_LEVEL": "debug",
-                "TABLE_NAME": props.table.tableName,
-            },
-        });
+  constructor(scope: Construct, id: string, props: TokenCustomizerProps) {
+    super(scope, id);
+    this._func = new GoFunction(this, `TokenCustomizerFunction`, {
+      entry: path.join(__dirname, `../src/token-customizer`),
+      functionName: `token-customizer`,
+      timeout: Duration.seconds(10),
+      environment: {
+        LOG_LEVEL: "debug",
+        TABLE_NAME: props.table.tableName,
+      },
+    });
 
-        // add permissions and event sources
-        props.table.grantReadWriteData(this._func)
-    }
-
+    // add permissions and event sources
+    props.table.grantReadWriteData(this._func);
+  }
 }
-
 ```
 
 The code above is defining the Function that'll support the customizing. I like to add Getters as well for exposing the infrastructure that I can use later on.
@@ -95,35 +93,35 @@ The code above is defining the Function that'll support the customizing. I like 
 Now that there is a Func, it can be used in the User Pool setup
 
 ```typescript
-const userPool = new UserPool(this, 'SampleUserPool', {
-    lambdaTriggers: {
-      // attaching the lambda
-      preTokenGeneration: props.tokenCustomizer
+const userPool = new UserPool(this, "SampleUserPool", {
+  lambdaTriggers: {
+    // attaching the lambda
+    preTokenGeneration: props.tokenCustomizer,
+  },
+  userPoolName: "SamplePool",
+  signInAliases: {
+    email: true,
+    username: true,
+    preferredUsername: true,
+  },
+  autoVerify: {
+    email: false,
+  },
+  standardAttributes: {
+    email: {
+      required: true,
+      mutable: true,
     },
-    userPoolName: 'SamplePool',
-    signInAliases: {
-        email: true,
-        username: true,
-        preferredUsername: true
-    },
-    autoVerify: {
-        email: false,
-    },
-    standardAttributes: {
-        email: {
-            required: true,
-            mutable: true,
-        }
-    },
-    passwordPolicy: {
-        minLength: 12,
-        requireLowercase: true,
-        requireDigits: true,
-        requireUppercase: true,
-        requireSymbols: true,
-    },
-    accountRecovery: AccountRecovery.EMAIL_ONLY,
-    removalPolicy: RemovalPolicy.DESTROY,
+  },
+  passwordPolicy: {
+    minLength: 12,
+    requireLowercase: true,
+    requireDigits: true,
+    requireUppercase: true,
+    requireSymbols: true,
+  },
+  accountRecovery: AccountRecovery.EMAIL_ONLY,
+  removalPolicy: RemovalPolicy.DESTROY,
 });
 ```
 
@@ -167,12 +165,11 @@ Here is a sample event in the project that you can run locally as well
     "claimsOverrideDetails": null
   }
 }
-
 ```
 
 Key thing to note in it
 
--   The `userName` key. That's the field that will be used for looking up additional details in DynamoDB
+- The `userName` key. That's the field that will be used for looking up additional details in DynamoDB
 
 Now let's look at the Lambda code
 
@@ -204,10 +201,10 @@ func handler(ctx context.Context, e events.CognitoEventUserPoolsPreTokenGen) (ev
 
 Breaking this code down
 
--   First is the marshalling of the event shown above
--   Notice how I'm using the `e.UserName` to lookup the user
--   Then your ability to add private claims comes from the struct `cod := events.ClaimsOverrideDetails{}`
--   Then I finalize it with `resp := events.CognitoEventUserPoolsPreTokenGenResponse{ClaimsOverrideDetails: cod}`
+- First is the marshalling of the event shown above
+- Notice how I'm using the `e.UserName` to lookup the user
+- Then your ability to add private claims comes from the struct `cod := events.ClaimsOverrideDetails{}`
+- Then I finalize it with `resp := events.CognitoEventUserPoolsPreTokenGenResponse{ClaimsOverrideDetails: cod}`
 
 The `ClaimsToAddOrOverride` is just a `map[string]string`. You can add anything you want into these claims. In the case of this example I'm adding in the following
 

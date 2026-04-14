@@ -1,7 +1,7 @@
 ---
 title: Infrastructure as Code
 author: "Benjamen Pyle"
-description: "Infrastructure as Code is an emerging practice that encourages the writing of cloud infrastructure as code instead of clicking your way to deployment. I feel like \"ClickOps\" is where we all started ye"
+description: 'Infrastructure as Code is an emerging practice that encourages the writing of cloud infrastructure as code instead of clicking your way to deployment. I feel like "ClickOps" is where we all started ye'
 pubDatetime: 2023-05-27T00:00:00Z
 tags:
   - aws
@@ -47,21 +47,21 @@ When a team decides to adopt this pattern and lean into what it means, the devel
 
 For instance, let's take a Queue and specifically an SQS in AWS. Things that have to be understood when designing and deploying:
 
--   FIFO or standard
--   Batch size when reading
--   Long-polling? Short-pooling? What's the difference?
--   Encryption? Custom KMS or AWS Managed KMS?
--   IAM and who can read from the Queue? Who can post to the Queue?
--   Failure? Does the message stay in the queue or go to a Dead-Letter-Queue?
+- FIFO or standard
+- Batch size when reading
+- Long-polling? Short-pooling? What's the difference?
+- Encryption? Custom KMS or AWS Managed KMS?
+- IAM and who can read from the Queue? Who can post to the Queue?
+- Failure? Does the message stay in the queue or go to a Dead-Letter-Queue?
 
 Now a Lambda:
 
--   Which runtime?
--   How much memory should I allocate?
--   What IAM policy should I build?
--   What triggers the Lambda?
--   VPC? Which one and why?
--   Environment variables, tags, aliases, versions ...
+- Which runtime?
+- How much memory should I allocate?
+- What IAM policy should I build?
+- What triggers the Lambda?
+- VPC? Which one and why?
+- Environment variables, tags, aliases, versions ...
 
 This can continue to go on and on and on depending upon how many resources you are using in your feature. And for each of those resources, you'll need to make these decisions and choices.
 
@@ -85,9 +85,9 @@ If you think back to the previous section, let's take a lambda reading from an S
 
 The main things that I've seen in my experiences here are centered around:
 
--   Customer focus
--   Accountability
--   Time to respond
+- Customer focus
+- Accountability
+- Time to respond
 
 Let's break those down just a little bit. When the team is observing how things are performing, they often will take a customer view of those operations. That customer view will help drive improvements to promote better efficiency or can include new workflows that get driven back into the product. This will also set up a mindset of continual improvement. Again, this isn't unique to IaC but I find that it happens more frequently when using IaC.
 
@@ -115,10 +115,10 @@ Honestly, neither of those things is true.
 
 First off, if you think about a sprint, what happens?
 
--   Plan
--   Do
--   Inspect
--   Adapt
+- Plan
+- Do
+- Inspect
+- Adapt
 
 That's the rhythm. But when you introduce the 3 new blocks on top of the App Code block it looks like this:
 
@@ -134,12 +134,12 @@ Now to the ops team. Should we get rid of them? Of course not! Their time is rep
 
 They will spend their time working on pipeline health, and standards around resource tagging and cost, in addition to stamping out standards for key cross-cutting concerns. These things range from best practices with:
 
--   Encryption
--   Runtimes
--   Container standards
--   IaC best practices
--   Common libraries for packaging corporate best practices.
--   Participating in design sessions on new features
+- Encryption
+- Runtimes
+- Container standards
+- IaC best practices
+- Common libraries for packaging corporate best practices.
+- Participating in design sessions on new features
 
 I often find that the Platform team works closely with the architecture team to help make sure the Engineering team has what it needs to deliver the customer value they are being asked for.
 

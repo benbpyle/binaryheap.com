@@ -53,44 +53,43 @@ The function CDK code looks like this
 
 ```typescript
 export class CacheFunction extends Construct {
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
-        const version = Math.round(new Date().getTime() / 1000).toString();
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
+    const version = Math.round(new Date().getTime() / 1000).toString();
 
-        // The DDB Table for lookup with a simple Primary Key
-        let table = new dynamodb.Table(this, id, {
-            billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-            removalPolicy: RemovalPolicy.DESTROY,
-            partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
-            pointInTimeRecovery: false,
-            tableName: "SampleLookupTable",
-        });
+    // The DDB Table for lookup with a simple Primary Key
+    let table = new dynamodb.Table(this, id, {
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: RemovalPolicy.DESTROY,
+      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
+      pointInTimeRecovery: false,
+      tableName: "SampleLookupTable",
+    });
 
-        // Basic Golang function
-        let func = new golambda.GoFunction(this, `CacheFunction`, {
-            entry: path.join(__dirname, "../../resources/router"),
-            functionName: "cache-function",
-            timeout: Duration.seconds(30),
-            environment: {
-                DD_FLUSH_TO_LOG: "true",
-                DD_TRACE_ENABLED: "true",
-                LOG_LEVEL: "debug",
-                CACHE_NAME: "sample-cache", // Momento Cache Name
-                TABLE_NAME: "SampleLookupTable",
-                IS_LOCAL: "false",
-            },
-        });
+    // Basic Golang function
+    let func = new golambda.GoFunction(this, `CacheFunction`, {
+      entry: path.join(__dirname, "../../resources/router"),
+      functionName: "cache-function",
+      timeout: Duration.seconds(30),
+      environment: {
+        DD_FLUSH_TO_LOG: "true",
+        DD_TRACE_ENABLED: "true",
+        LOG_LEVEL: "debug",
+        CACHE_NAME: "sample-cache", // Momento Cache Name
+        TABLE_NAME: "SampleLookupTable",
+        IS_LOCAL: "false",
+      },
+    });
 
-        Tags.of(func).add("version", version);
+    Tags.of(func).add("version", version);
 
-        // grant access to read and write
-        table.grantReadWriteData(func);
-        // grant access to query/decrypt the token secret
-        const s = Secret.fromSecretNameV2(this, "Secrets", "mo-cache-token");
-        s.grantRead(func);
-    }
+    // grant access to read and write
+    table.grantReadWriteData(func);
+    // grant access to query/decrypt the token secret
+    const s = Secret.fromSecretNameV2(this, "Secrets", "mo-cache-token");
+    s.grantRead(func);
+  }
 }
-
 ```
 
 With this function setup, I've set up a basic Lambda that has access to the DynamoDB table and the ability to read and decrypt the token. The Momento token must be used for all queries and it's transparent to the user when working with it beyond creating the client.
@@ -326,10 +325,9 @@ Lastly, let's run the Lambda with this event payload
 
 ```json
 {
-    "name": "sample",
-    "correlationId": "abc"
+  "name": "sample",
+  "correlationId": "abc"
 }
-
 ```
 
 Once you've done all of that, you'll get some output that looks like this.

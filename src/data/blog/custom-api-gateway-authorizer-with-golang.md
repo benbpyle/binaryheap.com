@@ -23,11 +23,11 @@ For reference, here is the architecture diagram for what I want to show you.
 
 What the above achieves is the following
 
--   Defines an API Gateway for managing payloads to our resources
--   Uses a Lamabda to handle Authorization
--   Validates the token against a Cognito User Pool
--   Leverages a cache with a custom set TTL to save compute
--   Finally, if all is good, allows access to the Protected Resource will also be able to supply overrides into the Claim Context
+- Defines an API Gateway for managing payloads to our resources
+- Uses a Lamabda to handle Authorization
+- Validates the token against a Cognito User Pool
+- Leverages a cache with a custom set TTL to save compute
+- Finally, if all is good, allows access to the Protected Resource will also be able to supply overrides into the Claim Context
 
 There is a companion half to this article as well that I'll show you how to extend the JWT that we'll be working with by using Lambdas and DyanamoDB. If you are curious about that, [here's the article to show you how that's done](https://binaryheap.com/extending-and-customizing-the-jwt-from-cognito-via-aws-lambda-using-go/)
 
@@ -41,54 +41,52 @@ Defining the UserPool looks like the below. Not much that needs additional expla
 
 ```typescript
 this._pool = new cognito.UserPool(this, "SamplePool", {
-    userPoolName: "SamplePool",
-    selfSignUpEnabled: false,
-    signInAliases: {
-        email: true,
-        username: true,
-        preferredUsername: true,
+  userPoolName: "SamplePool",
+  selfSignUpEnabled: false,
+  signInAliases: {
+    email: true,
+    username: true,
+    preferredUsername: true,
+  },
+  autoVerify: {
+    email: false,
+  },
+  standardAttributes: {
+    email: {
+      required: true,
+      mutable: true,
     },
-    autoVerify: {
-        email: false,
-    },
-    standardAttributes: {
-        email: {
-            required: true,
-            mutable: true,
-        },
-    },
-    customAttributes: {
-        isAdmin: new cognito.StringAttribute({ mutable: true }),
-    },
-    passwordPolicy: {
-        minLength: 8,
-        requireLowercase: true,
-        requireDigits: true,
-        requireUppercase: true,
-        requireSymbols: true,
-    },
-    accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
-    removalPolicy: cdk.RemovalPolicy.DESTROY,
+  },
+  customAttributes: {
+    isAdmin: new cognito.StringAttribute({ mutable: true }),
+  },
+  passwordPolicy: {
+    minLength: 8,
+    requireLowercase: true,
+    requireDigits: true,
+    requireUppercase: true,
+    requireSymbols: true,
+  },
+  accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+  removalPolicy: cdk.RemovalPolicy.DESTROY,
 });
-
 ```
 
 Adding a Client to a UserPool is also straightforward. So many options, but mine below is pretty vanilla. With this client, you can then have a way to login in with the user and do other app development against it. As you'll see later on in the article, I'm just using Postman to pull all this together.
 
 ```typescript
 this._pool.addClient("sample-client", {
-    userPoolClientName: "sample-client",
-    authFlows: {
-        adminUserPassword: true,
-        custom: true,
-        userPassword: true,
-        userSrp: false,
-    },
-    idTokenValidity: Duration.minutes(60),
-    refreshTokenValidity: Duration.days(30),
-    accessTokenValidity: Duration.minutes(60),
+  userPoolClientName: "sample-client",
+  authFlows: {
+    adminUserPassword: true,
+    custom: true,
+    userPassword: true,
+    userSrp: false,
+  },
+  idTokenValidity: Duration.minutes(60),
+  refreshTokenValidity: Duration.days(30),
+  accessTokenValidity: Duration.minutes(60),
 });
-
 ```
 
 ### Build the Authorizer
@@ -99,29 +97,28 @@ Now for the "custom" in building a custom API Gateway Authorizer with Golang. Th
 
 ```typescript
 export class AuthorizerFunction extends Construct {
-    private readonly _func: GoFunction;
+  private readonly _func: GoFunction;
 
-    constructor(scope: Construct, id: string, poolId: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string, poolId: string) {
+    super(scope, id);
 
-        this._func = new GoFunction(this, "AuthorizerFunc", {
-            entry: path.join(__dirname, `../../../src/authorizer`),
-            functionName: "authorizer-func",
-            timeout: Duration.seconds(30),
-            environment: {
-                USER_POOL_ID: poolId,
-            },
-        });
-    }
+    this._func = new GoFunction(this, "AuthorizerFunc", {
+      entry: path.join(__dirname, `../../../src/authorizer`),
+      functionName: "authorizer-func",
+      timeout: Duration.seconds(30),
+      environment: {
+        USER_POOL_ID: poolId,
+      },
+    });
+  }
 
-    get function(): GoFunction {
-        return this._func;
-    }
+  get function(): GoFunction {
+    return this._func;
+  }
 }
-
 ```
 
-As I mentioned above, a simple GoFunction implementation. The only interesting thing to note is the environment variable for the USER\_POOL\_ID. Let's take a look at why that matters.
+As I mentioned above, a simple GoFunction implementation. The only interesting thing to note is the environment variable for the USER_POOL_ID. Let's take a look at why that matters.
 
 #### Function implementation in Golang
 
@@ -158,9 +155,9 @@ The `jwksUrl` variable above is [documented](https://docs.aws.amazon.com/cognito
 
 The next part of this process is to perform the validation. I'm not going to go into the specifics in this article of how this happens but essentially the library is going to:
 
--   Verify the structure of the token
--   Verify the signing key matches the algorithm the key used
--   Verify the expiration and that the token hasn't expired
+- Verify the structure of the token
+- Verify the signing key matches the algorithm the key used
+- Verify the expiration and that the token hasn't expired
 
 That's the nice thing about using a library :) And here's how to invoke it.
 
@@ -333,14 +330,14 @@ cdk deploy
 
 Once the infrastructure is deployed, you should have
 
--   2 Lambdas
-    -   Authorizer
-    -   ProtectedResource
--   API Gateway
-    -   One endpoint to the ProtectedResource with the Authoirzer attached
-    -   An Authorizer
-    -   A Deployed Stage
--   A Cognito UserPool
+- 2 Lambdas
+  - Authorizer
+  - ProtectedResource
+- API Gateway
+  - One endpoint to the ProtectedResource with the Authoirzer attached
+  - An Authorizer
+  - A Deployed Stage
+- A Cognito UserPool
 
 Here is what your UserPool should look like
 
@@ -378,9 +375,9 @@ But first, let's snag a token. Remember I said to capture the ClientID in the Us
 
 The output of this is going to be your three tokens.
 
--   Access Token
--   ID Token
--   Refresh Token
+- Access Token
+- ID Token
+- Refresh Token
 
 Feel free to use either the ID or the Access in the next request.
 

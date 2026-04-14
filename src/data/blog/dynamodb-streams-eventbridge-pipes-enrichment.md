@@ -35,13 +35,13 @@ For the Patients table, I've got a simple setup.
 
 ```typescript
 this._table = new Table(this, id, {
-    billingMode: BillingMode.PAY_PER_REQUEST,
-    removalPolicy: RemovalPolicy.DESTROY,
-    partitionKey: { name: "id", type: AttributeType.STRING },
-    tableName: `Patients`,
-    encryption: TableEncryption.CUSTOMER_MANAGED,
-    encryptionKey: props.key,
-    stream: StreamViewType.NEW_AND_OLD_IMAGES,
+  billingMode: BillingMode.PAY_PER_REQUEST,
+  removalPolicy: RemovalPolicy.DESTROY,
+  partitionKey: { name: "id", type: AttributeType.STRING },
+  tableName: `Patients`,
+  encryption: TableEncryption.CUSTOMER_MANAGED,
+  encryptionKey: props.key,
+  stream: StreamViewType.NEW_AND_OLD_IMAGES,
 });
 ```
 
@@ -71,15 +71,15 @@ The CDK code that builds the pipe is kind of interesting to put together. There 
 
 ```typescript
 const pipe = new CfnPipe(scope, "Pipe", {
-    name: "Patient-StreamChange-Pipe",
-    roleArn: pipeRole.roleArn,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    source: props.table.tableStreamArn!,
-    enrichment: props.enrichmentFunction.functionArn,
-    target: logGroup.logGroupArn,
-    sourceParameters: this.sourceParameters(),
-    targetParameters: this.targetParameters(logGroup),
-    enrichmentParameters: this.enrichmentParameters(),
+  name: "Patient-StreamChange-Pipe",
+  roleArn: pipeRole.roleArn,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  source: props.table.tableStreamArn!,
+  enrichment: props.enrichmentFunction.functionArn,
+  target: logGroup.logGroupArn,
+  sourceParameters: this.sourceParameters(),
+  targetParameters: this.targetParameters(logGroup),
+  enrichmentParameters: this.enrichmentParameters(),
 });
 ```
 
@@ -87,19 +87,19 @@ That's the general pipe build. A good bit is going on in building each of the pa
 
 ```typescript
 sourceParameters = () => {
-    return {
-        dynamoDbStreamParameters: {
-            startingPosition: "LATEST",
-            batchSize: 1,
+  return {
+    dynamoDbStreamParameters: {
+      startingPosition: "LATEST",
+      batchSize: 1,
+    },
+    filterCriteria: {
+      filters: [
+        {
+          pattern: ' { "eventName": [ "MODIFY", "INSERT" ] }',
         },
-        filterCriteria: {
-            filters: [
-                {
-                    pattern: ' { "eventName": [ "MODIFY", "INSERT" ] }',
-                },
-            ],
-        },
-    };
+      ],
+    },
+  };
 };
 ```
 
@@ -109,12 +109,12 @@ The other part that needs some focus is the enrichment step. For my enrichment i
 
 ```typescript
 enrichmentParameters = () => {
-    return {
-        lambdaParameters: {
-            invocationType: "REQUEST_RESPONSE",
-        },
-        inputTemplate: ``,
-    };
+  return {
+    lambdaParameters: {
+      invocationType: "REQUEST_RESPONSE",
+    },
+    inputTemplate: ``,
+  };
 };
 ```
 
@@ -205,11 +205,11 @@ When enriching DyanmoDB Streams with EventBridge Pipes, I've got a lot of option
 
 ```typescript
 targetParameters = (logGroup: LogGroup) => {
-    return {
-        cloudWatchLogsParameters: {
-            logStreamName: logGroup.logGroupName,
-        },
-    };
+  return {
+    cloudWatchLogsParameters: {
+      logStreamName: logGroup.logGroupName,
+    },
+  };
 };
 ```
 

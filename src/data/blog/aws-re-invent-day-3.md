@@ -17,9 +17,9 @@ Let's dig into Day 3 of AWS re:Invent 2023.
 
 Just a quick recap, if you missed the previous updates.
 
--   [Day 0](https://binaryheap.com/aws-reinvent-day-0/)
--   [Day 1](https://binaryheap.com/aws-reinvent-day-1/)
--   [Day 2](https://binaryheap.com/aws-reinvent-day-2/)
+- [Day 0](https://binaryheap.com/aws-reinvent-day-0/)
+- [Day 1](https://binaryheap.com/aws-reinvent-day-1/)
+- [Day 2](https://binaryheap.com/aws-reinvent-day-2/)
 
 Head on over to those links to gain some insights into my first three days. Don't worry, this recap will still be waiting for you when you are done!
 

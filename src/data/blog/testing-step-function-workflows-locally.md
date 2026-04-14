@@ -37,31 +37,30 @@ First up, let's create the State Machine using CDK with TypeScript.
 const flow = this.buildStateMachine(scope);
 
 this._stateMachine = new stepfunctions.StateMachine(this, "StateMachine", {
-    stateMachineName: "SimpleStateMachine",
-    definition: flow,
-    stateMachineType: stepfunctions.StateMachineType.EXPRESS,
-    timeout: Duration.seconds(30),
-    logs: {
-        level: LogLevel.ALL,
-        destination: logGroup,
-        includeExecutionData: true,
-    },
+  stateMachineName: "SimpleStateMachine",
+  definition: flow,
+  stateMachineType: stepfunctions.StateMachineType.EXPRESS,
+  timeout: Duration.seconds(30),
+  logs: {
+    level: LogLevel.ALL,
+    destination: logGroup,
+    includeExecutionData: true,
+  },
 });
 
 // code above omitted
 buildStateMachine = (scope: Construct): stepfunctions.IChainable => {
-    const succeed = new Succeed(scope, "Succeed");
-    const failure = new Fail(scope, "Fail");
+  const succeed = new Succeed(scope, "Succeed");
+  const failure = new Fail(scope, "Fail");
 
-    return (
-        new Choice(this, "Success or Failure")
-            // Look at the "status" field
-            .when(Condition.stringEquals("$.path", "Succeed"), succeed)
-            .when(Condition.stringEquals("$.path", "Fail"), failure)
-            .otherwise(failure)
-    );
+  return (
+    new Choice(this, "Success or Failure")
+      // Look at the "status" field
+      .when(Condition.stringEquals("$.path", "Succeed"), succeed)
+      .when(Condition.stringEquals("$.path", "Fail"), failure)
+      .otherwise(failure)
+  );
 };
-
 ```
 
 ## Deploy Step Functions Locally
@@ -78,30 +77,29 @@ Let's have a look at the compose file
 version: "3.4"
 
 services:
-    localstack:
-        container_name: sf_localstack
-        image: localstack/localstack:latest
-        environment:
-            - AWS_DEFAULT_REGION=us-west-2
-            - HOSTNAME_EXTERNAL=localhost
-            - SERVICES=sqs # which services to start
-            - DEBUG=0
-        ports:
-            - 4566:4566
+  localstack:
+    container_name: sf_localstack
+    image: localstack/localstack:latest
+    environment:
+      - AWS_DEFAULT_REGION=us-west-2
+      - HOSTNAME_EXTERNAL=localhost
+      - SERVICES=sqs # which services to start
+      - DEBUG=0
+    ports:
+      - 4566:4566
 
-    step-functions:
-        container_name: step-functions
-        image: amazon/aws-stepfunctions-local
-        depends_on:
-            - localstack
-        environment:
-            - AWS_DEFAULT_REGION=us-west-2 # this is used when resources are created
-            - AWS_ACCESS_KEY_ID=12345 # just to fill in the blanks
-            - AWS_SECRET_ACCESS_KEY=12345 # just to fill in the blanks
-            - SQS_ENDPOINT=host.docker.internal:4566 # connected to Localstack
-        ports:
-            - 8083:8083
-
+  step-functions:
+    container_name: step-functions
+    image: amazon/aws-stepfunctions-local
+    depends_on:
+      - localstack
+    environment:
+      - AWS_DEFAULT_REGION=us-west-2 # this is used when resources are created
+      - AWS_ACCESS_KEY_ID=12345 # just to fill in the blanks
+      - AWS_SECRET_ACCESS_KEY=12345 # just to fill in the blanks
+      - SQS_ENDPOINT=host.docker.internal:4566 # connected to Localstack
+    ports:
+      - 8083:8083
 ```
 
 Basic of basic compose files. It starts up Localstack and then does the Step Functions container.
@@ -154,11 +152,11 @@ Moving right along, now we can start testing
 
 Now that we've got this State Machine up and running, how do we test it? So many ways.
 
--   Postman
--   cURL
--   Jest
--   jUnit
--   ...
+- Postman
+- cURL
+- Jest
+- jUnit
+- ...
 
 For this example, I'm going to show you how to set up Jest to test these. I like Jest for a couple of reasons
 
@@ -171,29 +169,27 @@ To isolate my State Machine tests, I create a test suite like this.
 import { SFNClient, StartSyncExecutionCommand } from "@aws-sdk/client-sfn";
 
 describe("SF Integration Tests", () => {
-    const client = new SFNClient({
-        region: "us-west-2",
-        endpoint: "http://localhost:8083",
-        disableHostPrefix: true,
-    });
+  const client = new SFNClient({
+    region: "us-west-2",
+    endpoint: "http://localhost:8083",
+    disableHostPrefix: true,
+  });
 });
-
 ```
 
 And then I can execute a test with the payload I want to like this
 
 ```typescript
 it("Should Succeed Success Path", async () => {
-    const startCommand = new StartSyncExecutionCommand({
-        stateMachineArn:
-            "arn:aws:states:us-west-2:123456789012:stateMachine:SimpleStateMachine3C32178E",
-        input: '{"path": "Succeed"}',
-    });
+  const startCommand = new StartSyncExecutionCommand({
+    stateMachineArn:
+      "arn:aws:states:us-west-2:123456789012:stateMachine:SimpleStateMachine3C32178E",
+    input: '{"path": "Succeed"}',
+  });
 
-    const startOutput = await client.send(startCommand);
-    expect(startOutput.status).toBe("SUCCEEDED");
+  const startOutput = await client.send(startCommand);
+  expect(startOutput.status).toBe("SUCCEEDED");
 });
-
 ```
 
 So pay close attention to the way I'm starting the State Machine. You'll see a lot of info on the internet about not being able to run StartSync with the local container. That's not true anymore. The first gripe you'll find is that it doesn't support it. IT DOES. The second one is that StartSync appends `sync-` to the host for your endpoint. And when adjusting your endpoint for local runs, it would append `sync-http://localhost`. That's not a valid endpoint.
@@ -202,11 +198,10 @@ After some digging through the GitHub repository and reading that this support w
 
 ```typescript
 const client = new SFNClient({
-    region: "us-west-2",
-    endpoint: "http://localhost:8083",
-    disableHostPrefix: true, // &lt;----- HERE
+  region: "us-west-2",
+  endpoint: "http://localhost:8083",
+  disableHostPrefix: true, // &lt;----- HERE
 });
-
 ```
 
 A run of the suite will look like this
@@ -215,10 +210,10 @@ A run of the suite will look like this
 
 So when testing Step Function workflows locally, I can use the same tooling that I am used to.
 
--   Docker
--   CDK and TypeScript
--   Bring my testing framework and tooling
--   AWS SDK that works locally and in the cloud
+- Docker
+- CDK and TypeScript
+- Bring my testing framework and tooling
+- AWS SDK that works locally and in the cloud
 
 ## Putting it all Together
 

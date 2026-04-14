@@ -17,9 +17,9 @@ However, when deploying more frequently, we also need to do it safely. Shipping 
 
 When deploying AWS Lambda functions you have a few options for how you want to deploy the code into the live environment. Just to touch on them before diving in a little deeper
 
--   All At Once -- what it sounds like. Full replacement of old code
--   Canary - Deploy and route a percentage of traffic and then fully cut over in the future
--   Linear - Deploy and route increments of traffic spread across increments of time
+- All At Once -- what it sounds like. Full replacement of old code
+- Canary - Deploy and route a percentage of traffic and then fully cut over in the future
+- Linear - Deploy and route increments of traffic spread across increments of time
 
 For the sake of this article I'm going to focus on using a Canary strategy but I'll point out where you can adjust based upon your needs. In addition, you want a more robust pipeline to run these deploys. For an example of how to setup CDK Pipelines as that mechanism, here's an [article](https://binaryheap.com/cdk-pipelines-the-construct/) for that
 
@@ -27,9 +27,9 @@ For the sake of this article I'm going to focus on using a Canary strategy but I
 
 For this example, I'll be using the following bits of tech to demonstrate
 
--   CDK (TypeScript)
--   Golang for the Lambda
--   Deploying locally up to AWS but could easily be put into a pipeline.
+- CDK (TypeScript)
+- Golang for the Lambda
+- Deploying locally up to AWS but could easily be put into a pipeline.
 
 ### Basic CDK Code
 
@@ -53,11 +53,11 @@ import * as cdk from "aws-cdk-lib";
 import { HandlerFunc } from "./queue-handler-func";
 
 export class MainStack extends cdk.Stack {
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        const handler = new HandlerFunc(this, "HandlerFunc");
-    }
+    const handler = new HandlerFunc(this, "HandlerFunc");
+  }
 }
 ```
 
@@ -69,10 +69,10 @@ First off, I'm creating a Lambda that's deployed with Golang runtime referenced 
 
 ```typescript
 const func = new GoFunction(scope, "Function", {
-    entry: path.join(__dirname, "../src/one"),
-    functionName: "sample-handler",
-    timeout: Duration.seconds(30),
-    environment: {},
+  entry: path.join(__dirname, "../src/one"),
+  functionName: "sample-handler",
+  timeout: Duration.seconds(30),
+  environment: {},
 });
 ```
 
@@ -80,12 +80,12 @@ With the function created, I'm going to use a couple of properties of Lambdas th
 
 ```typescript
 const version = new Date().toISOString();
-const aliasName = "main"
+const aliasName = "main";
 Tags.of(func).add("version", version);
 
 const stage = new Alias(scope, "FunctionAlias", {
-    aliasName: aliasName,
-    version: func.currentVersion,
+  aliasName: aliasName,
+  version: func.currentVersion,
 });
 ```
 
@@ -103,35 +103,35 @@ Next up is creating an alarm. This alarm exists to tell your deployment **when**
 
 ```typescript
 const failureAlarm = this.createFailureAlarm(
-    scope,
-    "LambdaFailure",
-    func,
-    aliasName
+  scope,
+  "LambdaFailure",
+  func,
+  aliasName
 );
 
 // further down in the class
 createFailureAlarm = (
-    c: Construct,
-    id: string,
-    func: GoFunction,
-    funcAlias: string
+  c: Construct,
+  id: string,
+  func: GoFunction,
+  funcAlias: string
 ): Alarm => {
-    return new Alarm(c, id, {
-        alarmDescription: "The latest deployment errors > 0", // give the alarm a name
-        metric: new Metric({
-            metricName: "Errors", // summing up the errors
-            namespace: "AWS/Lambda", // aws namespace
-            statistic: "sum",
-            dimensionsMap: {
-                Resource: `${func.functionName}:${func.currentVersion}`,
-                FunctionName: func.functionName,
-            },
-            period: Duration.minutes(1),
-        }),
+  return new Alarm(c, id, {
+    alarmDescription: "The latest deployment errors > 0", // give the alarm a name
+    metric: new Metric({
+      metricName: "Errors", // summing up the errors
+      namespace: "AWS/Lambda", // aws namespace
+      statistic: "sum",
+      dimensionsMap: {
+        Resource: `${func.functionName}:${func.currentVersion}`,
+        FunctionName: func.functionName,
+      },
+      period: Duration.minutes(1),
+    }),
 
-        threshold: 1, // only want 1 error.  that's too many
-        evaluationPeriods: 1, // how many periods to eval
-    });
+    threshold: 1, // only want 1 error.  that's too many
+    evaluationPeriods: 1, // how many periods to eval
+  });
 };
 ```
 
@@ -143,9 +143,9 @@ Lastly, I've got to build the deployment group. Here is some good [AWS Documenta
 
 ```typescript
 new LambdaDeploymentGroup(scope, "CanaryDeployment", {
-    alias: stage,
-    deploymentConfig: LambdaDeploymentConfig.CANARY_10PERCENT_5MINUTES,
-    alarms: [failureAlarm],
+  alias: stage,
+  deploymentConfig: LambdaDeploymentConfig.CANARY_10PERCENT_5MINUTES,
+  alarms: [failureAlarm],
 });
 ```
 

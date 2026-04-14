@@ -43,8 +43,8 @@ HealthLake has a tight quota on the number of "Exports" that can be running at a
 
 ```typescript
 const rule = new Rule(scope, "ExportRule", {
-    description: "Runs the CDC Export Process",
-    schedule: Schedule.expression("cron(0/" + 5 + " * * * ? *)"),
+  description: "Runs the CDC Export Process",
+  schedule: Schedule.expression("cron(0/" + 5 + " * * * ? *)"),
 });
 ```
 
@@ -52,18 +52,18 @@ With a rule built, I'll then add a Target, a Dead Letter Queue and a Role for th
 
 ```typescript
 const dlq = new Queue(this, "RuleDeadLetterQueue", {
-    queueName: "healthlake-cdc-trigger-dlq",
+  queueName: "healthlake-cdc-trigger-dlq",
 });
 
 const role = new Role(this, "Role", {
-    assumedBy: new ServicePrincipal("events.amazonaws.com"),
+  assumedBy: new ServicePrincipal("events.amazonaws.com"),
 });
 
 rule.addTarget(
-    new SfnStateMachine(props.stateMachine, {
-        deadLetterQueue: dlq,
-        role: role,
-    })
+  new SfnStateMachine(props.stateMachine, {
+    deadLetterQueue: dlq,
+    role: role,
+  })
 );
 ```
 
@@ -79,9 +79,9 @@ The first record I'm keeping is the last run to know 2 things. One, is there a j
 
 ```json
 {
-    "runStatus": "COMPLETED",
-    "lastRunTime": "2023-08-24T15:45:34.265Z",
-    "id": "RUN"
+  "runStatus": "COMPLETED",
+  "lastRunTime": "2023-08-24T15:45:34.265Z",
+  "id": "RUN"
 }
 ```
 
@@ -89,8 +89,8 @@ Secondarily, I'm holding the current run's time-triggered so that when the state
 
 ```json
 {
-    "id": "CURRENT_RUN",
-    "triggerTime": "2023-08-24T15:45:34.265Z"
+  "id": "CURRENT_RUN",
+  "triggerTime": "2023-08-24T15:45:34.265Z"
 }
 ```
 
@@ -112,24 +112,24 @@ That definition in ASL JSON (Amazon State Language) has this shape.
 
 ```json
 {
-    "Next": "Map",
-    "Type": "Task",
-    "HeartbeatSeconds": 120,
-    "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
-    "Parameters": {
-        "QueueUrl": "${StartExportQueueUrl}",
-        "MessageBody": {
-            "taskToken.$": "$.Task.Token",
-            "lastRunTime.$": "$.context.lastRunTime",
-            "runStatus.$": "$.context.runStatus"
-        }
-    },
-    "Catch": [
-        {
-            "ErrorEquals": ["States.ALL"],
-            "Next": "Set Failed"
-        }
-    ]
+  "Next": "Map",
+  "Type": "Task",
+  "HeartbeatSeconds": 120,
+  "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
+  "Parameters": {
+    "QueueUrl": "${StartExportQueueUrl}",
+    "MessageBody": {
+      "taskToken.$": "$.Task.Token",
+      "lastRunTime.$": "$.context.lastRunTime",
+      "runStatus.$": "$.context.runStatus"
+    }
+  },
+  "Catch": [
+    {
+      "ErrorEquals": ["States.ALL"],
+      "Next": "Set Failed"
+    }
+  ]
 }
 ```
 
@@ -142,14 +142,14 @@ The internals of the Function aren't that important other than it reads from the
 ```json
 // https://healthlake.us-west-2.amazonaws.com/datastore/{{HL_STORE_ID}}/r4/$export?_since=2023-07-18T00:00:00.461Z
 {
-    "JobName": "2023-07-19 15:06:49 +0000 UTC",
-    "OutputDataConfig": {
-        "S3Configuration": {
-            "S3Uri": "s3://<the s3 uri>",
-            "KmsKeyId": "arn:aws:kms:us-west-2:<account id>:key/<key id>"
-        }
-    },
-    "DataAccessRoleArn": "arn:aws:iam::<account id>:role/<key id>"
+  "JobName": "2023-07-19 15:06:49 +0000 UTC",
+  "OutputDataConfig": {
+    "S3Configuration": {
+      "S3Uri": "s3://<the s3 uri>",
+      "KmsKeyId": "arn:aws:kms:us-west-2:<account id>:key/<key id>"
+    }
+  },
+  "DataAccessRoleArn": "arn:aws:iam::<account id>:role/<key id>"
 }
 ```
 

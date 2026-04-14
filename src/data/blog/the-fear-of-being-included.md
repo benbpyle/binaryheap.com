@@ -29,7 +29,7 @@ But the label of introvert has become so strong in tech that everyone claims it 
 
 Here's the thing that took me years to understand: I cannot have the conversations and relationships that I have online in real life most of the time. My neighbors are construction workers, teachers, small business owners, and many other vocations. They don't want to talk about the existential threat or benefit that AI and agentic coding is having on the work of a software developer. It's not dinner party conversation. So the community I built online wasn't a substitute for real life — it was an extension of it that I couldn't get anywhere else.
 
-* * *
+---
 
 Somewhere around the 15-year mark of my career, I started to really understand that [people — myself included — and their experiences are not fungible](https://binaryheap.com/focus-on-value-building-serverless-applications/). This is hard to wrap your mind around until you gain more perspective.
 
@@ -45,7 +45,7 @@ I can remember several key conference conversations that had more impact on me t
 
 As a technologist, I find it imperative that I'm constantly challenging the status quo. Reviewing what I understand. Validating or invalidating it against what I might disagree with or not understand.
 
-* * *
+---
 
 Something started to change in me though. There wasn't an event, a trigger, an epiphany. I slowly found myself retreating. Not backing up. But stepping aside. Venturing out on my own path again.
 
@@ -59,7 +59,7 @@ I'm not so naive that I haven't seen this play out before in deep, dark spaces o
 
 The FOBI I'd carried my whole life started to feel less like a quirk and more like protection. The part of me that never wanted to join was watching the joiners tear each other apart over tools, platforms, and ideologies. And I thought: I stepped out from behind the keyboard to exchange ideas. Not to pick a side.
 
-* * *
+---
 
 The last layer in this evolution was the work I did establishing a public brand and identity. I spent months documenting what I most closely aligned with and how I wanted to present myself to the world. "Uniquely genuine and resourceful technology creator" is not just a phrase that describes me — it's a phrase I identify with. It became a filter. When the noise got loud, I could hold something up against that statement and ask: does this serve who I am? Does this fit?
 
@@ -69,6 +69,6 @@ I'm not here for the transactional. I'm here for the detail. The experience. The
 
 Or perhaps the FOBI was right all along, and the real community was never the platform. It was always the hallway conversation.
 
-* * *
+---
 
 _Next: The steam drill arrived. Read Part 3: John Henry at the Keyboard →_

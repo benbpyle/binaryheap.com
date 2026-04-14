@@ -18,12 +18,12 @@ For those who've read my technical articles before, you are aware that I write a
 
 My intention in the below tutorial is to walk through the following concepts:
 
--   Building Web API Route handlers utilizing Axum
--   Modeling a Todo from ViewModels to the Domain
--   Interacting with DynamoDB through a defined layer
--   Running locally with Docker and DynamoDB Local
--   Manually deploying in AWS ECS Fargate (no IaC at the moment)
--   Executing requests with Postman
+- Building Web API Route handlers utilizing Axum
+- Modeling a Todo from ViewModels to the Domain
+- Interacting with DynamoDB through a defined layer
+- Running locally with Docker and DynamoDB Local
+- Manually deploying in AWS ECS Fargate (no IaC at the moment)
+- Executing requests with Postman
 
 Fair warning, this will be one of the longer articles with more depth than I've done in a while so perhaps grab a beverage and a snack. Let's dive in!
 
@@ -40,12 +40,12 @@ For this example, I'm going to build a Web API with Rust and Fargate that provid
 
 The architecture when deployed in AWS will look like the image below. It will have a
 
--   VPC with Public and Private Subnets
--   An Application Load Balancer with a Target Group and a Rule to route to the Fargate Container
--   A Farage Cluster
-    -   One Service
-    -   One Task deployed under the service
--   DynamoDB table for storing the Todo items
+- VPC with Public and Private Subnets
+- An Application Load Balancer with a Target Group and a Rule to route to the Fargate Container
+- A Farage Cluster
+  - One Service
+  - One Task deployed under the service
+- DynamoDB table for storing the Todo items
 
 ![Web API with Rust and Fargate](/images/rust_web_api.png)
 
@@ -67,9 +67,9 @@ For more information on the [AWS Rust SDK](https://aws.amazon.com/sdk-for-rust/)
 
 Configuring DynamoDB requires establishing a client that is powered by the credentials for the given region or profile being used. Additionally, there are a few environment variables that I'm setting up below.
 
--   USE\_LOCAL: The purpose of this is to tell the init function that the code is running locally and to configure the additional settings for the DDB Client. Specifically adjustment the Endpoint URL.
--   TABLE\_NAME: Required value to be set. This is the table name of the DDB table
--   DDB\_HOST: Only required IF USE\_LOCAL is set. Allows for overriding the endpoint when running locally.
+- USE_LOCAL: The purpose of this is to tell the init function that the code is running locally and to configure the additional settings for the DDB Client. Specifically adjustment the Endpoint URL.
+- TABLE_NAME: Required value to be set. This is the table name of the DDB table
+- DDB_HOST: Only required IF USE_LOCAL is set. Allows for overriding the endpoint when running locally.
 
 ```rust
 let use_local = &std::env::var("USE_LOCAL");
@@ -131,11 +131,11 @@ Applications have state. That state and how it interacts with the other parts of
 
 A Web API with Rust and Fargate is no different. I've got 5 basic models that matter in this Todo Application.
 
--   Todo - The primary domain model
--   TodoView - The view representation of the Todo domain model
--   TodoDeleteView - View returned when a Delete is successful
--   TodoCreate - The input model for creating a new Todo
--   TodoUpdate - The input model for updating an existing Todo
+- Todo - The primary domain model
+- TodoView - The view representation of the Todo domain model
+- TodoDeleteView - View returned when a Delete is successful
+- TodoCreate - The input model for creating a new Todo
+- TodoUpdate - The input model for updating an existing Todo
 
 Notice that they all have references to Macros such as Serialize, Debug and Deserialize. Gives me some generated benefits of having JSON and DynamoDB serde and deserde taking care of. Additionally, the Debug macro helps with printing the values when logging and tracing.
 
@@ -223,9 +223,9 @@ Step 2 of building a Web API with Rust and Fargate requires a Docker image. One 
 
 To improve that experience, I did some digging into using multiple layers and steps to isolate things like dependencies that don't change much and allowing the bulk of my rebuilds to just be on source code changes. I'm by no means a Docker expert and even much less of a Docker and Rust expert, but what I've done below gives me the following:
 
--   250 - 300 second initial first builds
--   < 100 second subsequent builds
--   An image stored in AWS Elastic Container Registry that comes in around 43MB.
+- 250 - 300 second initial first builds
+- < 100 second subsequent builds
+- An image stored in AWS Elastic Container Registry that comes in around 43MB.
 
 I have much more to learn and there are surely more optimizations to be found but this is where I am right now.
 
@@ -249,17 +249,17 @@ RUN cargo build --release
 FROM debian:buster-slim
 ARG APP=/usr/src/app
 
-RUN apt-get update 
-    && apt-get install -y ca-certificates tzdata 
+RUN apt-get update
+    && apt-get install -y ca-certificates tzdata
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
 
-ENV TZ=Etc/UTC 
+ENV TZ=Etc/UTC
     APP_USER=appuser
 
-RUN groupadd $APP_USER 
-    && useradd -g $APP_USER $APP_USER 
+RUN groupadd $APP_USER
+    && useradd -g $APP_USER $APP_USER
     && mkdir -p ${APP}
 
 COPY --from=builder /web-app/target/release/sandbox ${APP}/web-app
@@ -281,30 +281,30 @@ For these reasons, I've added a `docker-compose.yml` so that you can experiment 
 ```yaml
 version: "3.8"
 services:
-    dynamodb-local:
-        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-        image: "amazon/dynamodb-local:latest"
-        container_name: dynamodb-local
-        ports:
-            - "8000:8000"
-        volumes:
-            - "./docker/dynamodb:/home/dynamodblocal/data"
-        working_dir: /home/dynamodblocal
-    application:
-        depends_on:
-            - dynamodb-local
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: application
-        ports:
-            - "8080:8080"
-        environment:
-            AWS_ACCESS_KEY_ID: "DUMMYIDEXAMPLE"
-            AWS_SECRET_ACCESS_KEY: "DUMMYEXAMPLEKEY"
-            USE_LOCAL: TRUE
-            TABLE_NAME: Todo
-            DDB_HOST: http://host.docker.internal:8000
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+  application:
+    depends_on:
+      - dynamodb-local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: application
+    ports:
+      - "8080:8080"
+    environment:
+      AWS_ACCESS_KEY_ID: "DUMMYIDEXAMPLE"
+      AWS_SECRET_ACCESS_KEY: "DUMMYEXAMPLEKEY"
+      USE_LOCAL: TRUE
+      TABLE_NAME: Todo
+      DDB_HOST: http://host.docker.internal:8000
 ```
 
 Now running the DynamoDB container and the Rust Web API locally is as simple as doing these two things.
@@ -438,11 +438,11 @@ As I start to close this article out and point you back to the [GitHub Repositor
 
 The future of application development with Rust and AWS seems very bright. I hope I've shown you a path to building a Web API with Rust that is ready for Fargate. There's a lot to digest in the ecosystem but there are smart folks in the community that can help you along the way. There is additionally some great written text and the online Rust book that do more than set you up well. The things I had to focus on most while building this article which I think would benefit you as well are:
 
--   Learning Rust
--   Understanding Crates
--   Tokio, Axum and the AWS SDK
--   Working with the Compiler
--   VSCode vs others
+- Learning Rust
+- Understanding Crates
+- Tokio, Axum and the AWS SDK
+- Working with the Compiler
+- VSCode vs others
 
 If I can leave you with this. If you start learning, stick with it. I've been coding for a long time and it's taken me months to get this far. You might do it in weeks or it might take a year. Who cares. The point is the learning. Growth is the goal. Results are just a by-product of those two things.
 

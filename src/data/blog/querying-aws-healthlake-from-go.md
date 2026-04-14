@@ -123,9 +123,9 @@ Very similar to the Bundle fetching. The difference is that I'm actually asking 
 
 As you can see, it's pretty easy to query Healthlake. Remember, the power in the solution can be explored [here](https://aws.amazon.com/healthlake/features/). It really is a nice product and when you have the problem of needing your data to be stored
 
--   In FHIR format
--   Organized by the Patient
--   Versioned
--   Stored at scale
+- In FHIR format
+- Organized by the Patient
+- Versioned
+- Stored at scale
 
 then Healthlake is a nice choice for this problem. As always, hope this was helpful.

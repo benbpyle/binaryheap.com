@@ -14,16 +14,16 @@ draft: false
 
 Event-driven applications aren't new, but the patterns and discussion in the context of the cloud are hard to miss these days. It's hard to argue with the patterns and practices because with events, I can build systems that are more reliable, available, and tolerant of fault and issues that arise both in and out of my control. I've actually written quite a bit about building event-driven systems with serverless technologies like Lambda, SQS, SNS, EventBridge, and DynamoDB, but I don't want to explore familiar topics here. What if I took that a different direction and built an event-driven consumer inside a Kubernetes and more specifically Amazon Elastic Kubernetes Service (EKS) deployment? The building blocks would be the same, SQS for instance, but can I replace Lambda and how would that work? Let's dive into Event-Driven Pods with KEDA and EKS.
 
--   [Architecture and Design](#architecture-and-design)
--   [Event-Driven Pods with KEDA and EKS](#event-driven-pods-with-keda-and-eks)
-    -   [EKS Cluster](#eks-cluster)
-    -   [SQS](#sqs)
-    -   [KEDA](#keda)
-    -   [Deploying the Application](#deploying-the-application)
-        -   [Deployment](#deployment)
-        -   [KEDA Configuration](#keda-configuration)
--   [Testing the Solution](#testing-the-solution)
--   [Wrapping Up](#wrapping-up)
+- [Architecture and Design](#architecture-and-design)
+- [Event-Driven Pods with KEDA and EKS](#event-driven-pods-with-keda-and-eks)
+  - [EKS Cluster](#eks-cluster)
+  - [SQS](#sqs)
+  - [KEDA](#keda)
+  - [Deploying the Application](#deploying-the-application)
+    - [Deployment](#deployment)
+    - [KEDA Configuration](#keda-configuration)
+- [Testing the Solution](#testing-the-solution)
+- [Wrapping Up](#wrapping-up)
 
 ## Architecture and Design
 
@@ -82,13 +82,13 @@ I'm doing something a little different for this article and using Claude Code to
 
 The key elements of this solution to dig through and configure:
 
--   Kubernetes (EKS)
-    -   Deployment with Docker Image built from source
--   KEDA
-    -   Includes the KEDA Operator
-    -   ScaledObject which is the resource that handles interacting with Metrics and Horizontal Pod Autoscaler
-    -   TriggerAuthentication is a resource that allows our scaler to use the Pod's identity
--   IRSA which is IAM Roles for Service Accounts which let's our pods assume an IAM role and the policies attached.
+- Kubernetes (EKS)
+  - Deployment with Docker Image built from source
+- KEDA
+  - Includes the KEDA Operator
+  - ScaledObject which is the resource that handles interacting with Metrics and Horizontal Pod Autoscaler
+  - TriggerAuthentication is a resource that allows our scaler to use the Pod's identity
+- IRSA which is IAM Roles for Service Accounts which let's our pods assume an IAM role and the policies attached.
 
 Once deployed, I'm going to use the KEDA ScaledObject (Scaler) to monitor an AWS SQS for queue depth and then spin up pods in my Deployment that can handle those messages and do something with each payload. A very traditional competing consumers pattern implemented as a scale-to-zero deployment with Kubernetes.
 
@@ -99,7 +99,7 @@ SQS Queue ──► KEDA Operator ──► ScaledObject ──► HPA ──►
     └──────────────┼────────────────┼────────────┼───────────┼──────────┘
                    │                │            │           │
                    ▼                ▼            ▼           ▼
-             Metrics Query    Scale Decision   Pod Count   Message 
+             Metrics Query    Scale Decision   Pod Count   Message
             (Every 15s)      (Queue ÷ 5)     Adjustment  Processing
 
 Timeline:
@@ -117,11 +117,11 @@ Foundationally, I could start with the cluster or with the SQS. I tried to keep 
 
 Here are the dependencies you'll need to follow along:
 
--   Rust 1.80 or later
--   Docker
--   AWS account
--   AWS CLI configured
--   eksctl installed (for cluster creation)
+- Rust 1.80 or later
+- Docker
+- AWS account
+- AWS CLI configured
+- eksctl installed (for cluster creation)
 
 ### EKS Cluster
 
@@ -206,12 +206,12 @@ I won't dive through all the resources but just point out highlights that I thin
 spec:
   serviceAccountName: sqs-processor-sa
   containers:
-  - name: sqs-processor
-    image: public.ecr.aws/f8u4w2p3/rust-sqs-processor:1.0.0
-    imagePullPolicy: IfNotPresent
-    envFrom:
-    - configMapRef:
-        name: sqs-processor-config
+    - name: sqs-processor
+      image: public.ecr.aws/f8u4w2p3/rust-sqs-processor:1.0.0
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - configMapRef:
+            name: sqs-processor-config
 ```
 
 This article is more about KEDA than it is the Rust code, but I do want to show that my Rust code is going to poll and print what it finds. The Rust code has an infinite loop that waits for signals that pod is being terminated. It also includes a server that has a healthcheck that Kubernetes can poll to make sure the container is still responding correctly.
@@ -266,21 +266,20 @@ metadata:
   namespace: default
 spec:
   scaleTargetRef:
-    name: sqs-processor  # Name of the deployment to scale
-  minReplicaCount: 0     # Minimum number of replicas
-  maxReplicaCount: 10    # Maximum number of replicas
-  pollingInterval: 15    # How frequently to check the metrics (in seconds)
-  cooldownPeriod: 300    # Period to wait after last trigger before scaling down
+    name: sqs-processor # Name of the deployment to scale
+  minReplicaCount: 0 # Minimum number of replicas
+  maxReplicaCount: 10 # Maximum number of replicas
+  pollingInterval: 15 # How frequently to check the metrics (in seconds)
+  cooldownPeriod: 300 # Period to wait after last trigger before scaling down
   triggers:
-  - type: aws-sqs-queue
-    metadata:
-      queueURL: https://sqs.us-west-2.amazonaws.com/{AWS_ACCOUNT_ID}/sqs-processor-queue  # Replace with your SQS queue URL
-      queueLength: "5"   # Target messages per pod
-      awsRegion: "us-west-2"  # Replace with your AWS region
-      identityOwner: "pod"  # Use IAM role attached to the application pod's service account
-    authenticationRef:
-      name: aws-pod-identity  # Reference to the TriggerAuthentication resource
-
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.us-west-2.amazonaws.com/{AWS_ACCOUNT_ID}/sqs-processor-queue # Replace with your SQS queue URL
+        queueLength: "5" # Target messages per pod
+        awsRegion: "us-west-2" # Replace with your AWS region
+        identityOwner: "pod" # Use IAM role attached to the application pod's service account
+      authenticationRef:
+        name: aws-pod-identity # Reference to the TriggerAuthentication resource
 ```
 
 ## Testing the Solution

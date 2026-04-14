@@ -31,7 +31,7 @@ I'd first like to define what category of compute these two are in my mind and t
 ### AWS Fargate
 
 > AWS Fargate is a serverless, pay-as-you-go compute engine that lets you focus on building applications without managing servers. AWS Fargate is compatible with both Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS). - AWS.
-> 
+>
 > AWS
 
 And to further illustrate, here is their infographic
@@ -45,7 +45,7 @@ Think about it this way. You build a container image (Docker) and then based on 
 Compare that with AWS Lambda which is described by AWS like this.
 
 > AWS Lambda is a serverless, event-driven compute service that lets you run code for virtually any type of application or backend service without provisioning or managing servers. You can trigger Lambda from over 200 AWS services and software as a service (SaaS) applications, and only pay for what you use.
-> 
+>
 > AWS
 
 ![](/images/product-page-diagram_Lambda-WebApplications-2.c7f8cf38e12cb1daae9965ca048e10d676094dc1-1024x243.png)
@@ -56,17 +56,17 @@ The way I think about when to use Lambdas is largely by what is going to trigger
 
 So if we want to look first at perhaps some "hard" criteria to understand one vs the other, these are the questions that I might ask.
 
--   Does your code run in bursts or perhaps not consistently throughout the day?
--   Does the idea of only paying for resources used to appeal to you?
--   Are you connecting to other Serverless services and using those things as Event Triggers?
--   Do you have a lot of passion for containers or prefer to just write your code and let AWS take care of the rest? (Side note, sure you can deploy custom images into the Lambda runtime but controversially I say why?)
+- Does your code run in bursts or perhaps not consistently throughout the day?
+- Does the idea of only paying for resources used to appeal to you?
+- Are you connecting to other Serverless services and using those things as Event Triggers?
+- Do you have a lot of passion for containers or prefer to just write your code and let AWS take care of the rest? (Side note, sure you can deploy custom images into the Lambda runtime but controversially I say why?)
 
 If you answered yes to those questions and maybe no to the last, I would tend to think that you are going to be looking to deploy in _Lambda_. But let's look at the converse of that why you might look at Fargate.
 
--   Are you bringing legacy code to the cloud that's currently already running on-prem or maybe even in EC2?
--   Is your workload more consistent and even balanced? Can you perhaps shut things off after hours or will you have steady demand after hours?
--   Is your scaling predictable or are you comfortable scaling up to meet demand with alarms and triggers to provision new infrastructure?
--   Do you have a longer running task that instead of using Step Functions you'd feel better running in a host? Lambda will drop you at 15 minutes so this might matter.
+- Are you bringing legacy code to the cloud that's currently already running on-prem or maybe even in EC2?
+- Is your workload more consistent and even balanced? Can you perhaps shut things off after hours or will you have steady demand after hours?
+- Is your scaling predictable or are you comfortable scaling up to meet demand with alarms and triggers to provision new infrastructure?
+- Do you have a longer running task that instead of using Step Functions you'd feel better running in a host? Lambda will drop you at 15 minutes so this might matter.
 
 Answering yes to the above lends me to thinking about _Fargate_. If you are looking for building consistent workloads with more Opensource and non-AWS frameworks, then go with Fargate. It's going to give you that EC2 but still Serverless feel.
 
@@ -84,10 +84,10 @@ What does this mean though for you as a developer or architect? Again, let me st
 
 I'm going to break each of these down into the following categories:
 
--   Deploying your code
--   Configuring common parameters
--   Cost
--   Overall Developer experience / Gotchas
+- Deploying your code
+- Configuring common parameters
+- Cost
+- Overall Developer experience / Gotchas
 
 Please remember, these are my takes from my experiences. It's not exhaustive and I'll never profess to be an expert at anything and especially something that is so open-ended as Serverless. But in the end, as a new developer to Serverless, I hope you find them helpful.
 
@@ -111,12 +111,12 @@ There is a great deal more than what I'm about to share, but for starters, these
 
 For Lambda, the things that matter the most to me are this and in no order of importance.
 
--   Memory allocated: This tells Lambda how much memory is assigned to your function and also proportionately assigns vCPU. There's no setting for CPU but you'll see there will be a sweet spot for how much memory balances against performance
--   Environment variables: Seems simple right? But having the right variables configured makes your Lambda more adaptable so that you can alter behavior without changing code.
--   VPC Settings: I'm going to be honest, I rarely ever use this. But when you need to use something inside your VPC, you'll need to specify the VPC and the Subnets that you want your Lambda attached to.
--   IAM Policies: Your Lambda will get its permissions from the policies that are attached to it. When you look at using the SDK for calling any other services, you won't need an ACCESS\_KEY\_ID or SECRET\_ACCESS\_KEY as the SDK will pick those up from your Lambda when it runs. So pay attention to what you grant in there and only grant what you need.
--   Concurrency: By default your account will only allow so many Lambda invocations at one time. Additionally, you might need to restrict the number of versions of this code running at any one time. Setting the max concurrency on your Lambda can be important.
--   Last and it's a big last. Learn the configurations for the Events that will trigger your Lambda. For SQS, how many messages per poll. For Kinesis, what's the batch size and what happens on failures? So many things to learn here.
+- Memory allocated: This tells Lambda how much memory is assigned to your function and also proportionately assigns vCPU. There's no setting for CPU but you'll see there will be a sweet spot for how much memory balances against performance
+- Environment variables: Seems simple right? But having the right variables configured makes your Lambda more adaptable so that you can alter behavior without changing code.
+- VPC Settings: I'm going to be honest, I rarely ever use this. But when you need to use something inside your VPC, you'll need to specify the VPC and the Subnets that you want your Lambda attached to.
+- IAM Policies: Your Lambda will get its permissions from the policies that are attached to it. When you look at using the SDK for calling any other services, you won't need an ACCESS_KEY_ID or SECRET_ACCESS_KEY as the SDK will pick those up from your Lambda when it runs. So pay attention to what you grant in there and only grant what you need.
+- Concurrency: By default your account will only allow so many Lambda invocations at one time. Additionally, you might need to restrict the number of versions of this code running at any one time. Setting the max concurrency on your Lambda can be important.
+- Last and it's a big last. Learn the configurations for the Events that will trigger your Lambda. For SQS, how many messages per poll. For Kinesis, what's the batch size and what happens on failures? So many things to learn here.
 
 ![Lambda Parameters](/images/aws_lambda_configuration.png)
 
@@ -126,12 +126,12 @@ When working with Fargate, I can't write up anything much better than what's alr
 
 But what I will do is point out what I think is important when you start. So those key things are this.
 
--   vCPU: This means just what you think it does. How much/many CPUs do you want to allocate to your container
--   Memory: Also super straightforward. You need to balance vCPU with Memory as there are combinations that you can't create. But in general, you should find this to be what you expect.
--   IAM Policies: Your Fargate Task will get its permissions from the policies that are attached to it. When you look at using the SDK for calling any other services, you won't need an ACCESS\_KEY\_ID or SECRET\_ACCESS\_KEY as the SDK will pick those up from your Task when it runs. So pay attention to what you grant in there and only grant what you need.
--   Docker Settings
--   Which ports are you opening and which port is the internal one listening to? They might be different
--   What's the HealthCheck (endpoint)
+- vCPU: This means just what you think it does. How much/many CPUs do you want to allocate to your container
+- Memory: Also super straightforward. You need to balance vCPU with Memory as there are combinations that you can't create. But in general, you should find this to be what you expect.
+- IAM Policies: Your Fargate Task will get its permissions from the policies that are attached to it. When you look at using the SDK for calling any other services, you won't need an ACCESS_KEY_ID or SECRET_ACCESS_KEY as the SDK will pick those up from your Task when it runs. So pay attention to what you grant in there and only grant what you need.
+- Docker Settings
+- Which ports are you opening and which port is the internal one listening to? They might be different
+- What's the HealthCheck (endpoint)
 
 ![Farage parameters](/images/aws_ecs_configuration.png)
 
@@ -144,7 +144,7 @@ Now here's where there is a good bit of difference and something worth thinking 
 For Lambda first, here is what AWS says.
 
 > Lambda counts a request each time it starts executing in response to an event notification trigger, such as from Amazon Simple Notification Service (SNS) or Amazon EventBridge, or an invoke call, such as from Amazon API Gateway, or via the AWS SDK, including test invokes from the AWS Console. Duration is calculated from the time your code begins executing until it returns or otherwise terminates, rounded up to the nearest 1 ms\*. The price depends on the amount of memory you allocate to your function. In the AWS Lambda resource model, you choose the amount of memory you want for your function, and are allocated proportional CPU power and other resources. An increase in memory size triggers an equivalent increase in CPU available to your function
-> 
+>
 > AWS
 
 What the above means is that you are charged for the size and duration of your function where size is measured in Memory Allocated. Take for instance a simple Queue event handler that only runs a handful of times a day. It really makes very little sense to have a container in Fargate running for something like this. Of course, you could spin it up, spin it down and whatnot, but why take that overhead? Additionally, you might have a Lambda that runs a million times a day. I could make the argument that the Fargate task would be cheaper if the request overhead makes sense, but then ask, what if the container doesn't need to be up overnight? It might be a mix of Fargate and then turning it off? Or perhaps even further, you don't want to worry about it and you are willing to pay the overhead to run Lambda all the time. That's your choice as well.
@@ -156,11 +156,11 @@ With anything, unless you are racking your equipment, perfectly sizing and going
 Per AWS, here's how Fargate pricing works.
 
 > AWS Fargate pricing is calculated based on the vCPU, memory, Operating Systems, CPU Architecture, and storage1 resources used from the time you start to download your container image until the Amazon ECS Task or Amazon EKS2 Pod terminates, rounded up to the nearest second.
-> 
+>
 > AWS
 
 > Pricing is based on requested vCPU, memory, Operating Systems, CPU Architecture, and storage1 resources for the Task or Pod. The five dimensions are independently configurable.
-> 
+>
 > AWS
 
 Bottom line, you are going to get charged for the architecture, storage, compute and memory that you need. From there, it's easy. You don't need to worry about where the container is deployed or even how just that you have an IP address that is in front of your container that is running your code and exposing the ports you've asked for with the parameter settings you specified.

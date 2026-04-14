@@ -35,10 +35,10 @@ Below are the pieces of my secret sauce to building influence. Remember, influen
 
 Let's jump into the key areas:
 
--   Credibility
--   Selflessness
--   Empathy
--   Follow the Yeses
+- Credibility
+- Selflessness
+- Empathy
+- Follow the Yeses
 
 ### Credibility
 

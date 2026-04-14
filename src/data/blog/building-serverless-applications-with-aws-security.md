@@ -31,9 +31,9 @@ In the previous article, we walked through building an API with API Gateway that
 
 Let's take our API and look at the below diagram and see the three parts I just mentioned above.
 
--   Securing the API
--   Limiting access of the compute platform you chose
--   Guarding the data with encryption
+- Securing the API
+- Limiting access of the compute platform you chose
+- Guarding the data with encryption
 
 ![Security Overview](/images/serverless_security.png)
 
@@ -79,15 +79,15 @@ A Policy Statement is the heart of defining access for your resource. A simple o
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "Stament ID",
-            "Effect": "Allow|Deny",
-            "Action": ["service:someAction"],
-            "Resource": "arn:the-thing-to-allow-access-to"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stament ID",
+      "Effect": "Allow|Deny",
+      "Action": ["service:someAction"],
+      "Resource": "arn:the-thing-to-allow-access-to"
+    }
+  ]
 }
 ```
 
@@ -95,28 +95,28 @@ To take it one step further, granting read access to a DynamoDB table like in th
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "ReadOnlyAPIActionsOnYourTable",
-            "Effect": "Allow",
-            "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:ConditionCheckItem"
-            ],
-            "Resource": "arn:aws:dynamodb:us-west-2:accountId:table/YourTable"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadOnlyAPIActionsOnYourTable",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:BatchGetItem",
+        "dynamodb:Scan",
+        "dynamodb:Query",
+        "dynamodb:ConditionCheckItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-west-2:accountId:table/YourTable"
+    }
+  ]
 }
 ```
 
--   Sid - just a statement id for the policy. Helps with naming
--   Effect - Allow or Deny. Allow is better as it's easier to me when understanding the explicit actions that are allowed when reading a policy document.
--   Action - The operations your resource would like to perform on another resource. These are specific to that resource. Go find your service in the AWS Docs and learn it. Always structured like `service:operation`. You can grant a `*` in the action as well. Use that sparingly unless you know what you are doing. Rarely every grant `*` on the whole thing. `dynamodb:Get*` is better than `dynamodb:*`
--   Resource - the thing you want to grant these permissions to. It can also be an array but again, limit to what you need. Rarely `*`. And when starting, I'd say **never** do that
+- Sid - just a statement id for the policy. Helps with naming
+- Effect - Allow or Deny. Allow is better as it's easier to me when understanding the explicit actions that are allowed when reading a policy document.
+- Action - The operations your resource would like to perform on another resource. These are specific to that resource. Go find your service in the AWS Docs and learn it. Always structured like `service:operation`. You can grant a `*` in the action as well. Use that sparingly unless you know what you are doing. Rarely every grant `*` on the whole thing. `dynamodb:Get*` is better than `dynamodb:*`
+- Resource - the thing you want to grant these permissions to. It can also be an array but again, limit to what you need. Rarely `*`. And when starting, I'd say **never** do that
 
 ## Guarding the data with encryption
 
@@ -132,11 +132,11 @@ For instance, maybe a key for databases/filesystems and a key for messaging. Thi
 
 The following items are candidates for encryption based on the things this summer series talks about.
 
--   DynamoDB Table/Stream
--   SQS
--   SNS
--   Kinesis
--   S3
+- DynamoDB Table/Stream
+- SQS
+- SNS
+- Kinesis
+- S3
 
 All of these services will encrypt your data at rest even if it only rests for milliseconds, it's still encrypted. However, now remember, if you encrypt something, your resource will need to be able to decrypt if it's a reader. And it will need to encrypt if it's a writer. Those are actions on KMS and will often look like this:
 
@@ -154,10 +154,10 @@ All of these services will encrypt your data at rest even if it only rests for m
 
 This is by no means an exhaustive look at security but it should be enough to get you started. By leveraging these 3 approaches to securing your workloads, you are on your way to building some really good and solid applications. For further and deeper reading, I highly recommend the below links. Some are outside the scope of this article and will apply to Identity Policies, Users, Roles and cross-account stuff, but still worth the reading.
 
--   [IAM Service Page](https://aws.amazon.com/iam/)
--   [IAM Deeper Resources](https://aws.amazon.com/iam/resources/?nc=sn&loc=4&iam-blogs.sort-by=item.additionalFields.createdDate&iam-blogs.sort-order=desc)
--   [IAM Best Practices](https://aws.amazon.com/iam/resources/best-practices/)
--   [AWS Well-Architected Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html)
+- [IAM Service Page](https://aws.amazon.com/iam/)
+- [IAM Deeper Resources](https://aws.amazon.com/iam/resources/?nc=sn&loc=4&iam-blogs.sort-by=item.additionalFields.createdDate&iam-blogs.sort-order=desc)
+- [IAM Best Practices](https://aws.amazon.com/iam/resources/best-practices/)
+- [AWS Well-Architected Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html)
 
 Next up I will be wrapping the series up with topics on Debugging and Troubleshooting in production. I will have some things in there that point to how to best instrument your Serverless components and also some scenarios I've seen that you will see too as you get going with Serverless. Stay tuned!
 

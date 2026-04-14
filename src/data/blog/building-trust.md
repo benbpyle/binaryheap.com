@@ -72,12 +72,12 @@ So you are probably thinking that this is a lot like "Add Value". And it is, but
 
 Once you've built some trust, contributing to your team daily will only deepen that which you've built. You want to be known as the person people can count on. That could mean:
 
--   Peer reviews for help with code
--   Solution reviews on a new design
--   Manual testing if you've finished your work early
--   Writing tests even for code you didn't write
--   Helping with project management tasks when you've got the space
--   Assisting your product leadership to make the backlog the best it can be.
+- Peer reviews for help with code
+- Solution reviews on a new design
+- Manual testing if you've finished your work early
+- Writing tests even for code you didn't write
+- Helping with project management tasks when you've got the space
+- Assisting your product leadership to make the backlog the best it can be.
 
 Building tech team trust is a lot like building a sports team trust. My teammates need to know that I'm willing to do whatever is necessary to make us better and ultimately succeed.
 

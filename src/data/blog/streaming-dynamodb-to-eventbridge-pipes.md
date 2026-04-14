@@ -16,12 +16,12 @@ draft: false
 
 There is a real push and thought process around moving as much of your boilerplate code up into your serverless cloud components as possible. By streaming DynamoDB to EventBridge Pipes, you can move a large chunk of that boilerplate into the cloud. The thinking is that for things that really don't differentiate your solution, why not let your cloud provider take care of that for you. Their integrations are well tested, highly scalable and highly available and can be more cost effective as you don't waste CPU cycles on things like
 
--   Polling
--   Error handling
--   Data transformation
--   Filtering
--   Enrichment
--   Event management
+- Polling
+- Error handling
+- Data transformation
+- Filtering
+- Enrichment
+- Event management
 
 All of those things "could" be done say in a container or in a Lambda but again, why pay the cycles, write all of this code over and over and over when you can push it up as configuration and as a part of your CDK or SAM code that handles the deployments
 
@@ -31,10 +31,10 @@ As usual, if you want to skip straight to a working sample, here's the [Github r
 
 [AWS EventBridge Pipes](https://aws.amazon.com/eventbridge/pipes/) were launched at re:Invent in '22 and they brought a new capability into the ecosystem for working with event driven architectures. This now gives a developer a very straightforward pipeline to perform the below on a host of events that are generated in your system
 
--   Handle
--   Filter
--   Enrich
--   Ship
+- Handle
+- Filter
+- Enrich
+- Ship
 
 For the sake of this article, I'm going to walk through streaming DynamoDB to EventBridge Pipes , filtering out just the MODIFY events, transform that data and then put the event on an EventBridge custom bus. From there, I'll handle the event with a Rule that targets a Lambda. If you are interested in connecting Pipes to SNS then here's another read to [check out](https://binaryheap.com/subscribe-sns-to-eventbridge-pipes-with-cdk/)
 
@@ -46,21 +46,20 @@ Let's start with what this looks like once it's been deployed. You can see the 3
 
 Starting out with the Table streams need to be enabled on it. And for the sake of this demo, I'm using the following settings.
 
--   LATEST for only those most recent records
--   Batch of 1 because this is for a simple setup
--   Capturing both New and Old images
+- LATEST for only those most recent records
+- Batch of 1 because this is for a simple setup
+- Capturing both New and Old images
 
 ```typescript
 this._table = new dynamodb.Table(this, id, {
-    billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-    removalPolicy: cdk.RemovalPolicy.DESTROY,
-    partitionKey: {name: 'PK', type: dynamodb.AttributeType.STRING},
-    sortKey: {name: 'SK', type: dynamodb.AttributeType.STRING},
-    pointInTimeRecovery: false,
-    tableName: 'SampleTable',
-    stream: StreamViewType.NEW_AND_OLD_IMAGES
+  billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+  removalPolicy: cdk.RemovalPolicy.DESTROY,
+  partitionKey: { name: "PK", type: dynamodb.AttributeType.STRING },
+  sortKey: { name: "SK", type: dynamodb.AttributeType.STRING },
+  pointInTimeRecovery: false,
+  tableName: "SampleTable",
+  stream: StreamViewType.NEW_AND_OLD_IMAGES,
 });
-
 ```
 
 ### Creating the Policies
@@ -71,74 +70,75 @@ I'm going to create a source and target Policy for IAM first off that grants rea
 
 ```typescript
 const sourcePolicy = new PolicyDocument({
-    statements: [
-        new PolicyStatement({
-            resources: [this._table.tableStreamArn!],
-            actions: [
-                "dynamodb:DescribeStream",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:ListStreams"
-            ],
-            effect: Effect.ALLOW,
-        })
-    ]
+  statements: [
+    new PolicyStatement({
+      resources: [this._table.tableStreamArn!],
+      actions: [
+        "dynamodb:DescribeStream",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:ListStreams",
+      ],
+      effect: Effect.ALLOW,
+    }),
+  ],
 });
 
 const targetPolicy = new PolicyDocument({
-    statements: [
-        new PolicyStatement({
-            resources: [props.bus.eventBusArn],
-            actions: ['events:PutEvents'],
-            effect: Effect.ALLOW,
-        }),
-    ],
+  statements: [
+    new PolicyStatement({
+      resources: [props.bus.eventBusArn],
+      actions: ["events:PutEvents"],
+      effect: Effect.ALLOW,
+    }),
+  ],
 });
-
 ```
 
 Then from the policies I create a Role
 
 ```typescript
-const pipeRole = new Role(this, 'PipeRole', {
-    assumedBy: new ServicePrincipal('pipes.amazonaws.com'),
-    inlinePolicies: {
-        sourcePolicy,
-        targetPolicy,
-    },
+const pipeRole = new Role(this, "PipeRole", {
+  assumedBy: new ServicePrincipal("pipes.amazonaws.com"),
+  inlinePolicies: {
+    sourcePolicy,
+    targetPolicy,
+  },
 });
-
 ```
 
 ### Creating the Stream Pipe
 
 ```typescript
-        // Create new Pipe
-        const pipe = new pipes.CfnPipe(this, 'pipe', {
-            name: 'SampleTableModifyPipe',
-            roleArn: pipeRole.roleArn,
-            source: this._table.tableStreamArn!,
-            target: props.bus.eventBusArn,
-            sourceParameters: {
-                dynamoDbStreamParameters: {
-                    startingPosition: 'LATEST',
-                    batchSize: 1
-                },
-                filterCriteria: {
-                    filters: [{
-                        pattern: `{
+// Create new Pipe
+const pipe = new pipes.CfnPipe(this, "pipe", {
+  name: "SampleTableModifyPipe",
+  roleArn: pipeRole.roleArn,
+  source: this._table.tableStreamArn!,
+  target: props.bus.eventBusArn,
+  sourceParameters: {
+    dynamoDbStreamParameters: {
+      startingPosition: "LATEST",
+      batchSize: 1,
+    },
+    filterCriteria: {
+      filters: [
+        {
+          pattern: `{
                         "eventName": [{
                             "prefix": "MODIFY"
                         }]
-                    }`}]
-                }
-            },
-            targetParameters: {
-                eventBridgeEventBusParameters: {
-                    detailType: 'SampleTableModified',
-                    source: 'com.sample'
-                },
-                inputTemplate: `
+                    }`,
+        },
+      ],
+    },
+  },
+  targetParameters: {
+    eventBridgeEventBusParameters: {
+      detailType: "SampleTableModified",
+      source: "com.sample",
+    },
+    inputTemplate: `
                     {
                       "details": {
                         "meta-data": {
@@ -152,9 +152,8 @@ const pipeRole = new Role(this, 'PipeRole', {
                       }
                     }          
                 `,
-            },
-        });
-
+  },
+});
 ```
 
 There are a few things that I had to look up when building this sample, so I want to highlight them individually.
@@ -201,7 +200,7 @@ targetParameters: {
               "Field1": <$.dynamodb.NewImage.Field1.S>
             }
           }
-        }          
+        }
     `,
 },
 
@@ -213,47 +212,47 @@ So here is where I find a ton of value. I spend a lot of time transforming data 
 
 ```json
 {
-    "eventID": "b8f3cb6ec96bde1583a951cbf29cf3e4",
-    "eventName": "MODIFY",
-    "eventVersion": "1.1",
-    "eventSource": "aws:dynamodb",
-    "awsRegion": "us-west-2",
-    "dynamodb": {
-        "ApproximateCreationDateTime": 1676153518,
-        "Keys": {
-            "SK": {
-                "S": "KEY1"
-            },
-            "PK": {
-                "S": "KEY1"
-            }
-        },
-        "NewImage": {
-            "SK": {
-                "S": "KEY1"
-            },
-            "PK": {
-                "S": "KEY1"
-            },
-            "Field1": {
-                "S": "Some value a"
-            }
-        },
-        "OldImage": {
-            "SK": {
-                "S": "KEY1"
-            },
-            "PK": {
-                "S": "KEY1"
-            },
-            "Field1": {
-                "S": "Some value"
-            }
-        },
-        "SequenceNumber": "1300000000034821079730",
-        "SizeBytes": 70,
-        "StreamViewType": "NEW_AND_OLD_IMAGES"
-    }
+  "eventID": "b8f3cb6ec96bde1583a951cbf29cf3e4",
+  "eventName": "MODIFY",
+  "eventVersion": "1.1",
+  "eventSource": "aws:dynamodb",
+  "awsRegion": "us-west-2",
+  "dynamodb": {
+    "ApproximateCreationDateTime": 1676153518,
+    "Keys": {
+      "SK": {
+        "S": "KEY1"
+      },
+      "PK": {
+        "S": "KEY1"
+      }
+    },
+    "NewImage": {
+      "SK": {
+        "S": "KEY1"
+      },
+      "PK": {
+        "S": "KEY1"
+      },
+      "Field1": {
+        "S": "Some value a"
+      }
+    },
+    "OldImage": {
+      "SK": {
+        "S": "KEY1"
+      },
+      "PK": {
+        "S": "KEY1"
+      },
+      "Field1": {
+        "S": "Some value"
+      }
+    },
+    "SequenceNumber": "1300000000034821079730",
+    "SizeBytes": 70,
+    "StreamViewType": "NEW_AND_OLD_IMAGES"
+  }
 }
 ```
 
@@ -263,26 +262,25 @@ So by applying that inputTemplate up above, the developer can shape the input in
 
 ```json
 {
-        "account": "xxxxxxx",
-        "detail": {
-                "data": {
-                    "Field1": "Some value again - This time",
-                    "PK": "KEY1",
-                    "SK": "KEY1"
-                },
-                "meta-data": {
-                    "correlationId": "eea1d60888eb59d75cf6c210cafb9bff"
-                }
-            
-        },
-        "detail-type": "SampleTableModified",
-        "id": "15cf1aad-9d98-7dd4-6a00-3ec41cc08873",
-        "region": "us-west-2",
-        "resources": [],
-        "source": "com.sample",
-        "time": "2023-02-12T16:42:23Z",
-        "version": "0"
+  "account": "xxxxxxx",
+  "detail": {
+    "data": {
+      "Field1": "Some value again - This time",
+      "PK": "KEY1",
+      "SK": "KEY1"
+    },
+    "meta-data": {
+      "correlationId": "eea1d60888eb59d75cf6c210cafb9bff"
     }
+  },
+  "detail-type": "SampleTableModified",
+  "id": "15cf1aad-9d98-7dd4-6a00-3ec41cc08873",
+  "region": "us-west-2",
+  "resources": [],
+  "source": "com.sample",
+  "time": "2023-02-12T16:42:23Z",
+  "version": "0"
+}
 ```
 
 Much much cleaner output.
@@ -297,9 +295,9 @@ The handler definition
 
 ```typescript
 this._handler = new GoFunction(this, `SampleHandlerFunc`, {
-    entry: path.join(__dirname, `../src/sample-handler`),
-    functionName: `sample-handler`,
-    timeout: Duration.seconds(30),
+  entry: path.join(__dirname, `../src/sample-handler`),
+  functionName: `sample-handler`,
+  timeout: Duration.seconds(30),
 });
 ```
 
@@ -326,20 +324,20 @@ Lastly, we need to wire up the Event to a Rule that Targets the Lambda.
 Here's a super simple rule that looks for a `source` and then forwards it along. There are so many more options to explore when setting this up and I wouldn't advise this setup for production since it's lacking error handling and failure.
 
 ```typescript
-const rule = new events.Rule(this, 'ModifySampleRule', {
-    eventPattern: {
-        source: ["com.sample"]
-    },
-    ruleName: "sample-table-modified-rule",
-    eventBus: props.bus
+const rule = new events.Rule(this, "ModifySampleRule", {
+  eventPattern: {
+    source: ["com.sample"],
+  },
+  ruleName: "sample-table-modified-rule",
+  eventBus: props.bus,
 });
 
-
-rule.addTarget(new LambdaFunction(props.func, {
+rule.addTarget(
+  new LambdaFunction(props.func, {
     maxEventAge: cdk.Duration.hours(2),
     retryAttempts: 1,
-}));
-
+  })
+);
 ```
 
 ### The Output

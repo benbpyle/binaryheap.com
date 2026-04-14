@@ -13,21 +13,21 @@ draft: false
 
 Observability is a user experience concern. Let that sync in for a minute. When you reach a certain amount of scale, it's not practical for a developer to take feedback from each and every user and the behaviors they encounter while running the system. Enter observability and code instrumentation. I've [written](https://binaryheap.com/?s=datadog) about Datadog quite a bit over the past couple of years and am publicly an [Ambassador](https://www.datadoghq.com/ambassadors/) in the community. But what I haven't done is shown you how to connect the most top-level of a user's interaction into backend level spans and traces. That's where Datadog's Real User Monitoring (RUM) comes into play. Let's jump into real user observability with RUM.
 
--   [What is Real User Monitoring (RUM)](#what-is-real-user-monitoring-rum)
--   [Why does RUM Matter](#why-does-rum-matter)
--   [Building a Solution](#building-a-solution)
-    -   [Vue.js as the Frontend](#vue-js-as-the-frontend)
-        -   [Customizing Actions](#customizing-actions)
-    -   [A .NET Backend](#a-net-backend)
-        -   [Todos Service](#todos-service)
-        -   [Users Service](#users-service)
--   [Datadog RUM Output](#datadog-rum-output)
-    -   [Sessions → Views → Actions/Resources/Errors](#sessions-→-views-→-actions-resources-errors)
-    -   [Sessions](#sessions)
-    -   [Views](#views)
-    -   [Traces, Spans, and the Goodness](#traces-spans-and-the-goodness)
--   [Final Thoughts](#final-thoughts)
--   [Wrapping Up](#wrapping-up)
+- [What is Real User Monitoring (RUM)](#what-is-real-user-monitoring-rum)
+- [Why does RUM Matter](#why-does-rum-matter)
+- [Building a Solution](#building-a-solution)
+  - [Vue.js as the Frontend](#vue-js-as-the-frontend)
+    - [Customizing Actions](#customizing-actions)
+  - [A .NET Backend](#a-net-backend)
+    - [Todos Service](#todos-service)
+    - [Users Service](#users-service)
+- [Datadog RUM Output](#datadog-rum-output)
+  - [Sessions → Views → Actions/Resources/Errors](#sessions-→-views-→-actions-resources-errors)
+  - [Sessions](#sessions)
+  - [Views](#views)
+  - [Traces, Spans, and the Goodness](#traces-spans-and-the-goodness)
+- [Final Thoughts](#final-thoughts)
+- [Wrapping Up](#wrapping-up)
 
 ## What is Real User Monitoring (RUM)
 
@@ -56,18 +56,18 @@ At the end of the article, you'll find some repositories that you can clone and 
 By adding the Dataog RUM package, the code is now ready to be configured to allow RUM to pick up and ship interactions, clicks, and actions that the user takes while using the application. Configuration of RUM is below and [here is](https://docs.datadoghq.com/real_user_monitoring/browser/setup/) an in-depth article about the various options and settings. In the configuration, the comments show just a little about what each of the options configures.
 
 ```javascript
-import { datadogRum } from '@datadog/browser-rum'
+import { datadogRum } from "@datadog/browser-rum";
 datadogRum.init({
-  applicationId: '<application id>',
-  clientToken: '<client token>',
+  applicationId: "<application id>",
+  clientToken: "<client token>",
   // `site` refers to the Datadog site parameter of your organization
   // see https://docs.datadoghq.com/getting_started/site/
-  site: '<site url>',
-  service: '<name of your service>',
+  site: "<site url>",
+  service: "<name of your service>",
   // this is the DD_ENV var
-  env: 'local',
+  env: "local",
   // Specify a version number to identify the deployed version of your application in Datadog
-  version: '1.0.0',
+  version: "1.0.0",
   // session sampling
   sessionSampleRate: 100,
   // true tracks clicks, scrolls, hovers
@@ -75,10 +75,10 @@ datadogRum.init({
   // api requests and file downloads
   trackResources: true,
   // connecting the UI with traces at this API URL
-  allowedTracingUrls: ['http://localhost:3000'],
+  allowedTracingUrls: ["http://localhost:3000"],
   trackLongTasks: true,
-  defaultPrivacyLevel: 'allow'
-})
+  defaultPrivacyLevel: "allow",
+});
 ```
 
 With the above bits in place, the code is completely configured, and Datadog RUM will start shipping telemetry into the product.
@@ -93,14 +93,18 @@ I can't overemphasize this enough. You want to be naming and standardizing on th
 
 ```html
 <div class="menu">
-    <router-link to="/" class="button" data-dd-action-name="Home Route Clicked">
+  <router-link to="/" class="button" data-dd-action-name="Home Route Clicked">
     <span class="material-icons">home</span>
     <span class="text">Home</span>
-    </router-link>
-    <router-link to="/todos" class="button" data-dd-action-name="Todo Route Clicked">
+  </router-link>
+  <router-link
+    to="/todos"
+    class="button"
+    data-dd-action-name="Todo Route Clicked"
+  >
     <span class="material-icons">description</span>
     <span class="text">Todos</span>
-    </router-link>
+  </router-link>
 </div>
 ```
 
@@ -157,12 +161,12 @@ All the instrumentation complexity comes into the Dockerfile and attaching the t
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS base
 
 WORKDIR /app
-EXPOSE 8080 
+EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Download the latest version of the tracer but don't install yet
-RUN TRACER_VERSION=$(curl -s https://api.github.com/repos/DataDog/dd-trace-dotnet/releases/latest | grep tag_name | cut -d '"' -f 4 | cut -c2-) 
+RUN TRACER_VERSION=$(curl -s https://api.github.com/repos/DataDog/dd-trace-dotnet/releases/latest | grep tag_name | cut -d '"' -f 4 | cut -c2-)
     && curl -Lo /tmp/datadog-dotnet-apm.deb https://github.com/DataDog/dd-trace-dotnet/releases/download/v${TRACER_VERSION}/datadog-dotnet-apm_${TRACER_VERSION}_arm64.deb
 
 WORKDIR /src
@@ -181,9 +185,9 @@ FROM base AS final
 # Copy the tracer from build target
 COPY --from=build /tmp/datadog-dotnet-apm.deb /tmp/datadog-dotnet-apm.deb
 # Install the tracer
-RUN mkdir -p /opt/datadog 
-    && mkdir -p /var/log/datadog 
-    && dpkg -i /tmp/datadog-dotnet-apm.deb 
+RUN mkdir -p /opt/datadog
+    && mkdir -p /var/log/datadog
+    && dpkg -i /tmp/datadog-dotnet-apm.deb
     && rm /tmp/datadog-dotnet-apm.deb
 
 # Enable the tracer
@@ -268,7 +272,7 @@ Observability is a user experience concern. It is my belief that all teams shoul
 
 As always, here are the repositories that I walked through in the code. Feel free to clone them and get them deployed in your own environments.
 
--   [Vue.js UI Code](https://github.com/benbpyle/rum-todo-ui)
--   [Backend Code](https://github.com/benbpyle/rum-todo-api)
+- [Vue.js UI Code](https://github.com/benbpyle/rum-todo-ui)
+- [Backend Code](https://github.com/benbpyle/rum-todo-api)
 
 Thanks for reading and happy building!

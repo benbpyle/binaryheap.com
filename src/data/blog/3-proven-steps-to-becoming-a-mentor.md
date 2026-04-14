@@ -60,7 +60,7 @@ There is no exact science to this part of the process. And it's ultimately as yo
 3.  Remember that you are both human and have some compassion. This is a no-judgment job. There might be some real truth that comes from it, but no judging.
 
 > If I'm going to influence someone, I'm going to give them information in an attempt to shape their decision for **their** benefit.
-> 
+>
 > Benjamen Pyle
 
 ### 3\. Follow the Yeses

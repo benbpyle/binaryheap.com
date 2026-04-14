@@ -18,17 +18,17 @@ So many times developers and architects try and roll their own solution and whil
 However, until very [recently](https://aws.amazon.com/about-aws/whats-new/2023/12/amazon-cognito-user-pools-customize-access-tokens/) a gap in functionality that honestly allowed some insecure usage existed. Developers were using ID tokens as Access tokens because only those tokens could be customized within a Cognito sign-in workflow. That is no longer the case, as Access tokens can now be customized. I want to take a look at how to customize a Cognito Access Token with Rust.
 
 > AWS' Cognito allows you to implement frictionless customer identity and access management that scales
-> 
+>
 > AWS
 
 ## Design
 
 Cognito offers a variety of hooks to plug into. These hooks give me options to customize just about every part of the process from
 
--   Sign-up
--   Authentication (Pre and Post)
--   Custom Authentication
--   Messaging templates, locales and content
+- Sign-up
+- Authentication (Pre and Post)
+- Custom Authentication
+- Messaging templates, locales and content
 
 ![Cognito Customization](/images/Screenshot-2023-02-04-at-10.00.08-AM.png)
 
@@ -48,8 +48,8 @@ Contrast that with the Access token whose purpose is to show that the user has b
 
 Think of it this way.
 
--   The ID token is for the client
--   The Access token is for the server(s)
+- The ID token is for the client
+- The Access token is for the server(s)
 
 ### Version 1 and 2 Payloads
 
@@ -59,26 +59,26 @@ As for payloads, the standard Version 1 request/response has the below shape. No
 
 ```json
 {
-    "request": {
-        "userAttributes": { "string": "string" },
-        "groupConfiguration": {
-            "groupsToOverride": ["string", "string"],
-            "iamRolesToOverride": ["string", "string"],
-            "preferredRole": "string"
-        },
-        "clientMetadata": { "string": "string" }
+  "request": {
+    "userAttributes": { "string": "string" },
+    "groupConfiguration": {
+      "groupsToOverride": ["string", "string"],
+      "iamRolesToOverride": ["string", "string"],
+      "preferredRole": "string"
     },
-    "response": {
-        "claimsOverrideDetails": {
-            "claimsToAddOrOverride": { "string": "string" },
-            "claimsToSuppress": ["string", "string"],
-            "groupOverrideDetails": {
-                "groupsToOverride": ["string", "string"],
-                "iamRolesToOverride": ["string", "string"],
-                "preferredRole": "string"
-            }
-        }
+    "clientMetadata": { "string": "string" }
+  },
+  "response": {
+    "claimsOverrideDetails": {
+      "claimsToAddOrOverride": { "string": "string" },
+      "claimsToSuppress": ["string", "string"],
+      "groupOverrideDetails": {
+        "groupsToOverride": ["string", "string"],
+        "iamRolesToOverride": ["string", "string"],
+        "preferredRole": "string"
+      }
     }
+  }
 }
 ```
 
@@ -88,43 +88,43 @@ I also have the ability now to suppress scopes as well as add scopes on the Acce
 
 ```json
 {
-    "request": {
-        "userAttributes": {
-            "string": "string"
-        },
-        "scopes": ["string", "string"],
-        "groupConfiguration": {
-            "groupsToOverride": ["string", "string"],
-            "iamRolesToOverride": ["string", "string"],
-            "preferredRole": "string"
-        },
-        "clientMetadata": {
-            "string": "string"
-        }
+  "request": {
+    "userAttributes": {
+      "string": "string"
     },
-    "response": {
-        "claimsAndScopeOverrideDetails": {
-            "idTokenGeneration": {
-                "claimsToAddOrOverride": {
-                    "string": "string"
-                },
-                "claimsToSuppress": ["string", "string"]
-            },
-            "accessTokenGeneration": {
-                "claimsToAddOrOverride": {
-                    "string": "string"
-                },
-                "claimsToSuppress": ["string", "string"],
-                "scopesToAdd": ["string", "string"],
-                "scopesToSuppress": ["string", "string"]
-            },
-            "groupOverrideDetails": {
-                "groupsToOverride": ["string", "string"],
-                "iamRolesToOverride": ["string", "string"],
-                "preferredRole": "string"
-            }
-        }
+    "scopes": ["string", "string"],
+    "groupConfiguration": {
+      "groupsToOverride": ["string", "string"],
+      "iamRolesToOverride": ["string", "string"],
+      "preferredRole": "string"
+    },
+    "clientMetadata": {
+      "string": "string"
     }
+  },
+  "response": {
+    "claimsAndScopeOverrideDetails": {
+      "idTokenGeneration": {
+        "claimsToAddOrOverride": {
+          "string": "string"
+        },
+        "claimsToSuppress": ["string", "string"]
+      },
+      "accessTokenGeneration": {
+        "claimsToAddOrOverride": {
+          "string": "string"
+        },
+        "claimsToSuppress": ["string", "string"],
+        "scopesToAdd": ["string", "string"],
+        "scopesToSuppress": ["string", "string"]
+      },
+      "groupOverrideDetails": {
+        "groupsToOverride": ["string", "string"],
+        "iamRolesToOverride": ["string", "string"],
+        "preferredRole": "string"
+      }
+    }
+  }
 }
 ```
 
@@ -223,8 +223,8 @@ Token claims
 
 I am beyond excited about this new feature that allows me to customize the Access token. The most prominent two examples I can think of using this for are:
 
--   Scope adjustments
--   Support multi-tenancy by adding a tenant field in the claims.
+- Scope adjustments
+- Support multi-tenancy by adding a tenant field in the claims.
 
 By having just the right amount of data in the Access token, I can now avoid using the ID token incorrectly and additionally save myself the extra hop to request the ID token from the OIDC server when needing to gain access to the client's tenant. In my book, that's a win-win scenario.
 

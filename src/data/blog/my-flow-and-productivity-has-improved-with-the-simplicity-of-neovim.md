@@ -142,8 +142,8 @@ My closing thought though is that in a world that is looking for more instant gr
 
 And I'd be remiss if I didn't include links to my font and color scheme in case anyone is looking to make the switch.
 
--   Font - [Jetbrains Mono Nerdfont](https://www.programmingfonts.org/#jetbrainsmono) -- I can't get away from Jetbrains!
--   Colors - The soothing pastels for [Catppuccin](https://github.com/catppuccin/nvim)
+- Font - [Jetbrains Mono Nerdfont](https://www.programmingfonts.org/#jetbrainsmono) -- I can't get away from Jetbrains!
+- Colors - The soothing pastels for [Catppuccin](https://github.com/catppuccin/nvim)
 
 And the last thing, if you ever get lost, [Which-Key](https://github.com/folke/which-key.nvim) is always there to help!
 
@@ -247,8 +247,8 @@ My closing thought though is that in a world that is looking for more instant gr
 
 And I'd be remiss if I didn't include links to my font and color scheme in case anyone is looking to make the switch.
 
--   Font - [Jetbrains Mono Nerdfont](https://www.programmingfonts.org/#jetbrainsmono) -- I can't get away from Jetbrains!
--   Colors - The soothing pastels for [Catppuccin](https://github.com/catppuccin/nvim)
+- Font - [Jetbrains Mono Nerdfont](https://www.programmingfonts.org/#jetbrainsmono) -- I can't get away from Jetbrains!
+- Colors - The soothing pastels for [Catppuccin](https://github.com/catppuccin/nvim)
 
 And the last thing, if you ever get lost, [Which-Key](https://github.com/folke/which-key.nvim) is always there to help!
 

@@ -18,12 +18,12 @@ I've been thinking about this topic a lot lately when bringing EventBridge's Eve
 
 I want to start with the idea that in a Microservice architecture, I like to have everything be as independent as possible. That means the following items are each owned by the boundary itself
 
--   API Definition
--   Data model and data store
--   Frontend and Backend code
--   Any async communication channels
-    -   A way to publish that only that boundary to use
-    -   A way to subscribe that only that boundary can use
+- API Definition
+- Data model and data store
+- Frontend and Backend code
+- Any async communication channels
+  - A way to publish that only that boundary to use
+  - A way to subscribe that only that boundary can use
 
 ### Pub/Sub before EventBridge
 
@@ -31,10 +31,10 @@ Before EventBridge, I built a lot of software that looked like the one below. An
 
 ![Traditional Pub-Sub](/images/Bus-Mesh-Traditional-2.png)
 
--   Functions behind API Gateway
--   A single or multiple DynamoDB Tables under its control
--   SQS for subscribing to other SNS Topics (only it can read from)
--   SNS Topic for publishing messages/events out to the ecosystem. Only it could publish on that topic
+- Functions behind API Gateway
+- A single or multiple DynamoDB Tables under its control
+- SQS for subscribing to other SNS Topics (only it can read from)
+- SNS Topic for publishing messages/events out to the ecosystem. Only it could publish on that topic
 
 With the advent of [EventBridge Pipes](https://aws.amazon.com/eventbridge/pipes/) and the ability of EventBridge Rules to trigger a Step Function (like this pattern [EventBridge Step Function Rule](https://serverlessland.com/patterns/eventbridge-sfn)), I felt the need to explore replacing SNS/SQS with EventBridge for new features and projects.
 
@@ -42,9 +42,9 @@ Again, nothing wrong with any of the above but I wanted to gain some additional 
 
 ### Benefits of Moving to EventBridge
 
--   Rules - they are more expressive and powerful than simple SNS message filtering. Filtering saves execution cycles which saves on cost and saves on waste
--   Schema Discovery - really nice feature to have messages/events be expressed through Schema
--   Pipes - standalone, they are fantastic for filtering, enriching and transforming. For more on Pipes, have a read [here](https://binaryheap.com/3a7w)
+- Rules - they are more expressive and powerful than simple SNS message filtering. Filtering saves execution cycles which saves on cost and saves on waste
+- Schema Discovery - really nice feature to have messages/events be expressed through Schema
+- Pipes - standalone, they are fantastic for filtering, enriching and transforming. For more on Pipes, have a read [here](https://binaryheap.com/3a7w)
 
 With just these three benefits, I save on wasted execution, remove points of failure and eliminate Lambdas and other code that could introduce errors that have to be tested. [This old article by Jeff Barr](https://aws.amazon.com/blogs/aws/we_build_muck_s/) which describes the famous Keynote that Jeff Bezos did where he talks about "undifferentiated heavy lifting" is an example why I like pushing this kind of code up to the cloud
 
@@ -56,12 +56,12 @@ I drew up this simple diagram to highlight how I see putting Buses together.
 
 Some of the core pieces of this pattern are this
 
--   Functions respond to API requests
--   Functions (Lambda or Step) interact with DynamoDB
--   EventBridge becomes the glue
-    -   Service A Bus connects to Service B Bus
-    -   Service A Bus connects to Functions in Service A
-    -   EventBridge Pipes are used in connecting to DynamoDB on Service A and then are registered onto Service A Bus
+- Functions respond to API requests
+- Functions (Lambda or Step) interact with DynamoDB
+- EventBridge becomes the glue
+  - Service A Bus connects to Service B Bus
+  - Service A Bus connects to Functions in Service A
+  - EventBridge Pipes are used in connecting to DynamoDB on Service A and then are registered onto Service A Bus
 
 The really important thing to nail down is the "boundaries". It's important to make sure that what owns what is isolated to that boundary. The real glue is Bus -> Bus. It's like Pub/Sub (and it is) but instead of subscribing an SQS Queue to an SNS Topic, you subscribe Service B's Bus to Service A's bus. Additionally, make sure to specify the Rules around the data that will connect those buses.
 
@@ -77,42 +77,40 @@ Let's look at some [CDK code](https://binaryheap.com/ojc1) to build
 
 ```typescript
 export class EventBusOne extends Construct {
-    private readonly _bus: EventBus;
+  private readonly _bus: EventBus;
 
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        this._bus = new events.EventBus(scope, "EventBusOne", {
-            eventBusName: "event-bus-one",
-        });
-    }
+    this._bus = new events.EventBus(scope, "EventBusOne", {
+      eventBusName: "event-bus-one",
+    });
+  }
 
-    get eventBus(): EventBus {
-        return this._bus;
-    }
+  get eventBus(): EventBus {
+    return this._bus;
+  }
 }
-
 ```
 
 #### EventBus Two
 
 ```typescript
 export class EventBusTwo extends Construct {
-    private readonly _bus: EventBus;
+  private readonly _bus: EventBus;
 
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        this._bus = new events.EventBus(scope, "EventBusTwo", {
-            eventBusName: "event-bus-two",
-        });
-    }
+    this._bus = new events.EventBus(scope, "EventBusTwo", {
+      eventBusName: "event-bus-two",
+    });
+  }
 
-    get eventBus(): EventBus {
-        return this._bus;
-    }
+  get eventBus(): EventBus {
+    return this._bus;
+  }
 }
-
 ```
 
 When that gets run, the resources created will look like this in the console.
@@ -164,10 +162,10 @@ I like using the naming convention of "mesh" in the name just so I know the Rule
 
 Now that BusTwo is receiving events with `detail-type` of "Busing", it only makes sense to have that event go somewhere. In a real scenario, I might be responding to change in one system and needing to handle that change in another. By using EventBus and Rules you can get granular. For instance
 
--   Only events that have a certain `detail-type` go to a specific State Machine
--   Look for multiple `detal-type` that go to the same State Machine
--   Look for matches in the payload itself
--   So many other choices that can be explored [here](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html)
+- Only events that have a certain `detail-type` go to a specific State Machine
+- Look for multiple `detal-type` that go to the same State Machine
+- Look for matches in the payload itself
+- So many other choices that can be explored [here](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html)
 
 Things really scale well and can be extended to your actual liking.
 
@@ -229,28 +227,28 @@ In the case of this demonstration, I'm going to use Step Functions with a simple
  *  @param {Construct} scope - the context for the state machine
  */
 finalizeStateMachine = (scope: Construct) => {
-    const logGroup = new logs.LogGroup(this, "CloudwatchLogs", {
-        logGroupName: "/aws/vendedlogs/states/sample-state-machine",
-    });
+  const logGroup = new logs.LogGroup(this, "CloudwatchLogs", {
+    logGroupName: "/aws/vendedlogs/states/sample-state-machine",
+  });
 
-    const role = new Role(this, "StateMachineRole", {
-        assumedBy: new ServicePrincipal("states.us-west-2.amazonaws.com"),
-    });
+  const role = new Role(this, "StateMachineRole", {
+    assumedBy: new ServicePrincipal("states.us-west-2.amazonaws.com"),
+  });
 
-    const flow = this.buildStateMachine(scope);
+  const flow = this.buildStateMachine(scope);
 
-    this._stateMachine = new stepfunctions.StateMachine(this, "StateMachine", {
-        role: role,
-        stateMachineName: "SampleStateMachine",
-        definition: flow,
-        stateMachineType: stepfunctions.StateMachineType.EXPRESS,
-        timeout: Duration.seconds(5),
-        logs: {
-            level: LogLevel.ALL,
-            destination: logGroup,
-            includeExecutionData: true,
-        },
-    });
+  this._stateMachine = new stepfunctions.StateMachine(this, "StateMachine", {
+    role: role,
+    stateMachineName: "SampleStateMachine",
+    definition: flow,
+    stateMachineType: stepfunctions.StateMachineType.EXPRESS,
+    timeout: Duration.seconds(5),
+    logs: {
+      level: LogLevel.ALL,
+      destination: logGroup,
+      includeExecutionData: true,
+    },
+  });
 };
 
 /**
@@ -259,9 +257,8 @@ finalizeStateMachine = (scope: Construct) => {
  *  @param {Construct} scope - the context for the state machine
  */
 buildStateMachine = (scope: Construct): stepfunctions.IChainable => {
-    return new Succeed(scope, "We made it and it finished");
+  return new Succeed(scope, "We made it and it finished");
 };
-
 ```
 
 ## Wrap Up

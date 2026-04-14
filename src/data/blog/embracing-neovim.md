@@ -7,5 +7,3 @@ tags:
   - uncategorized
 draft: true
 ---
-
-

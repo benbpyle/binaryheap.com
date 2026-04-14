@@ -38,16 +38,16 @@ OK, fine. Let me tie it together. With Jiu-Jitsu, the sport gives you nothing. I
 
 With Jiu-Jitsu the number one predictor of improvement is just showing up. And when you show up, doing the following.
 
--   Be humble.
--   Be open to learn.
--   Be open to feedback.
--   Respect others
+- Be humble.
+- Be open to learn.
+- Be open to feedback.
+- Respect others
 
 Notice that I didn't mention the secret to success? Well that's because success is measured differently in Jiu-Jitsu depending upon what YOU want to get out of it. (Also, just like a tech career) For me, the benefits are simple.
 
--   Learn a new skill
--   Stay in shape
--   Bond with other humans in person over something I enjoy
+- Learn a new skill
+- Stay in shape
+- Bond with other humans in person over something I enjoy
 
 Now if you are into the sport, you might have a different goal. Have a belt target in mind. You might want to win a tournament. Or you might want to have so many submissions in your arsenal. None of that though fits into my why.
 

@@ -1,7 +1,7 @@
 ---
 title: "Serverless, a CTO's Perspective"
 author: "Benjamen Pyle"
-description: "I've been following along the past couple of weeks in the \"wake\" of the article by the Prime Video Team. I've seen a lot of rebuttal-type articles by some folks that I respect so I didn't want to cont"
+description: 'I''ve been following along the past couple of weeks in the "wake" of the article by the Prime Video Team. I''ve seen a lot of rebuttal-type articles by some folks that I respect so I didn''t want to cont'
 pubDatetime: 2023-05-13T00:00:00Z
 tags:
   - aws
@@ -19,9 +19,9 @@ If this is the first article you've ever read by me, give me just a sentence or 
 
 When building any new software, I feel strongly that it needs to satisfy one of two conditions. It must either be Useful or it must be Fun. If you take any piece of software or tool that you use, it's going to fall into one of those two categories at a high level. And it doesn't matter if you have 1 user or 1B users. You need to deliver on the promise or premise that you set out to do. Customers will expect you to do that if you want to keep them happy. And they will care very little about "how" you do that. Except that what you choose to build your software on will shape their perspective as to some key questions of delivery
 
--   How quickly can I introduce new value?
--   How safely can I introduce new value?
--   How does this new value affect pricing?
+- How quickly can I introduce new value?
+- How safely can I introduce new value?
+- How does this new value affect pricing?
 
 ## Siding with Serverless
 
@@ -55,10 +55,10 @@ As many others have stated, it's not the absence of servers that makes it server
 
 From a "how much does it cost to run serverless?" point of view, that really depends. And the depends is on so many factors. First and foremost, you **MUST** understand your serverless component's cost model. For instance:
 
--   Lambda is memory choice / 1ms increments
--   DynamoDB is by storage and how you read. Go read [Alex's article](https://www.alexdebrie.com/posts/dynamodb-costs) for something more in-depth
--   SQS is by type of queue and the number of pulls. Make sure to use long polling to maximize
--   And so on ...
+- Lambda is memory choice / 1ms increments
+- DynamoDB is by storage and how you read. Go read [Alex's article](https://www.alexdebrie.com/posts/dynamodb-costs) for something more in-depth
+- SQS is by type of queue and the number of pulls. Make sure to use long polling to maximize
+- And so on ...
 
 Once you understand how your architecture is coming together, you can understand how to manage its costs. There are so many great stories of people who didn't abandon serverless, only tweaked how they were using a component and reduced their bill or increased their efficiency.
 
@@ -78,20 +78,20 @@ And lastly, from a people standpoint, I can start to waterline the base set of s
 
 As a CTO, I spend a lot of time talking to customers and potential customers. And as much as I love technology, most of them don't care too much about what we are built upon. Sure, some get it, and they want to geek out on the latest and greatest. But most really just care about the following things which expands upon the original list at the top:
 
--   How quickly can I introduce new value?
--   How safely can I introduce new value?
--   How does this new value affect pricing?
--   How available are you?
--   Do you work on a tablet?
--   What software do we need to install?
+- How quickly can I introduce new value?
+- How safely can I introduce new value?
+- How does this new value affect pricing?
+- How available are you?
+- Do you work on a tablet?
+- What software do we need to install?
 
 Here are the things that I've specifically seen with serverless from the perspective of a CTO.
 
--   Scaling to meet demand both up and down
--   Time to market on new features
--   The resiliency of the platform by being decoupled
--   Innovation increased by the isolation of the new features
--   Management of cost due to just-in-time sizing of infrastructure.
+- Scaling to meet demand both up and down
+- Time to market on new features
+- The resiliency of the platform by being decoupled
+- Innovation increased by the isolation of the new features
+- Management of cost due to just-in-time sizing of infrastructure.
 
 When addressing customer value, I want to give my teams the building blocks to be able to rapidly build out features while also being able to adapt to scaling changes. I tend to book serverless components in two categories. I have the bedrock components that I know I won't need to outgrow such as SQS, DyanmoDB and EventBridge. And then I have the components that get me going the quickest and will last a long time but might be replaced. Step Functions and Lambdas fall into the this category. I've not reached a scale that requires this in a few places but the upgrade path is easy enough. I lean into Fargate on ECS which gives me plenty of horizontal scale to deal with load that might be more consistent.
 

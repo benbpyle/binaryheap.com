@@ -31,31 +31,23 @@ The architecture is fairly straightforward. Here's the breakdown though of how i
 So to capture events from Cloudtrail I needed an EventBridge rule to make that happen. It looks like this
 
 ```typescript
-const rule = new events.Rule(this, 'rule', {
-    eventPattern: {
-        source: ["aws.healthlake"],
-        detailType: [
-            "AWS API Call via CloudTrail"
-        ],
-        detail: {
-            eventSource: [
-                "healthlake.amazonaws.com"
-            ],
-            eventName: [
-                "CreateResource",
-                "UpdateResource"
-            ],
-            requestParameters: {
-                datastoreId: [hl.attrDatastoreId]
-            },
-            responseElements: {
-                statusCode: [200, 201]
-            }
-        }
+const rule = new events.Rule(this, "rule", {
+  eventPattern: {
+    source: ["aws.healthlake"],
+    detailType: ["AWS API Call via CloudTrail"],
+    detail: {
+      eventSource: ["healthlake.amazonaws.com"],
+      eventName: ["CreateResource", "UpdateResource"],
+      requestParameters: {
+        datastoreId: [hl.attrDatastoreId],
+      },
+      responseElements: {
+        statusCode: [200, 201],
+      },
     },
-    ruleName: "capture-healthlake-events",
+  },
+  ruleName: "capture-healthlake-events",
 });
-
 ```
 
 What this is doing is listening on Cloudtrail for all "CreateResource" and "UpdateResource" events that are sent to Healthlake. By further restricting the rule down to only those that have `statusCode` of 201 and 200 which will be those PUT and POST events.
@@ -63,23 +55,24 @@ What this is doing is listening on Cloudtrail for all "CreateResource" and "Upda
 Next add a target for the rule to be a Lambda handler
 
 ```typescript
-const queue = new sqs.Queue(this, 'Queue', {
-    queueName: `rule-event-dlq`
+const queue = new sqs.Queue(this, "Queue", {
+  queueName: `rule-event-dlq`,
 });
 
-rule.addTarget(new LambdaFunction(props.func, {
+rule.addTarget(
+  new LambdaFunction(props.func, {
     deadLetterQueue: queue, // Optional: add a dead letter queue
     maxEventAge: cdk.Duration.hours(2), // Optional: set the maxEventAge retry policy
     retryAttempts: 2, // Optional: set the max number of retry attempts
-}));
-
+  })
+);
 ```
 
 Once the event has been handled then kick off a State Machine that does the following
 
--   Find just the changed enties
--   Hydrate or back fill with data
--   Post into EventBridge
+- Find just the changed enties
+- Hydrate or back fill with data
+- Post into EventBridge
 
 ### State Machine Workflow
 
@@ -109,16 +102,16 @@ Lastly, if the record is a first timer, then I send on over to the EventBridge B
 
 If you look at the repos to follow along, there is a lot going on with this solution.
 
--   Healthlake is the originator of the changes
--   Cloudtrail holds the events and operations that are happening to Healthlake
--   You need to build an EventBridge rule (has to be in the default bus) to listen to those changes
--   Build a handler or pipe to deal with the change
--   State machine work flow can be complex
-    -   Pauses
-    -   Hydrators / finding what changed
-    -   Multiple resource types must be implemented
-    -   Deduping
-    -   Posting into a custom Event Bridge Bus
+- Healthlake is the originator of the changes
+- Cloudtrail holds the events and operations that are happening to Healthlake
+- You need to build an EventBridge rule (has to be in the default bus) to listen to those changes
+- Build a handler or pipe to deal with the change
+- State machine work flow can be complex
+  - Pauses
+  - Hydrators / finding what changed
+  - Multiple resource types must be implemented
+  - Deduping
+  - Posting into a custom Event Bridge Bus
 
 But honestly, Healthlake needs to be a critical part of the ecosystem due to it's natural FHIR and Patient centered data storage so these changes need to be propagated into the broader ecosystem. So until AWS builds this capability, this solution works great for what I need it to do.
 

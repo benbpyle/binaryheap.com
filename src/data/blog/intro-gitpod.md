@@ -50,31 +50,28 @@ In the context of Gipod, the DevContainer specification is natively integrated a
 
 ```json
 {
-    "name": "Existing Docker Compose (Extend)",
-    "dockerComposeFile": [
-        "../docker-compose.yml"
-    ],
-    "service": "laravel.test",
-    "workspaceFolder": "/var/www/html",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-            ],
-            "settings": {}
-        }
-    },
-    "remoteUser": "sail",
-    "postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true"
+  "name": "Existing Docker Compose (Extend)",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "laravel.test",
+  "workspaceFolder": "/var/www/html",
+  "customizations": {
+    "vscode": {
+      "extensions": [],
+      "settings": {}
+    }
+  },
+  "remoteUser": "sail",
+  "postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true"
 }
 ```
 
 With the project setup, and the following custmomizations made, my simple application looks like the image below the bullets.
 
--   Added a Todo Model
--   Added a Todo Migration
--   Added a Todo Seeder
--   Customized the CSS and UI of the TodoView
--   Modified the routes to point `/` at my TodoController which yields a list of Todos
+- Added a Todo Model
+- Added a Todo Migration
+- Added a Todo Seeder
+- Customized the CSS and UI of the TodoView
+- Modified the routes to point `/` at my TodoController which yields a list of Todos
 
 ![Demo](/images/demo.png)
 

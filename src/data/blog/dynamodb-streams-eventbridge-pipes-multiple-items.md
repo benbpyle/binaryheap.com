@@ -20,17 +20,17 @@ Several of the comments I received about [Streaming DynamoDB to EventBridge Pipe
 
 Let's start with defining the setup that I'll be walking through.
 
--   DynamoDB Table with 2 Item Types
-    -   Patient
-    -   Address
--   DynamoDB Stream connected to an EventBridge Pipe
--   EB Pipe will
-    -   Filter
-    -   Enrich
-    -   Put into the EventBridge Default Bus
--   EB Rules carved out for
-    -   Lambda Handler for Patient
-    -   Lambda Handler for Address
+- DynamoDB Table with 2 Item Types
+  - Patient
+  - Address
+- DynamoDB Stream connected to an EventBridge Pipe
+- EB Pipe will
+  - Filter
+  - Enrich
+  - Put into the EventBridge Default Bus
+- EB Rules carved out for
+  - Lambda Handler for Patient
+  - Lambda Handler for Address
 
 ![EventBridge Pipe Stream](/images/Multi-Arch.png)
 
@@ -42,14 +42,14 @@ The DynamoDB Table I'm working from is going to contain multiple item types. Thi
 
 ```typescript
 this._table = new Table(this, id, {
-    billingMode: BillingMode.PAY_PER_REQUEST,
-    removalPolicy: RemovalPolicy.DESTROY,
-    partitionKey: { name: "id", type: AttributeType.STRING },
-    sortKey: { name: "sk", type: AttributeType.STRING },
-    tableName: `Patients`,
-    encryption: TableEncryption.CUSTOMER_MANAGED,
-    encryptionKey: props.key,
-    stream: StreamViewType.NEW_AND_OLD_IMAGES,
+  billingMode: BillingMode.PAY_PER_REQUEST,
+  removalPolicy: RemovalPolicy.DESTROY,
+  partitionKey: { name: "id", type: AttributeType.STRING },
+  sortKey: { name: "sk", type: AttributeType.STRING },
+  tableName: `Patients`,
+  encryption: TableEncryption.CUSTOMER_MANAGED,
+  encryptionKey: props.key,
+  stream: StreamViewType.NEW_AND_OLD_IMAGES,
 });
 ```
 
@@ -59,11 +59,11 @@ A Patient will look like this:
 
 ```json
 {
-    "id": "PATIENT#1",
-    "sk": "PATIENT#1",
-    "name": "Patient Name",
-    "itemType": "Patient",
-    "patientId": "1"
+  "id": "PATIENT#1",
+  "sk": "PATIENT#1",
+  "name": "Patient Name",
+  "itemType": "Patient",
+  "patientId": "1"
 }
 ```
 
@@ -71,12 +71,12 @@ And an Address like this:
 
 ```json
 {
-    "id": "PATIENT#1",
-    "sk": "ADDRESS#1",
-    "address": "123 Some City, Some State USA",
-    "addressId": "1",
-    "itemType": "Address",
-    "patientId": "1"
+  "id": "PATIENT#1",
+  "sk": "ADDRESS#1",
+  "address": "123 Some City, Some State USA",
+  "addressId": "1",
+  "itemType": "Address",
+  "patientId": "1"
 }
 ```
 
@@ -92,29 +92,29 @@ I want to first address the fact that your source component needs to have the pr
 
 ```typescript
 new PolicyDocument({
-    statements: [
-        new PolicyStatement({
-            actions: [
-                "dynamodb:DescribeStream",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:ListStreams",
-            ],
-            effect: Effect.ALLOW,
-            resources: [table.tableStreamArn!],
-        }),
-        new PolicyStatement({
-            actions: [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-                "kms:Encrypt",
-                "kms:GenerateDataKey*",
-                "kms:ReEncrypt*",
-            ],
-            resources: [key.keyArn],
-            effect: Effect.ALLOW,
-        }),
-    ],
+  statements: [
+    new PolicyStatement({
+      actions: [
+        "dynamodb:DescribeStream",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:ListStreams",
+      ],
+      effect: Effect.ALLOW,
+      resources: [table.tableStreamArn!],
+    }),
+    new PolicyStatement({
+      actions: [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:GenerateDataKey*",
+        "kms:ReEncrypt*",
+      ],
+      resources: [key.keyArn],
+      effect: Effect.ALLOW,
+    }),
+  ],
 });
 ```
 
@@ -122,17 +122,17 @@ The next step is to configure the stream reader. I want to process 1 record at a
 
 ```typescript
 return {
-    dynamoDbStreamParameters: {
-        startingPosition: "LATEST",
-        batchSize: 1,
-    },
-    filterCriteria: {
-        filters: [
-            {
-                pattern: ' { "eventName": [ "MODIFY", "INSERT" ] }',
-            },
-        ],
-    },
+  dynamoDbStreamParameters: {
+    startingPosition: "LATEST",
+    batchSize: 1,
+  },
+  filterCriteria: {
+    filters: [
+      {
+        pattern: ' { "eventName": [ "MODIFY", "INSERT" ] }',
+      },
+    ],
+  },
 };
 ```
 
@@ -144,10 +144,10 @@ The Lambda will be triggered as a Request/Response that makes this synchronous i
 
 ```typescript
 return {
-    lambdaParameters: {
-        invocationType: "REQUEST_RESPONSE",
-    },
-    inputTemplate: ``,
+  lambdaParameters: {
+    invocationType: "REQUEST_RESPONSE",
+  },
+  inputTemplate: ``,
 };
 ```
 
@@ -204,11 +204,11 @@ Once the event has been shaped in the format that I want, it's time to send the 
 
 ```typescript
 return {
-    eventBridgeEventBusParameters: {
-        detailType: "PatientChange",
-        source: "com.binaryheap.patient",
-    },
-    inputTemplate: `{
+  eventBridgeEventBusParameters: {
+    detailType: "PatientChange",
+    source: "com.binaryheap.patient",
+  },
+  inputTemplate: `{
             "meta": {
                 "correlationId": <$.eventId>,
                 "changeType": <$.eventType>
@@ -222,13 +222,13 @@ Just like with the source input, I need to grant the consumer the ability to pos
 
 ```typescript
 return new PolicyDocument({
-    statements: [
-        new PolicyStatement({
-            resources: [busArn],
-            actions: ["events:PutEvents"],
-            effect: Effect.ALLOW,
-        }),
-    ],
+  statements: [
+    new PolicyStatement({
+      resources: [busArn],
+      actions: ["events:PutEvents"],
+      effect: Effect.ALLOW,
+    }),
+  ],
 });
 ```
 
@@ -242,14 +242,14 @@ When dealing with the Patient, I might want to address something specific about 
 
 ```typescript
 this._handlerOne = new GoFunction(scope, "ItemOneHandlerFunction", {
-    entry: "src/type-one-handler",
-    functionName: `type-one-handler`,
-    timeout: Duration.seconds(15),
-    environment: {
-        IS_LOCAL: "false",
-        LOG_LEVEL: "DEBUG",
-        VERSION: props.version,
-    },
+  entry: "src/type-one-handler",
+  functionName: `type-one-handler`,
+  timeout: Duration.seconds(15),
+  environment: {
+    IS_LOCAL: "false",
+    LOG_LEVEL: "DEBUG",
+    VERSION: props.version,
+  },
 });
 ```
 
@@ -257,23 +257,23 @@ This code will deploy the Lambda that will be the target for my Patient rule.
 
 ```typescript
 const rule = new Rule(scope, "ItemOnHandlerRule", {
-    eventPattern: {
-        detailType: ["PatientChange"],
-        detail: {
-            meta: {
-                changeType: ["PatientModify", "PatientInsert"],
-            },
-        },
+  eventPattern: {
+    detailType: ["PatientChange"],
+    detail: {
+      meta: {
+        changeType: ["PatientModify", "PatientInsert"],
+      },
     },
-    eventBus: EventBus.fromEventBusArn(scope, "DefaultBusItemOne", busArn),
-    ruleName: "item-one-rule",
+  },
+  eventBus: EventBus.fromEventBusArn(scope, "DefaultBusItemOne", busArn),
+  ruleName: "item-one-rule",
 });
 
 const dlq = new Queue(this, "ItemOneHandler-DLQ");
 rule.addTarget(
-    new targets.LambdaFunction(handler, {
-        deadLetterQueue: dlq,
-    })
+  new targets.LambdaFunction(handler, {
+    deadLetterQueue: dlq,
+  })
 );
 ```
 
@@ -285,23 +285,23 @@ Next, I build an almost identical rule, but specifically for Address.
 
 ```typescript
 const rule = new Rule(scope, "ItemTwoHandlerRule", {
-    eventPattern: {
-        detailType: ["PatientChange"],
-        detail: {
-            meta: {
-                changeType: ["AddressModify", "AddressInsert"],
-            },
-        },
+  eventPattern: {
+    detailType: ["PatientChange"],
+    detail: {
+      meta: {
+        changeType: ["AddressModify", "AddressInsert"],
+      },
     },
-    eventBus: EventBus.fromEventBusArn(scope, "DefaultBusItemTwo", busArn),
-    ruleName: "item-two-rule",
+  },
+  eventBus: EventBus.fromEventBusArn(scope, "DefaultBusItemTwo", busArn),
+  ruleName: "item-two-rule",
 });
 
 const dlq = new Queue(this, "ItemTwoHandler-DLQ");
 rule.addTarget(
-    new targets.LambdaFunction(handler, {
-        deadLetterQueue: dlq,
-    })
+  new targets.LambdaFunction(handler, {
+    deadLetterQueue: dlq,
+  })
 );
 ```
 

@@ -16,18 +16,18 @@ Deploying code (assets) into AWS has never been easier than it is right now. A f
 To quote the CDK Documentation
 
 > CDK Pipelines is an opinionated construct library. It is purpose-built to deploy one or more copies of your CDK applications using CloudFormation with a minimal amount of effort on your part. It is not intended to support arbitrary deployment pipelines, and very specifically it is not built to use CodeDeploy to applications to instances, or deploy your custom-built ECR images to an ECS cluster directly: use CDK file assets with CloudFormation Init for instances, or CDK container assets for ECS clusters instead.
-> 
+>
 > https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html
 
 ## So why AWS CDK Pipelines
 
 If you are first on the fence about CDK, have a read [here](https://binaryheap.com/intro-to-cdk/) first. But if not, continuing with AWS CDK Pipelines you get a bunch of boilerplate items taking care of for you. For instance
 
--   Source / Commit monitoring
--   Build and synth phase which generates your artifacts
--   Self updating pipeline (I'll explain more)
--   Bundling and staging of the artifacts (including encryption)
--   Deployment of these artifacts to any number of environments you wish either sequentially or in "waves"
+- Source / Commit monitoring
+- Build and synth phase which generates your artifacts
+- Self updating pipeline (I'll explain more)
+- Bundling and staging of the artifacts (including encryption)
+- Deployment of these artifacts to any number of environments you wish either sequentially or in "waves"
 
 When put together in CodePipeline it looks like the following ...
 
@@ -40,10 +40,10 @@ When put together in CodePipeline it looks like the following ...
 
 Pretty neat right? We get a consistent and repeatable way to deploy code. This is the "shell" of the construct which then gives developers and cloud ops engineers the foundation to have those nuances in their individual services. At the core though is this pipeline that simple
 
--   Responds to commits
--   Builds
--   Bundles
--   Deploys
+- Responds to commits
+- Builds
+- Bundles
+- Deploys
 
 And the final point I'll make on the pipeline ease is that once you deploy the initial pipeline, any change you wish to make like adding new stages or targets are a simple commit to the repo which automatically gets deployed out as updates.
 
@@ -133,7 +133,7 @@ const pipeline = new CodePipeline(this, `${props?.options.stackNamePrefix}-${pro
             crossAccountKeys: true, // use this if you need cross account KMS sharing
             selfMutation: true, // adds the self update step we've talked about
             pipelineName: props?.pipelineName, // name of the pipeline
-            dockerEnabledForSynth: true, // if your build needs docker 
+            dockerEnabledForSynth: true, // if your build needs docker
             synth: new ShellStep('Synth', { // this is the build ... replaces the buildspec.yaml
                 input: CodePipelineSource.codeCommit(repos, 'main'),
                 commands: [
@@ -148,7 +148,7 @@ const pipeline = new CodePipeline(this, `${props?.options.stackNamePrefix}-${pro
 Now to add a stage so that we deploy to an environment
 
 ```
-pipeline.addStage(new PipelineAppStage(this, `${props?.options.stackNamePrefix}-${props?.options.stackName}-DevDeploymentStage`, 
+pipeline.addStage(new PipelineAppStage(this, `${props?.options.stackNamePrefix}-${props?.options.stackName}-DevDeploymentStage`,
     {
         options: props.options,
         env: {account: props?.options?.devAccount, region: props?.options?.defaultRegion}

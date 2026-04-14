@@ -43,21 +43,21 @@ For my example, I'm using a table with a Composite Key that has fields `pk` and 
 
 ```yaml
 DynamoDBTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-        AttributeDefinitions:
-            - AttributeName: pk
-              AttributeType: S
-            - AttributeName: sk
-              AttributeType: S
-        KeySchema:
-            - AttributeName: pk
-              KeyType: HASH
-            - AttributeName: sk
-              KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
-        StreamSpecification:
-            StreamViewType: NEW_IMAGE
+  Type: AWS::DynamoDB::Table
+  Properties:
+    AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+    KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+    BillingMode: PAY_PER_REQUEST
+    StreamSpecification:
+      StreamViewType: NEW_IMAGE
 ```
 
 #### SAM Function and Rust
@@ -66,28 +66,28 @@ A function definition in SAM allows me to attach the event triggers as well. In 
 
 ```yaml
 GetByIdFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Metadata:
-        BuildMethod: rust-cargolambda # More info about Cargo Lambda: https://github.com/cargo-lambda/cargo-lambda
-    Properties:
-        Environment:
-            Variables:
-                TABLE_NAME: !Ref DynamoDBTable
-        CodeUri: . # Points to dir of Cargo.toml
-        Handler: bootstrap # Do not change, as this is the default executable name produced by Cargo Lambda
-        Runtime: provided.al2
-        FunctionName: get-by-id
-        Architectures:
-            - arm64
-        Policies:
-            - DynamoDBCrudPolicy:
-                  TableName: !Ref DynamoDBTable
-        Events:
-            GetById:
-                Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-                Properties:
-                    Path: /{id}
-                    Method: get
+  Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  Metadata:
+    BuildMethod: rust-cargolambda # More info about Cargo Lambda: https://github.com/cargo-lambda/cargo-lambda
+  Properties:
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref DynamoDBTable
+    CodeUri: . # Points to dir of Cargo.toml
+    Handler: bootstrap # Do not change, as this is the default executable name produced by Cargo Lambda
+    Runtime: provided.al2
+    FunctionName: get-by-id
+    Architectures:
+      - arm64
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref DynamoDBTable
+    Events:
+      GetById:
+        Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        Properties:
+          Path: /{id}
+          Method: get
 ```
 
 #### Rust Specific Sections
@@ -106,13 +106,13 @@ beta_features = true
 
 \[default.sync.parameters\]
 
-\# Rust Support for Cargo Lambda beta\_features = true
+\# Rust Support for Cargo Lambda beta_features = true
 
 First, the MetaData section has a BuildMethod property. And that property is telling SAM to use Cargo Lambda as the build mechanism.
 
 ```yaml
 Metadata:
-    BuildMethod: rust-cargolambda
+  BuildMethod: rust-cargolambda
 ```
 
 Second, the Properties of the function matter.
@@ -128,7 +128,7 @@ CodeUri: . # Points to dir of Cargo.toml
 Handler: bootstrap # Do not change, as this is the default executable name produced by Cargo Lambda
 Runtime: provided.al2
 Architectures:
-    - arm64
+  - arm64
 ```
 
 The last thing to point out is that I'm using the ARM chipset which gives me access to Graviton and all of the benefits that doing so provides me.

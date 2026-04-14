@@ -60,17 +60,17 @@ The program first finds the monitor if it exists.
 
 ```typescript
 export const findMonitor = (
-    consoleOptions: ConsoleOptions
+  consoleOptions: ConsoleOptions
 ): Promise<v1.MonitorSearchResponse> => {
-    const monitorName = `${consoleOptions.readableQueueName} Depth of Queue Monitor`;
+  const monitorName = `${consoleOptions.readableQueueName} Depth of Queue Monitor`;
 
-    const configuration = client.createConfiguration();
-    const apiInstance = new v1.MonitorsApi(configuration);
-    const params: v1.MonitorsApiSearchMonitorsRequest = {
-        query: monitorName,
-    };
+  const configuration = client.createConfiguration();
+  const apiInstance = new v1.MonitorsApi(configuration);
+  const params: v1.MonitorsApiSearchMonitorsRequest = {
+    query: monitorName,
+  };
 
-    return apiInstance.searchMonitors(params);
+  return apiInstance.searchMonitors(params);
 };
 ```
 
@@ -78,46 +78,46 @@ And then creates it if it's missing.
 
 ```typescript
 export const createMonitor = (
-    consoleOptions: ConsoleOptions
+  consoleOptions: ConsoleOptions
 ): Promise<Monitor> => {
-    const message = `${consoleOptions.slackChannel} nn{{#is_alert}}n(Production) ${consoleOptions.readableQueueName} Dead Letter Queue depth is highn{{/is_alert}}nn{{#is_warning}}n(Production) FHIR Engine Consumer Dead Letter Queue depth is highn{{/is_warning}}`;
-    const escalation = `${consoleOptions.slackChannel} nn(Production) ${consoleOptions.readableQueueName} Dead Letter Queue depth bump`;
-    const query = `avg(last_5m):sum:aws.sqs.approximate_number_of_messages_visible{env:prod, queuename:${consoleOptions.queueName}} > 2`;
+  const message = `${consoleOptions.slackChannel} nn{{#is_alert}}n(Production) ${consoleOptions.readableQueueName} Dead Letter Queue depth is highn{{/is_alert}}nn{{#is_warning}}n(Production) FHIR Engine Consumer Dead Letter Queue depth is highn{{/is_warning}}`;
+  const escalation = `${consoleOptions.slackChannel} nn(Production) ${consoleOptions.readableQueueName} Dead Letter Queue depth bump`;
+  const query = `avg(last_5m):sum:aws.sqs.approximate_number_of_messages_visible{env:prod, queuename:${consoleOptions.queueName}} > 2`;
 
-    const params: v1.MonitorsApiCreateMonitorRequest = {
-        body: {
-            name: `${consoleOptions.readableQueueName} Depth of Queue Monitor`,
-            type: "query alert",
-            query: query,
-            message: message,
-            tags: ["createdBy:automated", "env:prod"],
-            priority: 1,
-            options: {
-                thresholds: {
-                    critical: 2.0,
-                    warning: 1.0,
-                    criticalRecovery: 1.0,
-                    warningRecovery: 0.0,
-                },
-                notifyAudit: false,
-                requireFullWindow: false,
-                notifyNoData: false,
-                renotifyInterval: 30,
-                includeTags: false,
-                evaluationDelay: 900,
-                renotifyStatuses: ["alert"],
-                escalationMessage: escalation,
-                newHostDelay: 300,
-                silenced: {},
-            },
-            multi: false,
+  const params: v1.MonitorsApiCreateMonitorRequest = {
+    body: {
+      name: `${consoleOptions.readableQueueName} Depth of Queue Monitor`,
+      type: "query alert",
+      query: query,
+      message: message,
+      tags: ["createdBy:automated", "env:prod"],
+      priority: 1,
+      options: {
+        thresholds: {
+          critical: 2.0,
+          warning: 1.0,
+          criticalRecovery: 1.0,
+          warningRecovery: 0.0,
         },
-    };
+        notifyAudit: false,
+        requireFullWindow: false,
+        notifyNoData: false,
+        renotifyInterval: 30,
+        includeTags: false,
+        evaluationDelay: 900,
+        renotifyStatuses: ["alert"],
+        escalationMessage: escalation,
+        newHostDelay: 300,
+        silenced: {},
+      },
+      multi: false,
+    },
+  };
 
-    const configuration = client.createConfiguration();
-    const apiInstance = new v1.MonitorsApi(configuration);
+  const configuration = client.createConfiguration();
+  const apiInstance = new v1.MonitorsApi(configuration);
 
-    return apiInstance.createMonitor(params);
+  return apiInstance.createMonitor(params);
 };
 ```
 
@@ -137,8 +137,8 @@ This defines that over the last 5 minutes, the monitor will average the sum of t
 
 I mentioned that a few things need to be configured for all of this to work. Having AWS integrated with Datadog and also Slack integrated with Datadog are two key pieces of this puzzle.
 
--   [Integrating AWS with Datadog](https://docs.datadoghq.com/integrations/amazon_web_services/)
--   [Integrating Slack with Datadog](https://docs.datadoghq.com/integrations/slack/?tab=applicationforslack)
+- [Integrating AWS with Datadog](https://docs.datadoghq.com/integrations/amazon_web_services/)
+- [Integrating Slack with Datadog](https://docs.datadoghq.com/integrations/slack/?tab=applicationforslack)
 
 The next thing you'll need to do is create an API Key and an Application Key in Datadog. The console program is expecting environment variables of `DD_API_KEY` and `DD_APP_KEY` that get set in the runtime environment. In order to be able use them though, you'll first [need to create them](https://docs.datadoghq.com/account_management/api-app-keys/). Walk through that article from Datadog to see how to make that happen. Pay close attention to [scopes](https://docs.datadoghq.com/api/latest/scopes/) as including the Monitoring scopes are important.
 
@@ -148,10 +148,10 @@ The automation of infrastructure and code deployment is what ultimately drove me
 
 There are many options when it comes to Pipeline building and executing deployments and builds. I generally choose to stick within the AWS CodeSuite of tools. And what I mean by that is the following components:
 
--   CodePipeline: The workflow engine
--   CodeBuild: On-demand environments for compiling, running tests or handling other automation
--   CodeCommit: Managed Git repositories
--   CodeDeploy: Blue/Green, Canary or All-at-once deployment tool for publishing Lambdas, Containers and more
+- CodePipeline: The workflow engine
+- CodeBuild: On-demand environments for compiling, running tests or handling other automation
+- CodeCommit: Managed Git repositories
+- CodeDeploy: Blue/Green, Canary or All-at-once deployment tool for publishing Lambdas, Containers and more
 
 In order to make this more generic, I decided to build a CDK Construct that handles the operation of the Monitor builder above. The output of using it in a CodePipline looks like this:
 
@@ -165,50 +165,50 @@ When monitoring SQS with Datadog, I needed to build that monitor as part of the 
 
 ```typescript
 export interface CdkQueueDdConstructProps {
-    queueName: string;
-    readableQueueName: string;
-    slackChannel: string;
-    datadogApiKeySecret: string;
-    datadogAppKeySecret: string;
+  queueName: string;
+  readableQueueName: string;
+  slackChannel: string;
+  datadogApiKeySecret: string;
+  datadogAppKeySecret: string;
 }
 
 export class CdkQueueDdConstruct extends Construct {
-    private readonly _codeBuildStep: CodeBuildStep;
+  private readonly _codeBuildStep: CodeBuildStep;
 
-    constructor(scope: Construct, id: string, props: CdkQueueDdConstructProps) {
-        super(scope, id);
+  constructor(scope: Construct, id: string, props: CdkQueueDdConstructProps) {
+    super(scope, id);
 
-        this._codeBuildStep = new CodeBuildStep("AddDatadogSqsMonitor", {
-            commands: this.buildCommands(props),
-            buildEnvironment: {
-                buildImage: LinuxBuildImage.STANDARD_7_0,
-                environmentVariables: {
-                    DD_API_KEY: {
-                        value: props.datadogApiKeySecret,
-                        type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-                    },
-                    DD_APP_KEY: {
-                        value: props.datadogAppKeySecret,
-                        type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-                    },
-                },
-            },
-        });
-    }
+    this._codeBuildStep = new CodeBuildStep("AddDatadogSqsMonitor", {
+      commands: this.buildCommands(props),
+      buildEnvironment: {
+        buildImage: LinuxBuildImage.STANDARD_7_0,
+        environmentVariables: {
+          DD_API_KEY: {
+            value: props.datadogApiKeySecret,
+            type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          },
+          DD_APP_KEY: {
+            value: props.datadogAppKeySecret,
+            type: BuildEnvironmentVariableType.SECRETS_MANAGER,
+          },
+        },
+      },
+    });
+  }
 
-    public get monitorStep(): CodeBuildStep {
-        return this._codeBuildStep;
-    }
+  public get monitorStep(): CodeBuildStep {
+    return this._codeBuildStep;
+  }
 
-    private buildCommands(props: CdkQueueDdConstructProps): string[] {
-        const installDeps = `npm install -g datadog-sqs-depth-monitor`;
-        const command = `datadog-sqs-depth-monitor -q ${props.queueName} -r "${props.readableQueueName}" -s "${props.slackChannel}"`;
-        return [
-            "echo DEPLOYING the Datadog SQS Monitor",
-            `${installDeps}`,
-            `${command}`,
-        ];
-    }
+  private buildCommands(props: CdkQueueDdConstructProps): string[] {
+    const installDeps = `npm install -g datadog-sqs-depth-monitor`;
+    const command = `datadog-sqs-depth-monitor -q ${props.queueName} -r "${props.readableQueueName}" -s "${props.slackChannel}"`;
+    return [
+      "echo DEPLOYING the Datadog SQS Monitor",
+      `${installDeps}`,
+      `${command}`,
+    ];
+  }
 }
 ```
 
@@ -223,11 +223,11 @@ let stage = new PipelineAppStage(this, "DeployStage", {});
 
 let stageDeployment = pipeline.addStage(stage);
 let queueConstruct = new CdkQueueDdConstruct(this, `QueueStage`, {
-    queueName: "alarm-queue-name",
-    readableQueueName: "Sample Alarm Queue",
-    slackChannel: "@slack-operational-issues",
-    datadogApiKeySecret: "dd-api:DD_API_KEY",
-    datadogAppKeySecret: "dd-api:DD_APP_KEY",
+  queueName: "alarm-queue-name",
+  readableQueueName: "Sample Alarm Queue",
+  slackChannel: "@slack-operational-issues",
+  datadogApiKeySecret: "dd-api:DD_API_KEY",
+  datadogAppKeySecret: "dd-api:DD_APP_KEY",
 });
 
 stageDeployment.addPost(queueConstruct.monitorStep);
@@ -243,12 +243,12 @@ When you implement this all together, you'll get something in Slack that alerts 
 
 My hope is that I've shown you an approach and given you some tools that'll help with Monitoring SQS with Datadog. I've got a few repositories and package links to include that you can fork, use and build upon.
 
--   Build Monitor Program
-    -   [NPM](https://www.npmjs.com/package/datadog-sqs-depth-monitor)
-    -   [GitHub](https://github.com/benbpyle/datadog-sqs-depth-monitor)
--   CDK Construct
-    -   [NPM](https://www.npmjs.com/package/cdk-queue-dd-construct)
-    -   [GitHub](https://github.com/benbpyle/cdk-queue-dd-construct)
+- Build Monitor Program
+  - [NPM](https://www.npmjs.com/package/datadog-sqs-depth-monitor)
+  - [GitHub](https://github.com/benbpyle/datadog-sqs-depth-monitor)
+- CDK Construct
+  - [NPM](https://www.npmjs.com/package/cdk-queue-dd-construct)
+  - [GitHub](https://github.com/benbpyle/cdk-queue-dd-construct)
 
 There are lots of ways and tools that you can use to go about solving this problem. But things I really want you to take away from this article are this.
 

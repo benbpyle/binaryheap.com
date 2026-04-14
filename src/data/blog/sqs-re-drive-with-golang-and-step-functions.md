@@ -20,8 +20,8 @@ As with everything I'm doing these days, I'm using [CDK with TypeScript](https:/
 
 I'm also making use of 2 of the 3 new APIs and IAM Actions to make this happens. Those are
 
--   [StartMessageMoveTask](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sqs/start-message-move-task.html)
--   [ListMessageMoveTasks](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sqs/list-message-move-tasks.html)
+- [StartMessageMoveTask](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sqs/start-message-move-task.html)
+- [ListMessageMoveTasks](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sqs/list-message-move-tasks.html)
 
 ## Step Function Workflow
 
@@ -81,11 +81,10 @@ The CDK code looks like this
 
 ```typescript
 buildWaitTask = (scope: Construct, duration: Duration): sf.Wait => {
-    return new sf.Wait(scope, "Wait for Redrive", {
-        time: sf.WaitTime.duration(duration),
-    });
+  return new sf.Wait(scope, "Wait for Redrive", {
+    time: sf.WaitTime.duration(duration),
+  });
 };
-
 ```
 
 ### Checking in on the re-drive
@@ -149,27 +148,26 @@ This is what that looks like:
 
 ```typescript
 buildStatusChoice = (
-    scope: Construct,
-    wait: IChainable,
-    success: IChainable,
-    unknownSuccess: IChainable,
-    failed: IChainable
+  scope: Construct,
+  wait: IChainable,
+  success: IChainable,
+  unknownSuccess: IChainable,
+  failed: IChainable
 ): IChainable => {
-    return new Choice(scope, "Redrive Status", {
-        comment: "Decide if the redrive status is good, on-going or unknown",
-    })
-        .when(Condition.stringEquals("$.status", "COMPLETED"), success)
-        .when(Condition.stringEquals("$.status", "UNKNOWN"), unknownSuccess)
-        .when(Condition.stringEquals("$.status", "RUNNING"), wait)
-        .otherwise(failed);
+  return new Choice(scope, "Redrive Status", {
+    comment: "Decide if the redrive status is good, on-going or unknown",
+  })
+    .when(Condition.stringEquals("$.status", "COMPLETED"), success)
+    .when(Condition.stringEquals("$.status", "UNKNOWN"), unknownSuccess)
+    .when(Condition.stringEquals("$.status", "RUNNING"), wait)
+    .otherwise(failed);
 };
-
 ```
 
--   If the status is still running, loop back to Wait.
--   If the move is completed, close it out
--   If unknown (that's my state), then let the State Machine know that
--   Anything else falls into a Fail task.
+- If the status is still running, loop back to Wait.
+- If the move is completed, close it out
+- If unknown (that's my state), then let the State Machine know that
+- Anything else falls into a Fail task.
 
 ## Setting up the Sample
 
@@ -184,18 +182,18 @@ cdk deploy # will deploy all the code
 
 Resources created
 
--   Lambdas
-    -   Redriver
-    -   Redrive status check
-    -   Processor
--   SQS
-    -   Sample Queue
-    -   Dead Letter Queue
--   Step Functions
-    -   Workflow State Machine
--   CloudWatch
-    -   Lambda log groups
-    -   State Machine log group
+- Lambdas
+  - Redriver
+  - Redrive status check
+  - Processor
+- SQS
+  - Sample Queue
+  - Dead Letter Queue
+- Step Functions
+  - Workflow State Machine
+- CloudWatch
+  - Lambda log groups
+  - State Machine log group
 
 ### Processor Lambda
 
@@ -203,16 +201,15 @@ There is a Processor Lambda in this code as well. It reads from the primary SQS 
 
 ```typescript
 this._func = new GoFunction(scope, `ProcessorFunc`, {
-    entry: "src/processor",
-    functionName: "processor",
-    timeout: Duration.seconds(30),
-    environment: {
-        IS_LOCAL: "false",
-        LOG_LEVEL: "debug",
-        FAIL: "true",
-    },
+  entry: "src/processor",
+  functionName: "processor",
+  timeout: Duration.seconds(30),
+  environment: {
+    IS_LOCAL: "false",
+    LOG_LEVEL: "debug",
+    FAIL: "true",
+  },
 });
-
 ```
 
 ```go

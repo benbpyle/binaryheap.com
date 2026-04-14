@@ -29,9 +29,9 @@ Setting up the infrastructure for this example will take advantage of the AWS CD
 
 When deployed, my infrastructure will include:
 
--   A DynamoDB Table
--   A Stream enabled on the Table
--   Lambda handler coded in Rust to serde the payload into a struct
+- A DynamoDB Table
+- A Stream enabled on the Table
+- Lambda handler coded in Rust to serde the payload into a struct
 
 #### Defining the Table
 
@@ -39,11 +39,11 @@ A DynamoDB Streams and Rust Lambda article needs a table and the below TypeScrip
 
 ```typescript
 this._table = new Table(scope, "SampleStreamTable", {
-    billingMode: BillingMode.PAY_PER_REQUEST,
-    removalPolicy: RemovalPolicy.DESTROY,
-    partitionKey: { name: "Id", type: AttributeType.NUMBER },
-    tableName: `SampleStreamTable`,
-    stream: StreamViewType.NEW_IMAGE,
+  billingMode: BillingMode.PAY_PER_REQUEST,
+  removalPolicy: RemovalPolicy.DESTROY,
+  partitionKey: { name: "Id", type: AttributeType.NUMBER },
+  tableName: `SampleStreamTable`,
+  stream: StreamViewType.NEW_IMAGE,
 });
 ```
 
@@ -55,11 +55,11 @@ I [wrote](https://binaryheap.com/serverless-rust-developer-experience/) in a pre
 
 ```typescript
 let sampleFunction = new RustFunction(scope, "SampleFunction", {
-    manifestPath: './',
-    architecture: Architecture.ARM_64,
-    functionName: 'sample-ddb-stream-handler',
-    memorySize: 256
-})
+  manifestPath: "./",
+  architecture: Architecture.ARM_64,
+  functionName: "sample-ddb-stream-handler",
+  memorySize: 256,
+});
 ```
 
 With the infrastructure in place, let's dive into the Rust code!
@@ -157,8 +157,8 @@ The above code fetches values from the `Item` Hashmap and tries to perform conve
 
 In creating a DynamoDB Streams and Rust example, I could have just shown you how to add items to the table in the console and stopped there. But I decided against that. This example includes a Node.js script for running a chunk of PutItem operations against the DynamoDB table. When you clone the repository, there will be a `scripts` directory. That directory holds a file called `sample-data.js`. That file expects two variables to be configured.
 
--   `DYNAMODB_ACCESS_KEY_ID` which is the AWS access key that has rights to the table
--   `DYNAMODB_SECRET_ACCESS_KEY` which is the AWS secret access key that has rights to the table
+- `DYNAMODB_ACCESS_KEY_ID` which is the AWS access key that has rights to the table
+- `DYNAMODB_SECRET_ACCESS_KEY` which is the AWS secret access key that has rights to the table
 
 Before running the script, you'll need to deploy the infrastructure code. As I mentioned at the beginning, since this is a CDK project that can be accomplished by running this command.
 

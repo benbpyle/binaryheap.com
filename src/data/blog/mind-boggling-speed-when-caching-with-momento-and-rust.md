@@ -52,9 +52,9 @@ Resources:
       BillingMode: PAY_PER_REQUEST
 
   RustConsumerFunction:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Metadata:
-      BuildMethod: rust-cargolambda 
+      BuildMethod: rust-cargolambda
     Properties:
       FunctionName: kinesis-consumer-model-one-rust
       Environment:
@@ -67,7 +67,7 @@ Resources:
         - arm64
       Policies:
         - AmazonDynamoDBFullAccess
-        - Version: "2012-10-17" 
+        - Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action:

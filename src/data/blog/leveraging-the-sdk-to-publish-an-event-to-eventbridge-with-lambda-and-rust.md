@@ -36,10 +36,10 @@ Putting an event on EventBridge with Lambda and Rust requires an additional tool
 
 ```typescript
 const rustFunction = new RustFunction(this, "RustFunction", {
-    manifestPath: "./Cargo.toml",
-    environment: {
-        EVENT_BUS_NAME: "default",
-    },
+  manifestPath: "./Cargo.toml",
+  environment: {
+    EVENT_BUS_NAME: "default",
+  },
 });
 ```
 
@@ -49,7 +49,7 @@ I wanted to keep this focused on the EventBridge with Lambda and Rust part of th
 
 ```typescript
 rustFunction.addFunctionUrl({
-    authType: FunctionUrlAuthType.NONE,
+  authType: FunctionUrlAuthType.NONE,
 });
 ```
 
@@ -66,16 +66,16 @@ const bus = EventBus.fromEventBusName(this, "EventBus", "default");
 bus.grantPutEventsTo(rustFunction);
 
 const rule = new Rule(this, `ForwardToCloudWatch`, {
-    description: "Send sample events to CloudWatch",
-    eventBus: bus,
-    eventPattern: {
-        detailType: ["rust-demo"],
-    },
+  description: "Send sample events to CloudWatch",
+  eventBus: bus,
+  eventPattern: {
+    detailType: ["rust-demo"],
+  },
 });
 
 const logGroup = new LogGroup(this, "RuleLogGroup", {
-    logGroupName: "rust-demo",
-    removalPolicy: RemovalPolicy.DESTROY,
+  logGroupName: "rust-demo",
+  removalPolicy: RemovalPolicy.DESTROY,
 });
 
 rule.addTarget(new CloudWatchLogGroup(logGroup));
@@ -97,9 +97,9 @@ A Rust binary starts with `main`. Putting an event on EventBridge with Lambda an
 
 Let's walk through the below.
 
--   Tracing Subscriber - Tracing in Rust is just like what it sounds. It's a way to emit structured events and information about a program. A tracing subscriber is what listens for those traces and the `fmt` or standard subscriber emits the traces out like log lines.
--   aws\_sdk\_eventbridge::Client - This is the EventBridge SDK Client which will broker the operations to the EventBridge Service
--   run( ... ) - The function takes the handler which runs when events are received. This technique of wrapping and supplying additional arguments is an easy and quick way to initialize the SDK once and then reuse it. From my experience, the SDK init is what causes the Cold Start init to be greater than 100ms but usually no more than 150ms.
+- Tracing Subscriber - Tracing in Rust is just like what it sounds. It's a way to emit structured events and information about a program. A tracing subscriber is what listens for those traces and the `fmt` or standard subscriber emits the traces out like log lines.
+- aws_sdk_eventbridge::Client - This is the EventBridge SDK Client which will broker the operations to the EventBridge Service
+- run( ... ) - The function takes the handler which runs when events are received. This technique of wrapping and supplying additional arguments is an easy and quick way to initialize the SDK once and then reuse it. From my experience, the SDK init is what causes the Cold Start init to be greater than 100ms but usually no more than 150ms.
 
 ```rust
 #[tokio::main]
@@ -179,9 +179,9 @@ Alright, the part why you showed up. Publishing an Event on EventBridge with Lam
 
 The code will operate on the `client` built during the `main` function. And working through the function here are the things to note.
 
--   async: This function will operate asynchronously. To learn more about Rust and async, [here's a nice book](https://rust-lang.github.io/async-book/).
--   payload: Rust loves the builder pattern. I do too. And so does the AWS Rust SDK. I'm simply building up a `PutEventsRequest` which can then be sent via the `client`.
--   send is async: this is where the async part comes into play. This code is also an expression as it evaluates to a result of `Result<PutEventsOutput, SdkError<PutEventsError>>`
+- async: This function will operate asynchronously. To learn more about Rust and async, [here's a nice book](https://rust-lang.github.io/async-book/).
+- payload: Rust loves the builder pattern. I do too. And so does the AWS Rust SDK. I'm simply building up a `PutEventsRequest` which can then be sent via the `client`.
+- send is async: this is where the async part comes into play. This code is also an expression as it evaluates to a result of `Result<PutEventsOutput, SdkError<PutEventsError>>`
 
 ```rust
 async fn send_to_event_bridge(
@@ -219,9 +219,9 @@ With the code deployed and the function explained, here is what it looks like wh
 
 I promised a full working sample and [here's the GitHub repository](https://github.com/benbpyle/rust-eventbridge-put-event). The repository will require that you have the following things installed.
 
--   Node
--   CDK
--   Rust
+- Node
+- CDK
+- Rust
 
 To deploy to your environment, simply run
 

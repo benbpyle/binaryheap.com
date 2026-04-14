@@ -53,10 +53,10 @@ I had such a great time networking and meeting people that I doubled down and sp
 
 There were too many topics to list but my favorite chats were about
 
--   Monolithic vs single purpose Lambdas
--   The new Rust SDK that is GA
--   Bedrock and Lambda
--   Sharing stories about friends who have passed away.
+- Monolithic vs single purpose Lambdas
+- The new Rust SDK that is GA
+- Bedrock and Lambda
+- Sharing stories about friends who have passed away.
 
 Again, I feel so lucky to have this opportunity.
 

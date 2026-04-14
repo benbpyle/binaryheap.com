@@ -31,9 +31,9 @@ Coming up with something to write can be tricky at times and here's how I approa
 
 First, keep things simple. I know my formula at the moment and I try to stay inside of that formula. The articles I usually produce are:
 
--   Tutorials
--   Architecture Opinions
--   Leadership and Human-Focused
+- Tutorials
+- Architecture Opinions
+- Leadership and Human-Focused
 
 Inside each of those categories, I have different types of articles that might take me 2 - 5 hours to produce. Or there might be articles that take me 1 - 4 weeks to produce. The duration is usually wrapped around the technology that I'm using to build the sample repository. For example, anything Rust at the moment is going to take me more than 1 week to pull together. I'm just not that efficient at Rust and the AWS SDK yet.
 
@@ -49,15 +49,15 @@ As for the content itself, I usually pull from these areas:
 
 If it's a tutorial:
 
--   I might have some version of it working on at my job.
--   As an AWS Community Builder, I'm exposed to so much beyond just what I work on day to day. So I might pull from those experiences.
--   Occasionally I see something written or said, that I want to put a slightly different spin on and use the original as inspiration.
+- I might have some version of it working on at my job.
+- As an AWS Community Builder, I'm exposed to so much beyond just what I work on day to day. So I might pull from those experiences.
+- Occasionally I see something written or said, that I want to put a slightly different spin on and use the original as inspiration.
 
 Architecture opinions generally come from 3 places
 
--   I've encountered something at work that I want to explore further
--   I've read something by another author that I have a different opinion on and want to offer that up.
--   Lastly, the world of Cloud Computing and AWS in particular is so big that the more I write and the more I learn, the more opinions I generate. So I put them down.
+- I've encountered something at work that I want to explore further
+- I've read something by another author that I have a different opinion on and want to offer that up.
+- Lastly, the world of Cloud Computing and AWS in particular is so big that the more I write and the more I learn, the more opinions I generate. So I put them down.
 
 Leadership and Human-Focused topics are where I like to offer my specific uniqueness to the world of tech blogging. Here's why. There are so many blogs, articles and opinions on the internet about things like Golang, Rust, AWS, Cloud, Serverless etc. But I am not just a builder and a creator, I'm also at the moment a CTO which means that I don't make decisions one byte at a time. I make decisions with humans at the forefront of my thought process and then I move into the bytes.
 
@@ -69,10 +69,10 @@ I keep this part super simple. I like to think of what problem or thesis I'm try
 
 My format is pretty consistent too.
 
--   Introduction
--   Set up the problem and show an architecture or a thesis
--   Walk through the concepts in a structured yet conversational order
--   Wrap up with some points that drive home the article, link to a GitHub repository if included and leave the reader with some things to ponder going forward
+- Introduction
+- Set up the problem and show an architecture or a thesis
+- Walk through the concepts in a structured yet conversational order
+- Wrap up with some points that drive home the article, link to a GitHub repository if included and leave the reader with some things to ponder going forward
 
 Once I've nailed down my topic and my format, it's time to get writing.
 

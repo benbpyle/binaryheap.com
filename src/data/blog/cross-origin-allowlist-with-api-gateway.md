@@ -1,7 +1,7 @@
 ---
 title: Cross-Origin Allowlist with API Gateway
 author: "Benjamen Pyle"
-description: "Cross-Origin Resource Sharing is a topic that most developers don't generally like to talk about it. It is usually a higher-level item that \"is just in place\" when building and shipping APIs. However,"
+description: 'Cross-Origin Resource Sharing is a topic that most developers don''t generally like to talk about it. It is usually a higher-level item that "is just in place" when building and shipping APIs. However,'
 pubDatetime: 2023-04-01T00:00:00Z
 tags:
   - aws
@@ -38,12 +38,12 @@ As with almost everything I'm doing these days with AWS IaC, let's take a look a
 
 The below example is going to build up the following:
 
--   Sample API Gateway
-    -   One endpoint
-        -   GET (MockIntegration)
-        -   OPTIONS (LAMBA\_PROXY)
--   Go Lambda which handles the CORS requests and matches the domain against - SSM Parameter which defines the "Allowlist" the Allowlist
--   A Role for API Gateway to use when Executing the CORS Lambda
+- Sample API Gateway
+  - One endpoint
+    - GET (MockIntegration)
+    - OPTIONS (LAMBA_PROXY)
+- Go Lambda which handles the CORS requests and matches the domain against - SSM Parameter which defines the "Allowlist" the Allowlist
+- A Role for API Gateway to use when Executing the CORS Lambda
 
 _All of this would work great if just as a standalone repository without an API Gateway so that other APIs could import this into their project. This is just demonstrating how to use it with a sample API Gateway_
 
@@ -51,20 +51,19 @@ _All of this would work great if just as a standalone repository without an API 
 
 ```typescript
 export default class SystemManagerConstruct extends Construct {
-    private readonly _parameter: StringParameter;
+  private readonly _parameter: StringParameter;
 
-    constructor(scope: Construct, id: string) {
-        super(scope, id);
+  constructor(scope: Construct, id: string) {
+    super(scope, id);
 
-        // StringParameter that has the allowed origins
-        //   Localhost stuff is good for local dev
-        this._parameter = new StringParameter(scope, "CorsParameter", {
-            parameterName: "/cors/ALLOWED_ORIGINS",
-            stringValue: `["http://localhost:8000","http://localhost:19006","https://your.custom.domain"]`,
-        });
-    }
+    // StringParameter that has the allowed origins
+    //   Localhost stuff is good for local dev
+    this._parameter = new StringParameter(scope, "CorsParameter", {
+      parameterName: "/cors/ALLOWED_ORIGINS",
+      stringValue: `["http://localhost:8000","http://localhost:19006","https://your.custom.domain"]`,
+    });
+  }
 }
-
 ```
 
 I'm using Paramater Store for this, but it could easily be a static field in the Lambda, a DynamoDB table, an environment variable or pretty much any other place that you want it. I just find that putting it somewhere outside of the environment allows a little more privacy and control over the field.
@@ -73,12 +72,12 @@ I'm using Paramater Store for this, but it could easily be a static field in the
 
 Below is a pretty simple Lambda written in Go that handles
 
--   Fetching the Parameter
--   Parsing and Comparing the Origin vs the allowlist
--   Returning:
-    -   500 - unable to parse or fetch
-    -   400 - no match to the origin
-    -   200 - all good and return
+- Fetching the Parameter
+- Parsing and Comparing the Origin vs the allowlist
+- Returning:
+  - 500 - unable to parse or fetch
+  - 400 - no match to the origin
+  - 200 - all good and return
 
 First the Infra
 

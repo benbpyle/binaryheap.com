@@ -40,36 +40,36 @@ Where do we get started on this epic build? Well, it's hard to have any resource
 
 This VPC will be simple enough and possess the following attributes.
 
--   Subnets will be Public, Private with Egress and Isolated
--   Contain 2 availability zones
--   A VPC Endpoint to ECR in case you want to leverage this capability
+- Subnets will be Public, Private with Egress and Isolated
+- Contain 2 availability zones
+- A VPC Endpoint to ECR in case you want to leverage this capability
 
 ```typescript
 this._vpc = new Vpc(this, "CustomVpc", {
-    subnetConfiguration: [
-        {
-            name: "custom-vpc-public-subnet",
-            subnetType: SubnetType.PUBLIC,
-            cidrMask: 24,
-        },
-        {
-            name: "custom-vpc-private-subnet",
-            subnetType: SubnetType.PRIVATE_WITH_EGRESS,
-            cidrMask: 24,
-        },
-        {
-            name: "custom-vpc-isolated-subnet",
-            subnetType: SubnetType.PRIVATE_ISOLATED,
-            cidrMask: 24,
-        },
-    ],
-    maxAzs: 2,
-    natGateways: 2,
-    vpcName: "CustomVpc",
+  subnetConfiguration: [
+    {
+      name: "custom-vpc-public-subnet",
+      subnetType: SubnetType.PUBLIC,
+      cidrMask: 24,
+    },
+    {
+      name: "custom-vpc-private-subnet",
+      subnetType: SubnetType.PRIVATE_WITH_EGRESS,
+      cidrMask: 24,
+    },
+    {
+      name: "custom-vpc-isolated-subnet",
+      subnetType: SubnetType.PRIVATE_ISOLATED,
+      cidrMask: 24,
+    },
+  ],
+  maxAzs: 2,
+  natGateways: 2,
+  vpcName: "CustomVpc",
 });
 
 this._vpc.addInterfaceEndpoint("EcrEndpoint", {
-    service: InterfaceVpcEndpointAwsService.ECR,
+  service: InterfaceVpcEndpointAwsService.ECR,
 });
 ```
 
@@ -88,10 +88,10 @@ By leveraging ECS, I can take advantage of another type of [serverless compute c
 The CDK code to establish the cluster sets a name and the VPC that was defined above.
 
 ```typescript
-this._cluster = new Cluster(scope, 'EcsCluster', {
-    clusterName: 'sample-cluster',
-    vpc: props.vpc
-})
+this._cluster = new Cluster(scope, "EcsCluster", {
+  clusterName: "sample-cluster",
+  vpc: props.vpc,
+});
 ```
 
 ### Load Balancing
@@ -121,22 +121,27 @@ That's a lot of information compressed into one writing block but the point of t
 Back on track to putting the load balancer together when building Blue Green with ECS and CDK. As mentioned above, I'm going to show the Application Load Balancer with the API Gateway HTTP version.
 
 ```typescript
-this._securityGroup = new SecurityGroup(scope, 'SecurityGroup', {
-    vpc: props.vpc,
-    allowAllOutbound: true
-})
+this._securityGroup = new SecurityGroup(scope, "SecurityGroup", {
+  vpc: props.vpc,
+  allowAllOutbound: true,
+});
 
-this._securityGroup.addIngressRule(this.securityGroup, Port.tcp(3000), 'Group Inbound', false);
+this._securityGroup.addIngressRule(
+  this.securityGroup,
+  Port.tcp(3000),
+  "Group Inbound",
+  false
+);
 
-this._loadBalancer = new ApplicationLoadBalancer(scope, 'NetworkLoadBalancer', {
-    vpc: props.vpc,
-    loadBalancerName: 'sample-cluster-nlb',
-    vpcSubnets: {
-        subnets: props.vpc.privateSubnets,
-        onePerAz: true,
-        availabilityZones: props.vpc.availabilityZones
-    },
-    securityGroup: this.securityGroup
+this._loadBalancer = new ApplicationLoadBalancer(scope, "NetworkLoadBalancer", {
+  vpc: props.vpc,
+  loadBalancerName: "sample-cluster-nlb",
+  vpcSubnets: {
+    subnets: props.vpc.privateSubnets,
+    onePerAz: true,
+    availabilityZones: props.vpc.availabilityZones,
+  },
+  securityGroup: this.securityGroup,
 });
 ```
 
@@ -147,42 +152,42 @@ The code above is building the Application Load Balancer with the VPC that was b
 Blue Green with ECS and CDK is performed by CodeDeploy shifting traffic between load balancer target groups. I've got to establish those, create listener rules, and then make them available for CodeDeploy. Let's first create the groups.
 
 ```typescript
-this._blueTargetGroup = new ApplicationTargetGroup(this, 'blueGroup', {
-    vpc: props.vpc,
-    port: 80,
-        targetGroupName: "sample-cluster-blue",
-    targetType: TargetType.IP,
-    healthCheck: {
-        protocol: Protocol.HTTP,
-        path: '/health',
-        timeout: Duration.seconds(30),
-        interval: Duration.seconds(60),
-        healthyHttpCodes: '200'
-    }
+this._blueTargetGroup = new ApplicationTargetGroup(this, "blueGroup", {
+  vpc: props.vpc,
+  port: 80,
+  targetGroupName: "sample-cluster-blue",
+  targetType: TargetType.IP,
+  healthCheck: {
+    protocol: Protocol.HTTP,
+    path: "/health",
+    timeout: Duration.seconds(30),
+    interval: Duration.seconds(60),
+    healthyHttpCodes: "200",
+  },
 });
 
-this._greenTargetGroup = new ApplicationTargetGroup(this, 'greenGroup', {
-    vpc: props.vpc,
-    port: 80,
-    targetType: TargetType.IP,
-    targetGroupName: "sample-cluster-green",
-    healthCheck: {
-        protocol: Protocol.HTTP,
-        path: '/health',
-        timeout: Duration.seconds(30),
-        interval: Duration.seconds(60),
-        healthyHttpCodes: '200'
-    }
+this._greenTargetGroup = new ApplicationTargetGroup(this, "greenGroup", {
+  vpc: props.vpc,
+  port: 80,
+  targetType: TargetType.IP,
+  targetGroupName: "sample-cluster-green",
+  healthCheck: {
+    protocol: Protocol.HTTP,
+    path: "/health",
+    timeout: Duration.seconds(30),
+    interval: Duration.seconds(60),
+    healthyHttpCodes: "200",
+  },
 });
 
-this._listener = this._loadBalancer.addListener('albProdListener', {
-    port: 80,
-    defaultTargetGroups: [this._blueTargetGroup]
+this._listener = this._loadBalancer.addListener("albProdListener", {
+  port: 80,
+  defaultTargetGroups: [this._blueTargetGroup],
 });
 
-this._testListener = this._loadBalancer.addListener('albTestListener', {
-    port: 8080,
-    defaultTargetGroups: [this._greenTargetGroup]
+this._testListener = this._loadBalancer.addListener("albTestListener", {
+  port: 8080,
+  defaultTargetGroups: [this._greenTargetGroup],
 });
 ```
 
@@ -197,45 +202,46 @@ Next, I'm defining listeners and then assigning them to the target groups. The l
 The definition for executing code in Blue Green with ECS and CDK is the ECS Task. The task definition contains information about the containers that will run together, port definitions, logging definitions, and many other useful settings that impact the runtime of your code. Tasks also aren't tied specifically to a cluster but will be married together with a Service to form the bond within a specific Cluster. With ECS, the task could exist in several clusters if needed. Tasks also contain versions so every update of the definition will create a new revision.
 
 ```typescript
-this._taskDefinition = new TaskDefinition(scope, 'rust-blue-green', {
-    cpu: "256",
-    memoryMiB: "512",
-    compatibility: Compatibility.FARGATE,
-    runtimePlatform: {
-        cpuArchitecture: CpuArchitecture.ARM64,
-        operatingSystemFamily: OperatingSystemFamily.LINUX
-    },
-    networkMode: NetworkMode.AWS_VPC,
-    family: "rust-blue-green"
+this._taskDefinition = new TaskDefinition(scope, "rust-blue-green", {
+  cpu: "256",
+  memoryMiB: "512",
+  compatibility: Compatibility.FARGATE,
+  runtimePlatform: {
+    cpuArchitecture: CpuArchitecture.ARM64,
+    operatingSystemFamily: OperatingSystemFamily.LINUX,
+  },
+  networkMode: NetworkMode.AWS_VPC,
+  family: "rust-blue-green",
 });
 
 const container = this._taskDefinition.addContainer("rust-api", {
-    // Use an image from Amazon ECR
-    image: ContainerImage.fromRegistry("public.ecr.aws/f8u4w2p3/rust-blue-green:latest"),
-    logging: LogDrivers.awsLogs({streamPrefix: 'rust-api'}),
-    environment: {
-    },
-    containerName: 'rust-api',
-    essential: true,
-    cpu: 256,
-    memoryReservationMiB: 512
-    // ... other options here ...
+  // Use an image from Amazon ECR
+  image: ContainerImage.fromRegistry(
+    "public.ecr.aws/f8u4w2p3/rust-blue-green:latest"
+  ),
+  logging: LogDrivers.awsLogs({ streamPrefix: "rust-api" }),
+  environment: {},
+  containerName: "rust-api",
+  essential: true,
+  cpu: 256,
+  memoryReservationMiB: 512,
+  // ... other options here ...
 });
 
 container.addPortMappings({
-    containerPort: 3000,
-    appProtocol: AppProtocol.http,
-    name: "web",
-    protocol: Protocol.TCP
+  containerPort: 3000,
+  appProtocol: AppProtocol.http,
+  name: "web",
+  protocol: Protocol.TCP,
 });
 ```
 
 There are three parts to this block.
 
 1.  Establish the task definition.
-    -   I'm opting for .25 vCPU and 512MB of memory. This is a Web API coded in Rust, so tons of resources aren't needed.
-    -   Fargate is my deployment option as I want it to be serverless
-    -   Graviton/ARM64 is my architecture type because who doesn't want more performance for less money?
+    - I'm opting for .25 vCPU and 512MB of memory. This is a Web API coded in Rust, so tons of resources aren't needed.
+    - Fargate is my deployment option as I want it to be serverless
+    - Graviton/ARM64 is my architecture type because who doesn't want more performance for less money?
 2.  Add my container to the task. I'm doing this via a public ECR repository where I've shipped my container ahead of time. I'll include this code's repos at the bottom as well.
 3.  Specify the ports that I want to communicate over and that my container exposes per the Dockerfile
 
@@ -247,16 +253,16 @@ One last piece of the Task Definition is to add an execution policy. This policy
 
 ```typescript
 const executionPolicy = new PolicyStatement({
-    actions: [
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-    ],
-    resources: ["*"],
-    effect: Effect.ALLOW
+  actions: [
+    "ecr:GetAuthorizationToken",
+    "ecr:BatchCheckLayerAvailability",
+    "ecr:GetDownloadUrlForLayer",
+    "ecr:BatchGetImage",
+    "logs:CreateLogStream",
+    "logs:PutLogEvents",
+  ],
+  resources: ["*"],
+  effect: Effect.ALLOW,
 });
 
 this._taskDefinition.addToExecutionRolePolicy(executionPolicy);
@@ -267,30 +273,28 @@ this._taskDefinition.addToExecutionRolePolicy(executionPolicy);
 We are most of the way done, but still need to put the cluster and the task together. With ECS you do this with a service. And with Blue Green with ECS and CDK, it looks like this.
 
 ```typescript
-const service = new FargateService(this, 'Service', {
-    cluster: props.cluster,
-    taskDefinition: props.task,
-    desiredCount: 1,
-    deploymentController: {
-        type: DeploymentControllerType.CODE_DEPLOY,
-    },
-    securityGroups: [props.securityGroup]
+const service = new FargateService(this, "Service", {
+  cluster: props.cluster,
+  taskDefinition: props.task,
+  desiredCount: 1,
+  deploymentController: {
+    type: DeploymentControllerType.CODE_DEPLOY,
+  },
+  securityGroups: [props.securityGroup],
 });
 
 service.attachToNetworkTargetGroup(props.blueTargetGroup as NetworkTargetGroup);
-new EcsDeploymentGroup(this, 'BlueGreenDG', {
-    service,
-    blueGreenDeploymentConfig: {
-        blueTargetGroup: props.blueTargetGroup,
-        greenTargetGroup: props.greenTargetGroup,
-        listener: props.listener,
-        testListener: props.testListener,
+new EcsDeploymentGroup(this, "BlueGreenDG", {
+  service,
+  blueGreenDeploymentConfig: {
+    blueTargetGroup: props.blueTargetGroup,
+    greenTargetGroup: props.greenTargetGroup,
+    listener: props.listener,
+    testListener: props.testListener,
+  },
 
-    },
-
-    deploymentConfig: EcsDeploymentConfig.ALL_AT_ONCE,
+  deploymentConfig: EcsDeploymentConfig.ALL_AT_ONCE,
 });
-
 ```
 
 Notice the first mention in the infrastructure of CodeDeploy. We'll get into more of that in the testing phase of the article but ECS is very tightly integrated with AWS CodeDeploy.
@@ -306,23 +310,26 @@ Remember, I'm going for an HTTP API Gateway which is limited in features but low
 I'm going to establish the PrivateLink and the API Gateway all in one swoop.
 
 ```typescript
-const link = new VpcLink(scope, 'VpcLink', {
-    vpc: props.vpc,
-    vpcLinkName: 'sample-cluster-vpc-link',
-    securityGroups: [props.securityGroup],
-
-})
-
-const albIntegration = new HttpAlbIntegration('ALBIntegration', props.listener, {
-    vpcLink: link
+const link = new VpcLink(scope, "VpcLink", {
+  vpc: props.vpc,
+  vpcLinkName: "sample-cluster-vpc-link",
+  securityGroups: [props.securityGroup],
 });
 
-const apiGateway = new HttpApi(scope, 'SampleClusterAPI', {});
+const albIntegration = new HttpAlbIntegration(
+  "ALBIntegration",
+  props.listener,
+  {
+    vpcLink: link,
+  }
+);
+
+const apiGateway = new HttpApi(scope, "SampleClusterAPI", {});
 apiGateway.addRoutes({
-    path: "/one",
-    methods: [HttpMethod.GET],
-    integration: albIntegration
-})
+  path: "/one",
+  methods: [HttpMethod.GET],
+  integration: albIntegration,
+});
 ```
 
 What I like about this is the simplicity of attaching the ALB Integration directly to the route definition. When I supply `/one`, it'll be routed into my load balancer passing along that path into the container.
@@ -366,33 +373,33 @@ When the stack is deployed, you'll have a CodeDeploy Application and a Deploymen
 Buried in this Blue Green with ECS and CDK project is a Lambda Function that you might have missed if just reading through the repository.
 
 ```typescript
-const securityGroup = new SecurityGroup(scope, 'FunctionSecurityGroup', {
-    allowAllOutbound: true,
-    vpc: props.vpc,
+const securityGroup = new SecurityGroup(scope, "FunctionSecurityGroup", {
+  allowAllOutbound: true,
+  vpc: props.vpc,
 });
 
 this._function = new RustFunction(scope, "InstallTestFunction", {
-    manifestPath: './',
-    architecture: Architecture.ARM_64,
-    memorySize: 256,
-    vpc: props.vpc,
-    securityGroups: [securityGroup],
-    vpcSubnets: {
-        subnets: props.vpc.privateSubnets
-    },
-    environment: {
-        ALB_URL: props.alb.loadBalancerDnsName
-    }
+  manifestPath: "./",
+  architecture: Architecture.ARM_64,
+  memorySize: 256,
+  vpc: props.vpc,
+  securityGroups: [securityGroup],
+  vpcSubnets: {
+    subnets: props.vpc.privateSubnets,
+  },
+  environment: {
+    ALB_URL: props.alb.loadBalancerDnsName,
+  },
 });
 
-this._function.addToRolePolicy(new PolicyStatement({
-    actions: [
-        "codedeploy:PutLifecycleEventHookExecutionStatus"
-    ],
+this._function.addToRolePolicy(
+  new PolicyStatement({
+    actions: ["codedeploy:PutLifecycleEventHookExecutionStatus"],
     resources: ["*"],
     effect: Effect.ALLOW,
-    sid: "CodeDeployActions"
-}))
+    sid: "CodeDeployActions",
+  })
+);
 ```
 
 If you notice that this function is coded in [Rust](https://binaryheap.com/serverless-rust-developer-experience/), I'm sure you won't be surprised.
@@ -471,7 +478,7 @@ As you can see in the response, the output is showing "green".
 
 ```json
 {
-    "key": "route_one from Green"
+  "key": "route_one from Green"
 }
 ```
 
@@ -511,7 +518,7 @@ As you can see in the response, the output is showing "blue".
 
 ```json
 {
-    "key": "route_one from Blue"
+  "key": "route_one from Blue"
 }
 ```
 

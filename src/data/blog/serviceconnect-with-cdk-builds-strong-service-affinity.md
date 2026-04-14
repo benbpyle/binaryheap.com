@@ -43,9 +43,9 @@ I mentioned above that this project spans multiple repos and parts, so let's div
 
 ```json
 {
-    "key_one": "(Hello)Field 1",
-    "key_two": "(Hello)Field 2",
-    "key_time": "2024-07-07T02:44:59.984673361Z"
+  "key_one": "(Hello)Field 1",
+  "key_two": "(Hello)Field 2",
+  "key_time": "2024-07-07T02:44:59.984673361Z"
 }
 ```
 
@@ -73,19 +73,15 @@ export class InfraStack extends Stack {
     super(scope, id, props);
 
     // build the base VPC
-    const vpcConstruct = new VpcConstruct(this, 'VpcConstruct');
+    const vpcConstruct = new VpcConstruct(this, "VpcConstruct");
 
     // create a new Application Load Balancer
-    new LoadBalancerConstruct(
-      this,
-      'LoadBalancerConstruct',
-      {
-        vpc: vpcConstruct.vpc
-      }
-    );
+    new LoadBalancerConstruct(this, "LoadBalancerConstruct", {
+      vpc: vpcConstruct.vpc,
+    });
 
     // Build the ECS Cluster to hold the services
-    new EcsClusterConstruct(this, 'EcsClusterConstruct', {
+    new EcsClusterConstruct(this, "EcsClusterConstruct", {
       vpc: vpcConstruct.vpc,
     });
   }
@@ -122,44 +118,46 @@ I mentioned that a proxy sidecar is installed next to your application code. Is 
 
 ```typescript
 // task definition
-this._taskDefinition = new TaskDefinition(scope, `${props.service.serviceName}-TaskDefinition`, {
-    cpu: '1024',
-    memoryMiB: '2048',
+this._taskDefinition = new TaskDefinition(
+  scope,
+  `${props.service.serviceName}-TaskDefinition`,
+  {
+    cpu: "1024",
+    memoryMiB: "2048",
     compatibility: Compatibility.FARGATE,
     runtimePlatform: {
-    cpuArchitecture: CpuArchitecture.ARM64,
-    operatingSystemFamily: OperatingSystemFamily.LINUX,
+      cpuArchitecture: CpuArchitecture.ARM64,
+      operatingSystemFamily: OperatingSystemFamily.LINUX,
     },
     networkMode: NetworkMode.AWS_VPC,
     family: `${props.service.serviceName}-task`,
-});
+  }
+);
 
 // add the container
-const apiContainer = this._taskDefinition.addContainer('rust-api', {
-    // Use an image from Amazon ECR
-    image: ContainerImage.fromRegistry(
-    `${service.ecrUri}:${service.imageTag}`
-    ),
-    logging: LogDrivers.awsLogs({ streamPrefix: service.serviceName }),
-    environment: {
+const apiContainer = this._taskDefinition.addContainer("rust-api", {
+  // Use an image from Amazon ECR
+  image: ContainerImage.fromRegistry(`${service.ecrUri}:${service.imageTag}`),
+  logging: LogDrivers.awsLogs({ streamPrefix: service.serviceName }),
+  environment: {
     BIND_ADDRESS: "0.0.0.0:3000",
     // uncomment this if you want to use DD tracing
     // AGENT_ADDRESS: "binaryheap.com",
     // set this to true if you want to use DD tracing
     DD_TRACING_ENABLED: "false",
-    RUST_LOG: "info"
-    },
-    containerName: service.apiShortName,
-    essential: true,
-    cpu: 512,
-    memoryReservationMiB: 1024,
+    RUST_LOG: "info",
+  },
+  containerName: service.apiShortName,
+  essential: true,
+  cpu: 512,
+  memoryReservationMiB: 1024,
 });
 
 apiContainer.addPortMappings({
-    containerPort: 3000,
-    appProtocol: AppProtocol.http,
-    name: 'web',
-    protocol: Protocol.TCP,
+  containerPort: 3000,
+  appProtocol: AppProtocol.http,
+  name: "web",
+  protocol: Protocol.TCP,
 });
 ```
 
@@ -168,33 +166,29 @@ Again, no mention of the proxy. A quick aside, if you notice the mentions of tra
 The FargateService definition is where ServiceConnect comes into play.
 
 ```typescript
-new FargateService(
-    scope,
-    `Service-${props.service.serviceName}`,
-    {
-    cluster: props.sharedResources.cluster,
-    taskDefinition: props.task,
-    desiredCount: 1,
-    serviceName: props.service.serviceName,
-    securityGroups: [securityGroup],
-    serviceConnectConfiguration: {
-        logDriver: LogDrivers.awsLogs({
-        streamPrefix: props.service.serviceName
-        }),
-        namespace: 'highlands.local',
-        services: [
-        {
-            portMappingName: 'web',
-            dnsName: props.service.apiShortName,
-            port: 8080,
-            discoveryName: props.service.apiShortName,
-            // timeout requests at 10 seconds
-            perRequestTimeout: Duration.seconds(10)
-        },
-        ],
-    },
-    }
-);
+new FargateService(scope, `Service-${props.service.serviceName}`, {
+  cluster: props.sharedResources.cluster,
+  taskDefinition: props.task,
+  desiredCount: 1,
+  serviceName: props.service.serviceName,
+  securityGroups: [securityGroup],
+  serviceConnectConfiguration: {
+    logDriver: LogDrivers.awsLogs({
+      streamPrefix: props.service.serviceName,
+    }),
+    namespace: "highlands.local",
+    services: [
+      {
+        portMappingName: "web",
+        dnsName: props.service.apiShortName,
+        port: 8080,
+        discoveryName: props.service.apiShortName,
+        // timeout requests at 10 seconds
+        perRequestTimeout: Duration.seconds(10),
+      },
+    ],
+  },
+});
 ```
 
 If you've worked with CDK and ECS before, this probably looks familiar. But if not, CDK offers many convenience classes that help with the type of service that I want to build. Anything from the above FargateService, EC2Service, and even Application Load Balanced Services. My ServiceConnect configuration is just a type on the FargateService. Let's break down what I'm doing here.
@@ -272,7 +266,7 @@ const apiContainer = this._taskDefinition.addContainer('rust-api', {
 
 With ServiceConnect and CDK, you can see how easy it is to add advanced service mesh capabilities to any of your ECS services. I haven't said it up to this point, but ServiceConnect is only available for services deployed in ECS. This does include EC2 and Fargate deployment models, but if you have more variety in your compute, you might need to look at including VPC Lattice (something I also need to write more about).
 
-**Coming Together**  
+**Coming Together**
 
 ![](/images/connectivity-1024x156.png)
 

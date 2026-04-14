@@ -18,27 +18,27 @@ Helm describes itself as:
 
 But what exactly does that mean for the developer or administrator of a Kubernetes cluster? And how does one package an API into common Kubernetes resources like Services, Deployments, ReplicaSets, and others? The example project below will explore some of the answers to these questions and give a great starting point for taking it further. Let's get started on a Helm Kubernetes Tutorial!
 
--   [What Problem Does this Solve?](#what-problem-does-this-solve)
--   [Helm Kubernetes Tutorial](#coding-example)
-    -   [Application Code](#application-code)
-    -   [Tour of Helm](#tour-of-helm)
-        -   [Chart](#chart)
-        -   [Templates](#templates)
-        -   [Values](#values)
--   [Installing the Chart](#installing-the-chart)
-    -   [Install](#install)
-    -   [Upgrade](#upgrade)
-    -   [Delete](#delete)
--   [Wrapping Up](#wrapping-up)
+- [What Problem Does this Solve?](#what-problem-does-this-solve)
+- [Helm Kubernetes Tutorial](#coding-example)
+  - [Application Code](#application-code)
+  - [Tour of Helm](#tour-of-helm)
+    - [Chart](#chart)
+    - [Templates](#templates)
+    - [Values](#values)
+- [Installing the Chart](#installing-the-chart)
+  - [Install](#install)
+  - [Upgrade](#upgrade)
+  - [Delete](#delete)
+- [Wrapping Up](#wrapping-up)
 
 ## What Problem Does this Solve?
 
 Going back to deploying an API application into a cluster, there are a number of different resources needed to make this happen. For a simple use case, I'd need the following:
 
--   Service
--   ReplicaSet
--   ConfigMap
--   Deployment
+- Service
+- ReplicaSet
+- ConfigMap
+- Deployment
 
 Those four resources would give me a starting point to extend from but at a minimum, I'd have my service running and serving traffic. I could of course hard code all of my values directly into my resource definitions. Again, that's an approach. But the minute that I need to have another environment, such as QA, I'm going to end up duplicating my work and having 2 copies of my full resources. This introduces waste and opportunities for errors.
 
@@ -122,7 +122,6 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
-
 ```
 
 #### Templates

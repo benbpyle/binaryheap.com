@@ -59,17 +59,16 @@ Second, the failure
     "statusCode": 400
   }
 }
-
 ```
 
 ### API Gateway VTL Mapping State Machine Response?
 
 With API Gateway you have the option to do incoming request mapping as well as outgoing response mapping. Articles I learned from when working on this
 
--   [API Gateway Data Mapping](https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html)
--   [Mapping Variables and Functions](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html#util-template-reference)
--   [Overrides](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-override-request-response-parameters.html)
--   [VTL (Velocity Template Language)](https://velocity.apache.org/engine/2.0/vtl-reference.html)
+- [API Gateway Data Mapping](https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html)
+- [Mapping Variables and Functions](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html#util-template-reference)
+- [Overrides](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-override-request-response-parameters.html)
+- [VTL (Velocity Template Language)](https://velocity.apache.org/engine/2.0/vtl-reference.html)
 
 The raw output from my State Machine actually has quite a bit more details about the execution such as billing time, execution id, inputs and outputs. For this example I'm interested in outputs but you could also use the execution id for debugging and tracing
 

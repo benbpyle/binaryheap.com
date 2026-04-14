@@ -37,26 +37,26 @@ And lastly, I'm going to talk about the access models for using them in a progra
 
 ### Relational
 
--   Is your data relational in nature?
--   Does your comfort lie in the ability to query using something familiar like SQL?
--   Are you migrating an existing workload into Serverless that might have been in a more traditional VM-backed system like MySQL or Postgres?
+- Is your data relational in nature?
+- Does your comfort lie in the ability to query using something familiar like SQL?
+- Are you migrating an existing workload into Serverless that might have been in a more traditional VM-backed system like MySQL or Postgres?
 
 If you answered yes to these questions, it would benefit you to look into [AWS RDS](https://aws.amazon.com/rds/). Sure, maybe not as "Serverless" as some of the others as you tend to need to look at provisioning but the scaling can be handled nicely and you don't have to worry about patching etc.
 
 ### Time Series
 
--   Is your data stored on a time series?
--   Do you have certain keys/queries that you know you are always going to use?
--   Are you OK using HTTP requests with your favorite programming language to access the data?
+- Is your data stored on a time series?
+- Do you have certain keys/queries that you know you are always going to use?
+- Are you OK using HTTP requests with your favorite programming language to access the data?
 
 Answers to these questions will yield a finger point to [Timestream](https://aws.amazon.com/timestream/). This might service you are familiar with, but it's worth checking out if you have yeses to the questions above. I've used this in production for a couple of years, and while not quite as full-featured as say InfluxDB, it's low-maintenance and super easy to use. And performs well to boot.
 
 ### Healthcare
 
--   Do you deal with Healthcare data?
--   Do you need a Patient-centric view of the information?
--   Are you comfortable making HTTP requests in your favorite programming language?
--   Would you like additional capabilities like connecting to Machine Learning, Dashboards and Quicksight and leveraging other tools like [Comprehend](https://aws.amazon.com/comprehend/)
+- Do you deal with Healthcare data?
+- Do you need a Patient-centric view of the information?
+- Are you comfortable making HTTP requests in your favorite programming language?
+- Would you like additional capabilities like connecting to Machine Learning, Dashboards and Quicksight and leveraging other tools like [Comprehend](https://aws.amazon.com/comprehend/)
 
 You might have a use case for [HealthLake](https://aws.amazon.com/healthlake). I can vouch for this service as I've been using it in production as well for the past 9 - 12 months. I'm trying my best to only speak on things I've used here. If you don't have the HealthLake use case, you will never need it. And you might not have ever heard of it. I wrote a case for [Event-Driven Serverless Data Architecture](https://binaryheap.com/event-driven-serverless-data-architecture/) a while back and that article has HealthLake at the core of the design. It has got its place for sure in the toolbox.
 
@@ -64,29 +64,29 @@ Let's continue the questions with a slant toward searching.
 
 ### Search
 
--   Is your data used for complex queries? Broad ones down to specifics?
--   Are these searches not predictable and might they be full-text in some cases?
--   Is eventually consistent OK?
--   Is your data in a wide variety of formats?
--   Do you need scale to handle both intensive load and query operations?
--   Are you comfortable making HTTP requests in your favorite programming language?
+- Is your data used for complex queries? Broad ones down to specifics?
+- Are these searches not predictable and might they be full-text in some cases?
+- Is eventually consistent OK?
+- Is your data in a wide variety of formats?
+- Do you need scale to handle both intensive load and query operations?
+- Are you comfortable making HTTP requests in your favorite programming language?
 
 If yes to these, then [OpenSearch](https://aws.amazon.com/opensearch-service/) is where you are looking. I rarely ever use OpenSearch on its own but usually pair it with DynamoDB. The performance of DDB and the power of searching with OpenSearch make a nice combination. And as with most things with Serverless, pick the right tool for the job. And when it comes to Data, there are so many choices because each one of these is specific to the problem it solves.
 
 ### Files
 
--   Do you have raw structured or unstructured files to work with?
--   Does your data serve as input(s) into a workflow?
--   Is your application built around a filesystem versus a traditional data store?
+- Do you have raw structured or unstructured files to work with?
+- Does your data serve as input(s) into a workflow?
+- Is your application built around a filesystem versus a traditional data store?
 
 Most people don't even consider S3 (Simple Storage Service) as an option when it comes to a database for your application. But honestly, it's about the simplest solution possible. For disclosure, I've used S3 in conjunction with other services and I've also used S3 as a storage and trigger mechanism for AWS Step Functions. Don't sleep on this stalwart as it can fit in so many ways.
 
 #### NoSQL
 
--   Are you comfortable modeling relational data in Key/Value terms?
--   Do you have non-relational data?
--   Are you OK querying a database via an SDK that doesn't come with a traditional SQL Language (yes I know about PartiQL :))
--   Are you good with non-traditional scaling (that is almost infinite) but is driven by access patterns and index definitions?
+- Are you comfortable modeling relational data in Key/Value terms?
+- Do you have non-relational data?
+- Are you OK querying a database via an SDK that doesn't come with a traditional SQL Language (yes I know about PartiQL :))
+- Are you good with non-traditional scaling (that is almost infinite) but is driven by access patterns and index definitions?
 
 If you feel like this is you, [DynamoDB](https://aws.amazon.com/dynamodb/) is where you need to look. Full disclosure, this is my default data choice that I reach for. I find that if you know how your data is going to be accessed, and you understand the scaling modes, then this is the best all-purpose choice. You can model relational, non-relational, JSON-based and several other intrinsic datatypes out of the box.
 
