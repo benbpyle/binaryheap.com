@@ -1,9 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import {
-  PUBLIC_GOOGLE_SITE_VERIFICATION,
-  PUBLIC_GA4_ID,
-} from "astro:env/client";
+import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 
@@ -191,30 +188,27 @@ const breadcrumbData = isBlogPost
       )
     }
 
-    <!-- Google Analytics 4 (production only) -->
+    <!-- Privacy-friendly analytics by Plausible (production only) -->
     {
-      import.meta.env.PROD && PUBLIC_GA4_ID && (
+      import.meta.env.PROD && (
         <>
           <script
             is:inline
-            src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA4_ID}`}
             async
+            src="https://plausible.io/js/pa-gH4SVF0mwAUebzD_rRtLp.js"
           />
-          <script
-            is:inline
-            define:vars={{ PUBLIC_GA4_ID }}
-          >
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', PUBLIC_GA4_ID, { send_page_view: false });
-
-            document.addEventListener('astro:page-load', () => {
-              gtag('event', 'page_view', {
-                page_location: window.location.href,
-                page_title: document.title,
-              });
-            });
+          <script is:inline>
+            window.plausible =
+              window.plausible ||
+              function () {
+                (plausible.q = plausible.q || []).push(arguments);
+              };
+            plausible.init =
+              plausible.init ||
+              function (i) {
+                plausible.o = i || {};
+              };
+            plausible.init();
           </script>
         </>
       )
