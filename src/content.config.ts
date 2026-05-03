@@ -3,6 +3,16 @@ import { glob } from "astro/loaders";
 import { SITE } from "@/config";
 
 export const BLOG_PATH = "src/data/blog";
+export const HAIKU_PATH = "src/data/haiku";
+
+export const HAIKU_CATEGORIES = [
+  "software",
+  "computing",
+  "cloud",
+  "networking",
+] as const;
+
+export type HaikuCategory = (typeof HAIKU_CATEGORIES)[number];
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/[^_]*.md", base: `./${BLOG_PATH}` }),
@@ -23,4 +33,15 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+const haiku = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.md", base: `./${HAIKU_PATH}` }),
+  schema: z.object({
+    title: z.string(),
+    pubDatetime: z.date(),
+    category: z.enum(HAIKU_CATEGORIES),
+    note: z.string().optional(),
+    draft: z.boolean().optional(),
+  }),
+});
+
+export const collections = { blog, haiku };

@@ -1,0 +1,69 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Main from "@/layouts/Main.astro";
+import { getCollection } from "astro:content";
+import { HAIKU_CATEGORIES, type HaikuCategory } from "@/content.config";
+
+const allHaiku = await getCollection("haiku", ({ data }) => !data.draft);
+
+const countByCategory = HAIKU_CATEGORIES.reduce(
+  (acc, c) => {
+    acc[c] = allHaiku.filter(h => h.data.category === c).length;
+    return acc;
+  },
+  {} as Record<HaikuCategory, number>
+);
+
+const categoryDescriptions: Record<HaikuCategory, string> = {
+  software: "Code, craft, and the quiet work of building things that last.",
+  computing: "Bits, machines, and the strange poetry of compute.",
+  cloud: "Distributed systems, ephemeral infrastructure, and life on AWS.",
+  networking: "Packets, protocols, and the conversations between machines.",
+};
+---
+
+<Layout title={`Poetry | binaryheap`}>
+  <Header />
+  <Main
+    pageTitle="Poetry"
+    pageDesc="Short verse on software, computing, and the quiet things in between."
+  >
+    <section class="mt-2 mb-10">
+      <p class="text-foreground/80">
+        I started writing poetry. Most of it is haiku — three lines, seventeen
+        syllables, and just enough room to say one true thing. Pick a section
+        below.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="mb-4 text-xl font-semibold">Haiku</h2>
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {
+          HAIKU_CATEGORIES.map(category => (
+            <li class="rounded-md border border-border p-5 transition-colors hover:bg-foreground/5">
+              <a
+                href={`/poetry/haiku/${category}`}
+                class="block hover:text-accent"
+              >
+                <div class="flex items-baseline justify-between gap-3">
+                  <h3 class="text-lg font-semibold capitalize">{category}</h3>
+                  <span class="text-sm text-foreground/60">
+                    {countByCategory[category]}
+                    {countByCategory[category] === 1 ? " poem" : " poems"}
+                  </span>
+                </div>
+                <p class="mt-2 text-sm text-foreground/80">
+                  {categoryDescriptions[category]}
+                </p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </Main>
+  <Footer />
+</Layout>

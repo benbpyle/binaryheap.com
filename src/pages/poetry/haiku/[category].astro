@@ -1,0 +1,96 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Main from "@/layouts/Main.astro";
+import Datetime from "@/components/Datetime.astro";
+import {
+  HAIKU_CATEGORIES,
+  type HaikuCategory,
+} from "@/content.config";
+
+export const getStaticPaths = (async () => {
+  return HAIKU_CATEGORIES.map(category => ({
+    params: { category },
+    props: { category },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  category: HaikuCategory;
+}
+
+const { category } = Astro.props;
+
+const haikus = await getCollection(
+  "haiku",
+  ({ data }) => !data.draft && data.category === category
+);
+
+haikus.sort(
+  (a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf()
+);
+
+const rendered = await Promise.all(
+  haikus.map(async entry => {
+    const { Content } = await render(entry);
+    return { entry, Content };
+  })
+);
+
+const categoryDescriptions: Record<HaikuCategory, string> = {
+  software: "Code, craft, and the quiet work of building things that last.",
+  computing: "Bits, machines, and the strange poetry of compute.",
+  cloud: "Distributed systems, ephemeral infrastructure, and life on AWS.",
+  networking: "Packets, protocols, and the conversations between machines.",
+};
+
+const titleCategory = category.charAt(0).toUpperCase() + category.slice(1);
+---
+
+<Layout title={`${titleCategory} Haiku | binaryheap`}>
+  <Header />
+  <Main
+    pageTitle={`Haiku · ${titleCategory}`}
+    pageDesc={categoryDescriptions[category]}
+  >
+    {
+      rendered.length === 0 ? (
+        <div class="rounded-md border border-dashed border-border p-8 text-center text-foreground/70">
+          <p>Nothing here yet. Check back soon.</p>
+        </div>
+      ) : (
+        <ul class="space-y-16">
+          {rendered.map(({ entry, Content }) => (
+            <li class="border-b border-border pb-12 last:border-b-0">
+              <h2 class="text-xl font-semibold">{entry.data.title}</h2>
+              <Datetime pubDatetime={entry.data.pubDatetime} size="sm" />
+
+              <blockquote class="mt-6 border-l-2 border-accent/60 pl-6 text-lg leading-loose whitespace-pre-line italic text-foreground/90">
+                <Content />
+              </blockquote>
+
+              {entry.data.note && (
+                <div class="mt-6 max-w-prose text-sm leading-relaxed whitespace-pre-line text-foreground/70">
+                  {entry.data.note}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <nav class="mt-12 border-t border-border pt-6">
+      <a
+        href="/poetry"
+        class="font-medium text-accent underline decoration-dashed underline-offset-4 hover:text-accent/80"
+      >
+        ← All poetry
+      </a>
+    </nav>
+  </Main>
+  <Footer />
+</Layout>
